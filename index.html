@@ -1146,9 +1146,13 @@
       var STORAGE_LANG = "nahlhub_lang";
       var STORAGE_THEME = "nahlhub_theme";
 
+      // 🔹 NahlHub App ID (multi-tenant)
+      var HUB_APP_ID = null;
+
       var currentLang = localStorage.getItem(STORAGE_LANG) || "ar";
       var currentTheme = localStorage.getItem(STORAGE_THEME) || "light";
-      var currentSessionKey = localStorage.getItem(STORAGE_SESSION_KEY) || null;
+      var currentSessionKey =
+        localStorage.getItem(STORAGE_SESSION_KEY) || null;
       var currentUser = null;
       var currentApps = [];
       var currentMobileRaw = "";
@@ -1250,6 +1254,11 @@
         return entry[currentLang] || entry.ar || key;
       }
 
+      function getQueryParam(name) {
+        var params = new URLSearchParams(window.location.search);
+        return params.get(name);
+      }
+
       function applyLanguage() {
         document.documentElement.lang = currentLang;
         document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
@@ -1295,10 +1304,13 @@
           tDict[msgKeyOrText] && tDict[msgKeyOrText][currentLang]
             ? t(msgKeyOrText)
             : msgKeyOrText;
+
         statusPill.classList.remove("ok", "error");
         if (type === "ok") statusPill.classList.add("ok");
         else if (type === "error") statusPill.classList.add("error");
-        statusText.textContent = text;
+
+        var appPart = HUB_APP_ID ? "AppID=" + HUB_APP_ID + " · " : "";
+        statusText.textContent = appPart + text;
       }
 
       function showStep(name) {
@@ -1321,10 +1333,16 @@
       }
 
       function postJson(payload) {
+        payload = payload || {};
+        // 🔹 Always send appId if available
+        if (HUB_APP_ID && !payload.appId && !payload.appid) {
+          payload.appId = HUB_APP_ID;
+        }
+
         return fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload || {})
+          body: JSON.stringify(payload)
         }).then(function (res) {
           return res.json().catch(function () {
             throw new Error("Invalid JSON from backend.");
@@ -1374,6 +1392,11 @@
       }
 
       function sendOtp() {
+        if (!HUB_APP_ID) {
+          setStatus("App ID is missing (?appid=...)", "error");
+          return;
+        }
+
         var mobile = (mobileInput.value || "").trim();
         if (!mobile) {
           setStatus(
@@ -1412,6 +1435,11 @@
       }
 
       function verifyOtp() {
+        if (!HUB_APP_ID) {
+          setStatus("App ID is missing (?appid=...)", "error");
+          return;
+        }
+
         var otp = readOtp();
         if (!otp || otp.length !== 4) {
           setStatus(
@@ -1452,7 +1480,6 @@
               localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
             }
 
-            // After login: hide welcome, show apps, neutral status
             if (welcomeCard) welcomeCard.classList.add("hidden");
             updateUserUi();
             renderApps();
@@ -1468,7 +1495,7 @@
       }
 
       function authMe() {
-        if (!currentSessionKey) {
+        if (!currentSessionKey || !HUB_APP_ID) {
           setStatus("statusIdle", null);
           showStep("mobile");
           return;
@@ -1553,13 +1580,11 @@
         appsListEl.innerHTML = "";
         currentAppId = null;
 
-        // Reset iframe
         appFrame.src = "";
         appFrame.classList.add("hidden");
         appFramePlaceholder.classList.remove("hidden");
         currentAppTitle.textContent = t("appPlaceholder");
 
-        // Home state by default → show cards, hide app-view
         appsCard.classList.remove("hidden");
         btnHome.classList.add("hidden");
         appView.classList.add("hidden");
@@ -1735,10 +1760,8 @@
       function goHome() {
         if (!currentApps || !currentApps.length) return;
 
-        // Show cards again
         appsCard.classList.remove("hidden");
 
-        // Reset iframe and hide viewer
         appFrame.classList.add("hidden");
         appFramePlaceholder.classList.remove("hidden");
         currentAppTitle.textContent = t("appPlaceholder");
@@ -1817,15 +1840,27 @@
         goHome();
       });
 
-      // Init
+      // 🔹 Init
       applyTheme();
       applyLanguage();
-      setStatus("statusIdle", null);
-      showStep("mobile");
 
-      if (currentSessionKey) {
-        authMe();
+      // Read App ID from URL
+      HUB_APP_ID =
+        getQueryParam("appid") || getQueryParam("appId") || "";
+
+      if (!HUB_APP_ID) {
+        // App ID missing – disable auth actions
+        btnSendOtp.disabled = true;
+        btnVerifyOtp.disabled = true;
+        setStatus("App ID is missing (?appid=...)", "error");
+      } else {
+        setStatus("statusIdle", null);
+        if (currentSessionKey) {
+          authMe();
+        }
       }
+
+      showStep("mobile");
     })();
   </script>
 </body>
