@@ -1,91 +1,130 @@
 // pages/api/hub/manage.js
-//
-// Proxy between frontend (Next.js / Vercel) and Google Apps Script WebApp.
-//
-// ENV VAR (in Vercel):
-//   NAHL_HUB_WEBAPP_URL = https://script.google.com/macros/s/XXXX/exec
-//
-// Frontend usage:
-//   POST /api/hub/manage  { action: 'auth.requestOtp', mobile: '9665...' }
-//   POST /api/hub/manage  { action: 'auth.verifyOtp', mobile, otp }
-//   POST /api/hub/manage  { action: 'auth.me', sessionKey }
-//   POST /api/hub/manage  { action: 'auth.logout', sessionKey }
-//
-// Notes:
-//   - For GET, if no "action" is provided, we add action=ping.
-//   - For POST, we forward JSON body as-is to Apps Script doPost(e).
-//   - If Apps Script returns non-JSON (e.g., HTML error page), we wrap it
-//     in a JSON error so the frontend never sees raw HTML.
 
-export default async function handler(req, res) {
-  const scriptUrl = process.env.NAHL_HUB_WEBAPP_URL;
+// ✅ Vercel / Next.js API route that proxies to Google Apps Script (NahlHub backend)
 
-  if (!scriptUrl) {
-    res.status(500).json({
-      success: false,
-      error:
-        "NAHL_HUB_WEBAPP_URL is not configured in environment variables. Please set it to your Apps Script Web App /exec URL."
-    });
-    return;
+const APPS_SCRIPT_URL = process.env.NAHLHUB_APPS_SCRIPT_URL;
+
+/**
+ * Helper: build the Apps Script URL with original query params.
+ */
+function buildAppsScriptUrl(query) {
+  if (!APPS_SCRIPT_URL) {
+    throw new Error("Missing NAHLHUB_APPS_SCRIPT_URL env variable.");
   }
 
-  try {
-    const url = new URL(scriptUrl);
+  const url = new URL(APPS_SCRIPT_URL);
 
-    // Copy query parameters from the incoming request
-    const query = req.query || {};
+  // Copy all query params from the incoming request
+  if (query) {
     Object.keys(query).forEach((key) => {
       const value = query[key];
       if (Array.isArray(value)) {
         value.forEach((v) => url.searchParams.append(key, v));
       } else if (value !== undefined) {
-        url.searchParams.set(key, String(value));
+        url.searchParams.append(key, value);
       }
     });
+  }
 
-    // For GET requests, if no action is supplied, default to "ping"
-    if (req.method === "GET" && !url.searchParams.get("action")) {
-      url.searchParams.set("action", "ping");
-    }
+  // For generic GET calls with no `action`, we can default (not really used for hub, but safe)
+  if (!url.searchParams.has("action") && (query && Object.keys(query).length)) {
+    url.searchParams.set("action", "list");
+  }
 
-    const fetchOptions = {
-      method: req.method,
-      headers: {}
+  return url.toString();
+}
+
+/**
+ * Helper: forward request to Apps Script and normalize to JSON.
+ */
+async function forwardToAppsScript(method, query, body) {
+  const targetUrl = buildAppsScriptUrl(query);
+
+  const fetchOptions = {
+    method,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  if (method === "POST") {
+    // Ensure we send JSON string body
+    fetchOptions.body = JSON.stringify(body || {});
+  }
+
+  const resp = await fetch(targetUrl, fetchOptions);
+
+  const rawText = await resp.text();
+
+  // Try to parse JSON; if fails, wrap it in a JSON error envelope
+  try {
+    const data = JSON.parse(rawText);
+    return {
+      ok: resp.ok,
+      status: resp.status,
+      data,
     };
+  } catch (err) {
+    console.error("❌ Apps Script did not return valid JSON", {
+      status: resp.status,
+      rawSnippet: rawText.slice(0, 500),
+    });
 
-    if (req.method !== "GET") {
-      fetchOptions.headers["Content-Type"] = "application/json";
-      fetchOptions.body = JSON.stringify(req.body || {});
-    }
+    return {
+      ok: false,
+      status: 500,
+      data: {
+        success: false,
+        error: "Invalid JSON from Apps Script backend.",
+        statusCodeFromAppsScript: resp.status,
+        rawBodySnippet: rawText.slice(0, 500),
+      },
+    };
+  }
+}
 
-    const response = await fetch(url.toString(), fetchOptions);
-    const text = await response.text();
-
-    // Try to parse JSON from Apps Script.
-    // If it fails, wrap it in a JSON error so frontend never sees raw HTML.
-    let json;
-    try {
-      json = JSON.parse(text);
-    } catch (err) {
-      console.error("Apps Script returned non-JSON response:", text);
-
-      res.status(502).json({
+/**
+ * Main handler
+ */
+export default async function handler(req, res) {
+  try {
+    if (!APPS_SCRIPT_URL) {
+      console.error("❌ NAHLHUB_APPS_SCRIPT_URL is not set.");
+      return res.status(500).json({
         success: false,
         error:
-          "Invalid JSON returned from Apps Script (POST). Check Web App deployment & NAHL_HUB_WEBAPP_URL.",
-        statusCodeFromAppsScript: response.status,
-        raw: text
+          "Server misconfigured: NAHLHUB_APPS_SCRIPT_URL env variable is not set.",
       });
-      return;
     }
 
-    // Forward status + parsed JSON
-    res.status(response.status).json(json);
+    const method = req.method || "GET";
+
+    if (method !== "GET" && method !== "POST") {
+      return res
+        .status(405)
+        .json({ success: false, error: "Method not allowed" });
+    }
+
+    const query = req.query || {};
+    const body = method === "POST" ? req.body || {} : null;
+
+    const result = await forwardToAppsScript(method, query, body);
+
+    // Always respond with JSON
+    return res.status(result.status || 200).json(result.data);
   } catch (err) {
-    console.error("Error in /api/hub/manage:", err);
-    res.status(500).json({
+    console.error("❌ Error in /api/hub/manage:", err);
+    return res.status(500).json({
       success: false,
-      error: "Proxy error: " + (err && err.message ? err.message : String(err))
+      error: "Unexpected error in hub API.",
+      details: err.message || String(err),
     });
   }
 }
+
+// Optional: keep default body parsing (JSON) enabled
+export const config = {
+  api: {
+    bodyParser: true,
+  },
+};
