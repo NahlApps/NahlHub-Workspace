@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>NahlHub</title>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    :root {
+      --bg-light: #f5f7f8;
+      --bg-dark: #020617;
+      --card-light: #ffffff;
+      --card-dark: #020617;
+      --border-light: rgba(15, 23, 42, 0.08);
+      --border-dark: rgba(148, 163, 184, 0.25);
+      --accent: #f4ce14;
+      --text-light: #0f172a;
+      --text-dark: #e5e7eb;
+      --muted-light: #6b7280;
+      --muted-dark: #9ca3af;
+      --surface-radius: 18px;
+      --transition-fast: 0.18s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+    }
+
+    body[data-theme="light"] {
+      background: radial-gradient(
+          circle at top left,
+          rgba(244, 206, 20, 0.18),
+          transparent 55%
+        ),
+        var(--bg-light);
+      color: var(--text-light);
+    }
+
+    body[data-theme="dark"] {
+      background: radial-gradient(
+          circle at top left,
+          rgba(250, 204, 21, 0.14),
+          transparent 50%
+        ),
+        linear-gradient(145deg, #020617, #020617);
+      color: var(--text-dark);
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 6px;
+      gap: 8px;
+      position: relative;
+    }
+
+    /* Topbar */
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid;
+      backdrop-filter: blur(14px);
+      gap: 12px;
+      position: relative;
+      z-index: 10;
+    }
+
+    body[data-theme="light"] .topbar {
+      background: rgba(255, 255, 255, 0.72);
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .topbar {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: var(--border-dark);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .brand-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 18px;
+      background: radial-gradient(circle at 20% 0, #facc15, #f97316);
+      color: #111827;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      font-size: 13px;
+      line-height: 1.2;
+    }
+
+    .brand-title {
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      opacity: 0.75;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip-group {
+      display: inline-flex;
+      padding: 2px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      gap: 2px;
+    }
+
+    body[data-theme="light"] .chip-group {
+      border-color: rgba(148, 163, 184, 0.42);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    body[data-theme="dark"] .chip-group {
+      border-color: rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .chip-btn {
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      background: transparent;
+      color: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background var(--transition-fast),
+        color var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .chip-btn span.icon {
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .chip-btn.active {
+      background: var(--accent);
+      color: #111827;
+      box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
+      transform: translateY(-0.5px);
+    }
+
+    .chip-btn:not(.active):hover {
+      background: rgba(148, 163, 184, 0.25);
+    }
+
+    body[data-theme="dark"] .chip-btn:not(.active):hover {
+      background: rgba(31, 41, 55, 0.8);
+    }
+
+    .chip-btn-mini {
+      border-radius: 999px;
+      padding: 5px 7px;
+      font-size: 11px;
+    }
+
+    /* Apps burger menu (header) */
+
+    .apps-menu-btn {
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .apps-menu-panel {
+      position: absolute;
+      top: 48px;
+      inset-inline-end: 10px;
+      min-width: 200px;
+      max-width: 260px;
+      max-height: 260px;
+      overflow-y: auto;
+      border-radius: 16px;
+      border: 1px solid;
+      padding: 6px;
+      z-index: 20;
+    }
+
+    body[data-theme="light"] .apps-menu-panel {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.4);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.16);
+    }
+
+    body[data-theme="dark"] .apps-menu-panel {
+      background: rgba(15, 23, 42, 0.98);
+      border-color: rgba(148, 163, 184, 0.6);
+      box-shadow: 0 18px 34px rgba(15, 23, 42, 0.8);
+    }
+
+    .apps-menu-item {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      padding: 6px 8px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      text-align: start;
+      transition: background var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .apps-menu-item-title {
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .apps-menu-item-cat {
+      font-size: 11px;
+      opacity: 0.6;
+    }
+
+    body[data-theme="light"] .apps-menu-item:hover {
+      background: rgba(248, 250, 252, 0.9);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    body[data-theme="dark"] .apps-menu-item:hover {
+      background: rgba(30, 64, 175, 0.2);
+      border-color: rgba(129, 140, 248, 0.6);
+    }
+
+    .apps-menu-item.active {
+      border-color: rgba(250, 204, 21, 0.9);
+      background: rgba(250, 204, 21, 0.14);
+    }
+
+    /* Status pill */
+
+    .status-pill {
+      align-self: stretch;
+      margin: 0 4px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      max-width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    body[data-theme="light"] .status-pill {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: var(--border-light);
+      color: var(--muted-light);
+    }
+
+    body[data-theme="dark"] .status-pill {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: var(--border-dark);
+      color: var(--muted-dark);
+    }
+
+    .status-pill.ok {
+      border-color: rgba(34, 197, 94, 0.7);
+      color: rgba(34, 197, 94, 0.95);
+    }
+
+    .status-pill.error {
+      border-color: rgba(239, 68, 68, 0.85);
+      color: rgba(248, 113, 113, 0.96);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    /* Main content */
+
+    .main-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .welcome-card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    body[data-theme="light"] .welcome-card {
+      background: linear-gradient(
+        135deg,
+        rgba(244, 206, 20, 0.12),
+        rgba(255, 255, 255, 0.96)
+      );
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .welcome-card {
+      background: linear-gradient(
+        145deg,
+        rgba(250, 204, 21, 0.16),
+        rgba(15, 23, 42, 0.96)
+      );
+      border-color: rgba(148, 163, 184, 0.45);
+    }
+
+    .welcome-header-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .welcome-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .welcome-sub {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    /* Generic card */
+
+    .card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    body[data-theme="light"] .card {
+      background: #ffffff;
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: var(--border-dark);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-caption {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+
+    body[data-theme="light"] .input {
+      background: rgba(248, 250, 252, 0.95);
+      border-color: rgba(148, 163, 184, 0.5);
+      color: var(--text-light);
+    }
+
+    body[data-theme="dark"] .input {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(148, 163, 184, 0.6);
+      color: var(--text-dark);
+    }
+
+    .input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
+      background: rgba(255, 251, 235, 0.9);
+    }
+
+    body[data-theme="dark"] .input:focus {
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      outline: none;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast),
+        color var(--transition-fast), opacity var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #111827;
+      box-shadow: 0 8px 20px rgba(250, 204, 21, 0.45);
+    }
+
+    .btn-primary:hover:enabled {
+      transform: translateY(-0.5px);
+      box-shadow: 0 10px 28px rgba(250, 204, 21, 0.6);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: inherit;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      border: none;
+      cursor: pointer;
+    }
+
+    body[data-theme="light"] .btn-ghost:hover {
+      background: rgba(148, 163, 184, 0.18);
+    }
+
+    body[data-theme="dark"] .btn-ghost:hover {
+      background: rgba(31, 41, 55, 0.9);
+    }
+
+    /* OTP row: left to right */
+
+    .otp-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      direction: ltr;
+    }
+
+    .otp-input {
+      width: 44px;
+      height: 44px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 16px;
+      border: 1px solid;
+      outline: none;
+      transition: border-color var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+
+    body[data-theme="light"] .otp-input {
+      background: rgba(248, 250, 252, 0.96);
+      border-color: rgba(148, 163, 184, 0.5);
+      color: var(--text-light);
+    }
+
+    body[data-theme="dark"] .otp-input {
+      background: rgba(15, 23, 42, 0.97);
+      border-color: rgba(148, 163, 184, 0.7);
+      color: var(--text-dark);
+    }
+
+    .otp-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
+      background: rgba(255, 251, 235, 0.96);
+    }
+
+    body[data-theme="dark"] .otp-input:focus {
+      background: rgba(15, 23, 42, 1);
+    }
+
+    /* Apps layout */
+
+    .apps-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+      flex: 1;
+    }
+
+    #appsCard {
+      padding-bottom: 12px;
+    }
+
+    .apps-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 10px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-top: 4px;
+    }
+
+    .app-card {
+      border-radius: 16px;
+      border: 1px solid;
+      padding: 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      position: relative;
+      transition: background var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+    }
+
+    body[data-theme="light"] .app-card {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    body[data-theme="dark"] .app-card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(148, 163, 184, 0.55);
+    }
+
+    .app-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
+      border-color: rgba(250, 204, 21, 0.9);
+    }
+
+    .app-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .app-card-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background: rgba(244, 206, 20, 0.15);
+      color: #92400e;
+    }
+
+    body[data-theme="dark"] .app-card-icon {
+      background: rgba(250, 204, 21, 0.14);
+      color: #facc15;
+    }
+
+    .app-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .app-card-body {
+      font-size: 11px;
+      opacity: 0.78;
+      height: 2.4em;
+      overflow: hidden;
+    }
+
+    .app-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      opacity: 0.75;
+      margin-top: 2px;
+    }
+
+    .badge-pinned {
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 10px;
+      background: rgba(250, 204, 21, 0.16);
+      color: #92400e;
+    }
+
+    body[data-theme="dark"] .badge-pinned {
+      background: rgba(250, 204, 21, 0.22);
+      color: #facc15;
+    }
+
+    .app-view {
+      flex: 1;
+      border-radius: 14px;
+      border: 1px solid;
+      overflow: hidden;
+      min-height: 220px;
+    }
+
+    body[data-theme="light"] .app-view {
+      background: #ffffff;
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .app-view {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: var(--border-dark);
+    }
+
+    .app-view-header {
+      padding: 7px 10px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid;
+    }
+
+    body[data-theme="light"] .app-view-header {
+      border-color: rgba(148, 163, 184, 0.25);
+      background: rgba(248, 250, 252, 0.96);
+    }
+
+    body[data-theme="dark"] .app-view-header {
+      border-color: rgba(51, 65, 85, 0.9);
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    .app-frame-wrap {
+      width: 100%;
+      height: calc(100vh - 210px);
+      max-height: calc(100vh - 200px);
+    }
+
+    .app-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: transparent;
+    }
+
+    .app-frame-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      opacity: 0.6;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Auth popup overlay */
+
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+    }
+
+    body[data-theme="light"] .auth-overlay {
+      background: radial-gradient(
+          circle at top,
+          rgba(148, 163, 184, 0.16),
+          transparent 60%
+        ),
+        rgba(15, 23, 42, 0.18);
+    }
+
+    body[data-theme="dark"] .auth-overlay {
+      background: radial-gradient(
+          circle at top,
+          rgba(15, 23, 42, 0.95),
+          rgba(15, 23, 42, 0.98)
+        );
+    }
+
+    .auth-modal {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 22px;
+      border: 1px solid;
+      padding: 14px 12px 12px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.55);
+    }
+
+    body[data-theme="light"] .auth-modal {
+      background: linear-gradient(
+        140deg,
+        rgba(244, 206, 20, 0.12),
+        #ffffff
+      );
+      border-color: rgba(148, 163, 184, 0.5);
+    }
+
+    body[data-theme="dark"] .auth-modal {
+      background: radial-gradient(
+          circle at top left,
+          rgba(250, 204, 21, 0.18),
+          transparent 50%
+        ),
+        rgba(15, 23, 42, 0.98);
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
+    .auth-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 4px 10px;
+    }
+
+    .auth-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .auth-sub {
+      font-size: 12px;
+      opacity: 0.78;
+    }
+
+    .auth-badge {
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      opacity: 0.9;
+    }
+
+    .auth-modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    @media (min-width: 768px) {
+      .app-shell {
+        padding: 6px 10px;
+      }
+      .main-panel {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+      }
+      .app-frame-wrap {
+        height: calc(100vh - 210px);
+        max-height: calc(100vh - 190px);
+      }
+      .apps-list {
+        max-height: 220px;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <div class="app-shell">
+    <!-- Apps burger panel -->
+    <div id="appsMenuPanel" class="apps-menu-panel hidden"></div>
+
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand-logo">N</div>
+        <div class="brand-text">
+          <div class="brand-title" data-i18n="hubTitle">NahlHub</div>
+          <div class="brand-subtitle" data-i18n="hubSub">
+            تطبيقاتك في نحل هب
+          </div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <button
+          class="chip-btn chip-btn-mini apps-menu-btn hidden"
+          id="btnAppsMenu"
+          type="button"
+        >
+          <span class="icon">☰</span>
+          <span data-i18n="appsTitle">تطبيقاتك</span>
+        </button>
+
+        <div class="chip-group">
+          <button
+            class="chip-btn"
+            id="btnLangAr"
+            type="button"
+            data-lang="ar"
+          >
+            <span>عربي</span>
+          </button>
+          <button
+            class="chip-btn"
+            id="btnLangEn"
+            type="button"
+            data-lang="en"
+          >
+            <span>EN</span>
+          </button>
+        </div>
+        <button
+          class="chip-btn chip-btn-mini"
+          id="btnTheme"
+          type="button"
+        >
+          <span class="icon" id="themeIcon">🌞</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Status -->
+    <div id="statusPill" class="status-pill">
+      <span class="status-dot"></span>
+      <span id="statusText"></span>
+    </div>
+
+    <!-- AUTH POPUP -->
+    <div id="authOverlay" class="auth-overlay">
+      <div class="auth-modal">
+        <div class="auth-modal-header">
+          <div>
+            <div class="auth-title" data-i18n="welcomeTitle">مرحباً 👋</div>
+            <div class="auth-sub" data-i18n="welcomeSub">
+              ادخل برقم الجوال ثم أدخل رمز الدخول.
+            </div>
+          </div>
+          <div class="auth-badge">
+            <span data-i18n="step1Title">رقم الجوال</span> ·
+            <span data-i18n="step2Title">رمز</span>
+          </div>
+        </div>
+        <div class="auth-modal-body">
+          <!-- Step 1: Mobile (inside popup) -->
+          <section id="stepMobile" class="card" style="margin: 0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="step1Title">
+                  رقم الجوال
+                </div>
+                <div class="card-caption" data-i18n="step1Sub">
+                  ادخل رقم الجوال.
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="field-group">
+                <label
+                  class="field-label"
+                  for="mobileInput"
+                  data-i18n="step1Label"
+                >
+                  رقم الجوال
+                </label>
+                <div class="field-row">
+                  <input
+                    id="mobileInput"
+                    class="input"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="5XXXXXXXX"
+                  />
+                </div>
+              </div>
+              <div class="field-row" style="justify-content: flex-end">
+                <button
+                  id="btnSendOtp"
+                  class="btn btn-primary"
+                  type="button"
+                >
+                  <span data-i18n="btnSendOtp">إرسال الرمز</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Step 2: OTP (inside popup) -->
+          <section id="stepOtp" class="card hidden" style="margin: 0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="step2Title">
+                  رمز الدخول
+                </div>
+                <div class="card-caption" data-i18n="step2Sub">
+                  أدخل الرمز ٤ أرقام.
+                </div>
+              </div>
+              <button
+                type="button"
+                class="btn-ghost"
+                id="btnChangeMobile"
+              >
+                <span data-i18n="changeMobile">تعديل الرقم</span>
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="otp-row">
+                <input
+                  class="otp-input"
+                  id="otp1"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="1"
+                />
+                <input
+                  class="otp-input"
+                  id="otp2"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="1"
+                />
+                <input
+                  class="otp-input"
+                  id="otp3"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="1"
+                />
+                <input
+                  class="otp-input"
+                  id="otp4"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="1"
+                />
+              </div>
+              <div
+                class="field-row"
+                style="justify-content: flex-end; margin-top: 10px"
+              >
+                <button
+                  id="btnVerifyOtp"
+                  class="btn btn-primary"
+                  type="button"
+                >
+                  <span data-i18n="btnVerify">تأكيد</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main -->
+    <main class="main-panel">
+      <!-- Welcome (used only after login if needed; we hide after login) -->
+      <section class="welcome-card" id="welcomeCard">
+        <div class="welcome-header-line">
+          <div>
+            <div class="welcome-title" data-i18n="welcomeTitle">مرحباً 👋</div>
+            <div class="welcome-sub" data-i18n="welcomeSub">
+              ادخل برقم الجوال ثم اختر التطبيق.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 3: Apps -->
+      <section id="stepApps" class="apps-layout hidden">
+        <!-- Home cards -->
+        <div class="card" id="appsCard">
+          <div class="card-header">
+            <div>
+              <div class="card-title" data-i18n="appsTitle">
+                تطبيقاتك
+              </div>
+              <div class="card-caption" id="userNameLabel"></div>
+            </div>
+            <button
+              class="btn-ghost"
+              type="button"
+              id="btnLogout"
+            >
+              <span data-i18n="logout">تسجيل خروج</span>
+            </button>
+          </div>
+          <div class="card-body">
+            <div id="appsList" class="apps-list"></div>
+          </div>
+        </div>
+
+        <div class="app-view hidden" id="appView">
+          <div class="app-view-header">
+            <div id="currentAppTitle" class="card-caption">
+              <span data-i18n="appPlaceholder">
+                اختر تطبيقاً من الشاشة الرئيسية.
+              </span>
+            </div>
+            <button
+              id="btnHome"
+              class="btn-ghost hidden"
+              type="button"
+              aria-label="Home"
+            >
+              🏠
+            </button>
+          </div>
+          <div class="app-frame-wrap">
+            <iframe
+              id="appFrame"
+              class="app-frame hidden"
+              src=""
+              title="NahlHub App"
+            ></iframe>
+            <div
+              id="appFramePlaceholder"
+              class="app-frame-placeholder"
+            >
+              <span data-i18n="appPlaceholder">
+                اختر تطبيقاً من الشاشة الرئيسية.
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var API_URL = "/api/hub/manage";
+      var STORAGE_SESSION_KEY = "nahlhub_session_key";
+      var STORAGE_LANG = "nahlhub_lang";
+      var STORAGE_THEME = "nahlhub_theme";
+
+      var currentLang = localStorage.getItem(STORAGE_LANG) || "ar";
+      var currentTheme = localStorage.getItem(STORAGE_THEME) || "light";
+      var currentSessionKey = localStorage.getItem(STORAGE_SESSION_KEY) || null;
+      var currentUser = null;
+      var currentApps = [];
+      var currentMobileRaw = "";
+      var currentAppId = null;
+
+      var bodyEl = document.body;
+      var statusPill = document.getElementById("statusPill");
+      var statusText = document.getElementById("statusText");
+
+      var welcomeCard = document.getElementById("welcomeCard");
+
+      var authOverlay = document.getElementById("authOverlay");
+      var stepMobile = document.getElementById("stepMobile");
+      var stepOtp = document.getElementById("stepOtp");
+      var stepApps = document.getElementById("stepApps");
+
+      var mobileInput = document.getElementById("mobileInput");
+      var btnSendOtp = document.getElementById("btnSendOtp");
+
+      var otpInputs = [
+        document.getElementById("otp1"),
+        document.getElementById("otp2"),
+        document.getElementById("otp3"),
+        document.getElementById("otp4")
+      ];
+      var btnVerifyOtp = document.getElementById("btnVerifyOtp");
+      var btnChangeMobile = document.getElementById("btnChangeMobile");
+
+      var appsCard = document.getElementById("appsCard");
+      var appsListEl = document.getElementById("appsList");
+      var appView = document.getElementById("appView");
+      var appFrame = document.getElementById("appFrame");
+      var appFramePlaceholder = document.getElementById("appFramePlaceholder");
+      var currentAppTitle = document.getElementById("currentAppTitle");
+      var userNameLabel = document.getElementById("userNameLabel");
+      var btnLogout = document.getElementById("btnLogout");
+
+      var btnTheme = document.getElementById("btnTheme");
+      var themeIcon = document.getElementById("themeIcon");
+      var btnLangAr = document.getElementById("btnLangAr");
+      var btnLangEn = document.getElementById("btnLangEn");
+
+      var btnAppsMenu = document.getElementById("btnAppsMenu");
+      var appsMenuPanel = document.getElementById("appsMenuPanel");
+
+      var btnHome = document.getElementById("btnHome");
+
+      var tDict = {
+        hubTitle: { ar: "NahlHub", en: "NahlHub" },
+        hubSub: {
+          ar: "تطبيقاتك في نحل هب",
+          en: "Your apps in NahlHub"
+        },
+        welcomeTitle: { ar: "مرحباً 👋", en: "Welcome 👋" },
+        welcomeSub: {
+          ar: "ادخل برقم الجوال ثم اختر التطبيق.",
+          en: "Enter your mobile then choose an app."
+        },
+        step1Title: { ar: "رقم الجوال", en: "Mobile number" },
+        step1Sub: { ar: "ادخل رقم الجوال.", en: "Enter your mobile." },
+        step1Label: { ar: "رقم الجوال", en: "Mobile" },
+        btnSendOtp: { ar: "إرسال الرمز", en: "Send code" },
+        step2Title: { ar: "رمز الدخول", en: "Login code" },
+        step2Sub: {
+          ar: "أدخل الرمز ٤ أرقام.",
+          en: "Enter the 4-digit code."
+        },
+        changeMobile: { ar: "تعديل الرقم", en: "Change number" },
+        btnVerify: { ar: "تأكيد", en: "Confirm" },
+        appsTitle: { ar: "تطبيقاتك", en: "Your apps" },
+        logout: { ar: "تسجيل خروج", en: "Logout" },
+        appPlaceholder: {
+          ar: "اختر تطبيقاً من الشاشة الرئيسية.",
+          en: "Choose an app from the home cards."
+        },
+        statusIdle: { ar: "جاهز.", en: "Ready." },
+        statusSendingOtp: {
+          ar: "يتم إرسال الرمز...",
+          en: "Sending code..."
+        },
+        statusOtpSent: {
+          ar: "تم إرسال الرمز إلى واتساب.",
+          en: "Code sent to WhatsApp."
+        },
+        statusVerifying: { ar: "يتم التحقق...", en: "Verifying..." },
+        statusNoApps: {
+          ar: "لا توجد تطبيقات متاحة.",
+          en: "No apps available."
+        },
+        statusError: {
+          ar: "حدث خطأ. حاول مرة أخرى.",
+          en: "Something went wrong. Try again."
+        }
+      };
+
+      function t(key) {
+        var entry = tDict[key];
+        if (!entry) return key;
+        return entry[currentLang] || entry.ar || key;
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+
+        var nodes = document.querySelectorAll("[data-i18n]");
+        nodes.forEach(function (node) {
+          var key = node.getAttribute("data-i18n");
+          node.textContent = t(key);
+        });
+
+        if (currentLang === "ar") {
+          btnLangAr.classList.add("active");
+          btnLangEn.classList.remove("active");
+          mobileInput.placeholder = "5XXXXXXXX";
+        } else {
+          btnLangAr.classList.remove("active");
+          btnLangEn.classList.add("active");
+          mobileInput.placeholder = "5XXXXXXXX";
+        }
+
+        if (currentUser) {
+          var suffix = " · " + (currentUser.mobile || "");
+          var greetName =
+            currentLang === "ar"
+              ? "مرحباً " + (currentUser.name || "")
+              : "Hi " + (currentUser.name || "");
+          userNameLabel.textContent = greetName + suffix;
+        }
+      }
+
+      function applyTheme() {
+        bodyEl.setAttribute("data-theme", currentTheme);
+        themeIcon.textContent = currentTheme === "light" ? "🌞" : "🌙";
+      }
+
+      function setStatus(msgKeyOrText, type) {
+        if (!msgKeyOrText) {
+          statusText.textContent = "";
+          statusPill.classList.remove("ok", "error");
+          return;
+        }
+        var text =
+          tDict[msgKeyOrText] && tDict[msgKeyOrText][currentLang]
+            ? t(msgKeyOrText)
+            : msgKeyOrText;
+        statusPill.classList.remove("ok", "error");
+        if (type === "ok") statusPill.classList.add("ok");
+        else if (type === "error") statusPill.classList.add("error");
+        statusText.textContent = text;
+      }
+
+      function showStep(name) {
+        stepMobile.classList.add("hidden");
+        stepOtp.classList.add("hidden");
+        stepApps.classList.add("hidden");
+
+        if (name === "mobile") {
+          authOverlay.classList.remove("hidden");
+          stepMobile.classList.remove("hidden");
+          mobileInput.focus();
+        } else if (name === "otp") {
+          authOverlay.classList.remove("hidden");
+          stepOtp.classList.remove("hidden");
+          otpInputs[0].focus();
+        } else if (name === "apps") {
+          authOverlay.classList.add("hidden");
+          stepApps.classList.remove("hidden");
+        }
+      }
+
+      function postJson(payload) {
+        return fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload || {})
+        }).then(function (res) {
+          return res.json().catch(function () {
+            throw new Error("Invalid JSON from backend.");
+          });
+        });
+      }
+
+      // OTP behaviour (L → R)
+      otpInputs.forEach(function (input, idx) {
+        input.addEventListener("input", function (e) {
+          var value = e.target.value.replace(/\D/g, "");
+          e.target.value = value.slice(0, 1);
+          if (value && idx < otpInputs.length - 1) {
+            otpInputs[idx + 1].focus();
+          }
+        });
+
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Backspace" && !e.target.value && idx > 0) {
+            otpInputs[idx - 1].focus();
+          }
+          if (e.key === "ArrowLeft" && idx > 0) {
+            otpInputs[idx - 1].focus();
+          }
+          if (e.key === "ArrowRight" && idx < otpInputs.length - 1) {
+            otpInputs[idx + 1].focus();
+          }
+          if (e.key === "Enter") {
+            e.preventDefault();
+            verifyOtp();
+          }
+        });
+      });
+
+      function readOtp() {
+        return otpInputs
+          .map(function (el) {
+            return el.value || "";
+          })
+          .join("");
+      }
+
+      function clearOtpInputs() {
+        otpInputs.forEach(function (el) {
+          el.value = "";
+        });
+      }
+
+      function sendOtp() {
+        var mobile = (mobileInput.value || "").trim();
+        if (!mobile) {
+          setStatus(
+            currentLang === "ar" ? "أدخل رقم الجوال." : "Enter your mobile.",
+            "error"
+          );
+          mobileInput.focus();
+          return;
+        }
+
+        currentMobileRaw = mobile;
+        btnSendOtp.disabled = true;
+        setStatus("statusSendingOtp", null);
+
+        postJson({ action: "auth.requestOtp", mobile: mobile })
+          .then(function (res) {
+            if (!res || !res.success) {
+              var msg =
+                (res && res.error) ||
+                (currentLang === "ar"
+                  ? "تعذر إرسال الرمز."
+                  : "Failed to send code.");
+              setStatus(msg, "error");
+              return;
+            }
+            setStatus("statusOtpSent", "ok");
+            clearOtpInputs();
+            showStep("otp");
+          })
+          .catch(function () {
+            setStatus("statusError", "error");
+          })
+          .finally(function () {
+            btnSendOtp.disabled = false;
+          });
+      }
+
+      function verifyOtp() {
+        var otp = readOtp();
+        if (!otp || otp.length !== 4) {
+          setStatus(
+            currentLang === "ar"
+              ? "أدخل الرمز ٤ أرقام."
+              : "Enter the 4-digit code.",
+            "error"
+          );
+          otpInputs[0].focus();
+          return;
+        }
+
+        btnVerifyOtp.disabled = true;
+        setStatus("statusVerifying", null);
+
+        postJson({
+          action: "auth.verifyOtp",
+          mobile: currentMobileRaw,
+          otp: otp
+        })
+          .then(function (res) {
+            if (!res || !res.success) {
+              var msg =
+                (res && res.error) ||
+                (currentLang === "ar"
+                  ? "رمز غير صحيح أو منتهي."
+                  : "Invalid or expired code.");
+              setStatus(msg, "error");
+              clearOtpInputs();
+              otpInputs[0].focus();
+              return;
+            }
+
+            currentSessionKey = res.sessionKey || null;
+            currentUser = res.user || null;
+            currentApps = res.apps || [];
+            if (currentSessionKey) {
+              localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
+            }
+
+            // After login: hide welcome, show apps, neutral status
+            if (welcomeCard) welcomeCard.classList.add("hidden");
+            updateUserUi();
+            renderApps();
+            showStep("apps");
+            setStatus("statusIdle", null);
+          })
+          .catch(function () {
+            setStatus("statusError", "error");
+          })
+          .finally(function () {
+            btnVerifyOtp.disabled = false;
+          });
+      }
+
+      function authMe() {
+        if (!currentSessionKey) {
+          setStatus("statusIdle", null);
+          showStep("mobile");
+          return;
+        }
+
+        setStatus(
+          currentLang === "ar"
+            ? "يتم التحقق من الجلسة..."
+            : "Checking session...",
+          null
+        );
+
+        postJson({ action: "auth.me", sessionKey: currentSessionKey })
+          .then(function (res) {
+            if (!res || !res.success) {
+              currentSessionKey = null;
+              localStorage.removeItem(STORAGE_SESSION_KEY);
+              setStatus("statusIdle", null);
+              showStep("mobile");
+              return;
+            }
+
+            currentUser = res.user || null;
+            currentApps = res.apps || [];
+
+            if (welcomeCard) welcomeCard.classList.add("hidden");
+            updateUserUi();
+            renderApps();
+            showStep("apps");
+            setStatus("statusIdle", null);
+          })
+          .catch(function () {
+            setStatus("statusIdle", null);
+            showStep("mobile");
+          });
+      }
+
+      function logout() {
+        var key = currentSessionKey;
+        currentSessionKey = null;
+        localStorage.removeItem(STORAGE_SESSION_KEY);
+        currentUser = null;
+        currentApps = [];
+        currentAppId = null;
+
+        appFrame.src = "";
+        appFrame.classList.add("hidden");
+        appFramePlaceholder.classList.remove("hidden");
+        currentAppTitle.textContent = t("appPlaceholder");
+        appsListEl.innerHTML = "";
+        appsCard.classList.remove("hidden");
+        btnAppsMenu.classList.add("hidden");
+        appsMenuPanel.classList.add("hidden");
+        btnHome.classList.add("hidden");
+        appView.classList.add("hidden");
+
+        if (welcomeCard) welcomeCard.classList.remove("hidden");
+
+        setStatus("statusIdle", null);
+        showStep("mobile");
+
+        if (!key) return;
+        postJson({ action: "auth.logout", sessionKey: key }).catch(
+          function () {}
+        );
+      }
+
+      function updateUserUi() {
+        if (!currentUser) {
+          userNameLabel.textContent = "";
+          return;
+        }
+        var suffix = " · " + (currentUser.mobile || "");
+        var greetName =
+          currentLang === "ar"
+            ? "مرحباً " + (currentUser.name || "")
+            : "Hi " + (currentUser.name || "");
+        userNameLabel.textContent = greetName + suffix;
+      }
+
+      function renderApps() {
+        appsListEl.innerHTML = "";
+        currentAppId = null;
+
+        // Reset iframe
+        appFrame.src = "";
+        appFrame.classList.add("hidden");
+        appFramePlaceholder.classList.remove("hidden");
+        currentAppTitle.textContent = t("appPlaceholder");
+
+        // Home state by default → show cards, hide app-view
+        appsCard.classList.remove("hidden");
+        btnHome.classList.add("hidden");
+        appView.classList.add("hidden");
+
+        if (!currentApps || !currentApps.length) {
+          setStatus("statusNoApps", "error");
+          btnAppsMenu.classList.add("hidden");
+          appsMenuPanel.classList.add("hidden");
+          appView.classList.add("hidden");
+          return;
+        }
+
+        btnAppsMenu.classList.remove("hidden");
+        buildAppsMenu();
+
+        currentApps.forEach(function (app) {
+          var card = document.createElement("div");
+          card.className =
+            "app-card" + (app.pinned ? " app-card-pinned" : "");
+          card.dataset.appId = app.appId;
+
+          var header = document.createElement("div");
+          header.className = "app-card-header";
+
+          var icon = document.createElement("div");
+          icon.className = "app-card-icon";
+          icon.textContent = "⋯";
+
+          var title = document.createElement("div");
+          title.className = "app-card-title";
+          var name =
+            currentLang === "ar"
+              ? app.appNameAr || app.appNameEn
+              : app.appNameEn || app.appNameAr;
+          title.textContent = name || app.appId;
+
+          header.appendChild(icon);
+          header.appendChild(title);
+
+          var body = document.createElement("div");
+          body.className = "app-card-body";
+          var desc =
+            currentLang === "ar"
+              ? app.descriptionAr || app.descriptionEn
+              : app.descriptionEn || app.descriptionAr;
+          body.textContent = desc || "";
+
+          var footer = document.createElement("div");
+          footer.className = "app-card-footer";
+
+          var catSpan = document.createElement("span");
+          catSpan.textContent = app.category || "";
+
+          var pinnedSpan = document.createElement("span");
+          if (app.pinned) {
+            pinnedSpan.className = "badge-pinned";
+            pinnedSpan.textContent =
+              currentLang === "ar" ? "مثبّت" : "Pinned";
+          }
+
+          footer.appendChild(catSpan);
+          if (app.pinned) footer.appendChild(pinnedSpan);
+
+          card.appendChild(header);
+          card.appendChild(body);
+          card.appendChild(footer);
+
+          card.addEventListener("click", function () {
+            openAppFromHome(app);
+          });
+
+          appsListEl.appendChild(card);
+        });
+      }
+
+      function buildAppsMenu() {
+        appsMenuPanel.innerHTML = "";
+        if (!currentApps || !currentApps.length) return;
+
+        currentApps.forEach(function (app) {
+          var item = document.createElement("button");
+          item.type = "button";
+          item.className = "apps-menu-item";
+          item.dataset.appId = app.appId;
+
+          var left = document.createElement("div");
+          left.style.display = "flex";
+          left.style.flexDirection = "column";
+          left.style.gap = "2px";
+          left.style.flex = "1";
+
+          var title = document.createElement("div");
+          title.className = "apps-menu-item-title";
+          var name =
+            currentLang === "ar"
+              ? app.appNameAr || app.appNameEn
+              : app.appNameEn || app.appNameAr;
+          title.textContent = name || app.appId;
+
+          var cat = document.createElement("div");
+          cat.className = "apps-menu-item-cat";
+          cat.textContent = app.category || "";
+
+          left.appendChild(title);
+          left.appendChild(cat);
+
+          var dot = document.createElement("div");
+          dot.style.width = "8px";
+          dot.style.height = "8px";
+          dot.style.borderRadius = "999px";
+          dot.style.background = app.pinned
+            ? "rgba(250,204,21,0.95)"
+            : "rgba(34,197,94,0.9)";
+
+          item.appendChild(left);
+          item.appendChild(dot);
+
+          item.addEventListener("click", function (e) {
+            e.stopPropagation();
+            openApp(app);
+            appsMenuPanel.classList.add("hidden");
+          });
+
+          appsMenuPanel.appendChild(item);
+        });
+
+        updateAppsMenuActiveState();
+      }
+
+      function updateAppsMenuActiveState() {
+        var items = appsMenuPanel.querySelectorAll(".apps-menu-item");
+        items.forEach(function (item) {
+          if (item.dataset.appId === currentAppId) {
+            item.classList.add("active");
+          } else {
+            item.classList.remove("active");
+          }
+        });
+      }
+
+      function openAppFromHome(app) {
+        appsCard.classList.add("hidden");
+        btnHome.classList.remove("hidden");
+        appView.classList.remove("hidden");
+        openApp(app);
+      }
+
+      function openApp(app) {
+        if (!app || !currentUser) return;
+        currentAppId = app.appId;
+
+        var name =
+          currentLang === "ar"
+            ? app.appNameAr || app.appNameEn
+            : app.appNameEn || app.appNameAr;
+        currentAppTitle.textContent = name || "";
+
+        var base = (app.baseUrl || "").trim();
+        if (!base) return;
+        var sep = base.indexOf("?") === -1 ? "?" : "&";
+        var finalUrl =
+          base + sep + "appid=" + encodeURIComponent(currentUser.userId);
+
+        appFramePlaceholder.classList.add("hidden");
+        appFrame.classList.remove("hidden");
+        appFrame.src = finalUrl;
+
+        btnHome.classList.remove("hidden");
+        appView.classList.remove("hidden");
+        updateAppsMenuActiveState();
+      }
+
+      function goHome() {
+        if (!currentApps || !currentApps.length) return;
+
+        // Show cards again
+        appsCard.classList.remove("hidden");
+
+        // Reset iframe and hide viewer
+        appFrame.classList.add("hidden");
+        appFramePlaceholder.classList.remove("hidden");
+        currentAppTitle.textContent = t("appPlaceholder");
+        currentAppId = null;
+        updateAppsMenuActiveState();
+
+        appView.classList.add("hidden");
+      }
+
+      // Events
+      btnSendOtp.addEventListener("click", sendOtp);
+      mobileInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          sendOtp();
+        }
+      });
+
+      btnVerifyOtp.addEventListener("click", verifyOtp);
+
+      btnChangeMobile.addEventListener("click", function () {
+        showStep("mobile");
+        setStatus("statusIdle", null);
+      });
+
+      btnLogout.addEventListener("click", logout);
+
+      btnTheme.addEventListener("click", function () {
+        currentTheme = currentTheme === "light" ? "dark" : "light";
+        localStorage.setItem(STORAGE_THEME, currentTheme);
+        applyTheme();
+      });
+
+      btnLangAr.addEventListener("click", function () {
+        currentLang = "ar";
+        localStorage.setItem(STORAGE_LANG, currentLang);
+        applyLanguage();
+        setStatus("statusIdle", null);
+        if (currentApps.length) {
+          renderApps();
+          buildAppsMenu();
+        }
+      });
+
+      btnLangEn.addEventListener("click", function () {
+        currentLang = "en";
+        localStorage.setItem(STORAGE_LANG, currentLang);
+        applyLanguage();
+        setStatus("statusIdle", null);
+        if (currentApps.length) {
+          renderApps();
+          buildAppsMenu();
+        }
+      });
+
+      btnAppsMenu.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (appsMenuPanel.classList.contains("hidden")) {
+          buildAppsMenu();
+          appsMenuPanel.classList.remove("hidden");
+        } else {
+          appsMenuPanel.classList.add("hidden");
+        }
+      });
+
+      document.addEventListener("click", function () {
+        appsMenuPanel.classList.add("hidden");
+      });
+
+      appsMenuPanel.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      btnHome.addEventListener("click", function (e) {
+        e.stopPropagation();
+        goHome();
+      });
+
+      // Init
+      applyTheme();
+      applyLanguage();
+      setStatus("statusIdle", null);
+      showStep("mobile");
+
+      if (currentSessionKey) {
+        authMe();
+      }
+    })();
+  </script>
+</body>
+</html>
