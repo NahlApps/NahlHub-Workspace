@@ -1022,21 +1022,21 @@
                   inputmode="numeric"
                   maxlength="1"
                 />
-                <input
+              <input
                   class="otp-input"
                   id="otp2"
                   type="tel"
                   inputmode="numeric"
                   maxlength="1"
                 />
-                <input
+              <input
                   class="otp-input"
                   id="otp3"
                   type="tel"
                   inputmode="numeric"
                   maxlength="1"
                 />
-                <input
+              <input
                   class="otp-input"
                   id="otp4"
                   type="tel"
@@ -1076,7 +1076,7 @@
         </div>
       </section>
 
-      <!-- Step 3: Apps -->
+      <!-- Step 3: Apps (optional hub mode) -->
       <section id="stepApps" class="apps-layout hidden">
         <!-- Home cards -->
         <div class="card" id="appsCard">
@@ -1141,7 +1141,12 @@
     (function () {
       "use strict";
 
+      // 🔗 API endpoint (Vercel proxy)
       var API_URL = "/api/hub/manage";
+
+      // 🔑 Fixed appId for OTP multi-tenant separation
+      var HUB_APP_ID = "NAHLHUB";
+
       var STORAGE_SESSION_KEY = "nahlhub_session_key";
       var STORAGE_LANG = "nahlhub_lang";
       var STORAGE_THEME = "nahlhub_theme";
@@ -1242,6 +1247,10 @@
         statusError: {
           ar: "حدث خطأ. حاول مرة أخرى.",
           en: "Something went wrong. Try again."
+        },
+        statusOtpVerified: {
+          ar: "تم التحقق من الرمز بنجاح.",
+          en: "Code verified successfully."
         }
       };
 
@@ -1296,11 +1305,9 @@
           tDict[msgKeyOrText] && tDict[msgKeyOrText][currentLang]
             ? t(msgKeyOrText)
             : msgKeyOrText;
-
         statusPill.classList.remove("ok", "error");
         if (type === "ok") statusPill.classList.add("ok");
         else if (type === "error") statusPill.classList.add("error");
-
         statusText.textContent = text;
       }
 
@@ -1324,16 +1331,16 @@
       }
 
       function postJson(payload) {
-        payload = payload || {};
-
         return fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(payload || {})
         }).then(function (res) {
-          return res.json().catch(function () {
-            throw new Error("Invalid JSON from backend.");
-          });
+          return res
+            .json()
+            .catch(function () {
+              throw new Error("Invalid JSON from backend.");
+            });
         });
       }
 
@@ -1382,7 +1389,9 @@
         var mobile = (mobileInput.value || "").trim();
         if (!mobile) {
           setStatus(
-            currentLang === "ar" ? "أدخل رقم الجوال." : "Enter your mobile.",
+            currentLang === "ar"
+              ? "أدخل رقم الجوال."
+              : "Enter your mobile.",
             "error"
           );
           mobileInput.focus();
@@ -1393,7 +1402,12 @@
         btnSendOtp.disabled = true;
         setStatus("statusSendingOtp", null);
 
-        postJson({ action: "auth.requestOtp", mobile: mobile })
+        // 🔁 Updated action + appId
+        postJson({
+          action: "sendOtp",
+          appId: HUB_APP_ID,
+          mobile: mobile
+        })
           .then(function (res) {
             if (!res || !res.success) {
               var msg =
@@ -1408,7 +1422,8 @@
             clearOtpInputs();
             showStep("otp");
           })
-          .catch(function () {
+          .catch(function (err) {
+            console.error("sendOtp error:", err);
             setStatus("statusError", "error");
           })
           .finally(function () {
@@ -1432,8 +1447,10 @@
         btnVerifyOtp.disabled = true;
         setStatus("statusVerifying", null);
 
+        // 🔁 Updated action + appId
         postJson({
-          action: "auth.verifyOtp",
+          action: "verifyOtp",
+          appId: HUB_APP_ID,
           mobile: currentMobileRaw,
           otp: otp
         })
@@ -1450,20 +1467,36 @@
               return;
             }
 
+            // Save sessionKey if backend returns it
             currentSessionKey = res.sessionKey || null;
-            currentUser = res.user || null;
-            currentApps = res.apps || [];
             if (currentSessionKey) {
               localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
             }
 
-            if (welcomeCard) welcomeCard.classList.add("hidden");
-            updateUserUi();
-            renderApps();
-            showStep("apps");
-            setStatus("statusIdle", null);
+            // 🔀 Two modes:
+            // 1) Hub mode: backend returns user + apps
+            // 2) Login-only mode: backend only returns redirectUrl
+            if (res.user || res.apps) {
+              currentUser =
+                res.user || { mobile: currentMobileRaw, name: "" };
+              currentApps = res.apps || [];
+
+              if (welcomeCard) welcomeCard.classList.add("hidden");
+              updateUserUi();
+              renderApps();
+              showStep("apps");
+              setStatus("statusIdle", null);
+            } else {
+              // Login-only mode → open redirect URL (if provided) and hide OTP dialog
+              if (res.redirectUrl) {
+                window.open(res.redirectUrl, "_blank");
+              }
+              authOverlay.classList.add("hidden");
+              setStatus("statusOtpVerified", "ok");
+            }
           })
-          .catch(function () {
+          .catch(function (err) {
+            console.error("verifyOtp error:", err);
             setStatus("statusError", "error");
           })
           .finally(function () {
@@ -1471,43 +1504,16 @@
           });
       }
 
+      // (Optional) authMe for future sessions – not used yet
       function authMe() {
         if (!currentSessionKey) {
           setStatus("statusIdle", null);
           showStep("mobile");
           return;
         }
-
-        setStatus(
-          currentLang === "ar"
-            ? "يتم التحقق من الجلسة..."
-            : "Checking session...",
-          null
-        );
-
-        postJson({ action: "auth.me", sessionKey: currentSessionKey })
-          .then(function (res) {
-            if (!res || !res.success) {
-              currentSessionKey = null;
-              localStorage.removeItem(STORAGE_SESSION_KEY);
-              setStatus("statusIdle", null);
-              showStep("mobile");
-              return;
-            }
-
-            currentUser = res.user || null;
-            currentApps = res.apps || [];
-
-            if (welcomeCard) welcomeCard.classList.add("hidden");
-            updateUserUi();
-            renderApps();
-            showStep("apps");
-            setStatus("statusIdle", null);
-          })
-          .catch(function () {
-            setStatus("statusIdle", null);
-            showStep("mobile");
-          });
+        // If you later implement auth.me in backend, you can use it here.
+        setStatus("statusIdle", null);
+        showStep("mobile");
       }
 
       function logout() {
@@ -1535,9 +1541,8 @@
         showStep("mobile");
 
         if (!key) return;
-        postJson({ action: "auth.logout", sessionKey: key }).catch(
-          function () {}
-        );
+        // Optional: call backend logout if you implement it later
+        // postJson({ action: "auth.logout", sessionKey: key }).catch(function () {});
       }
 
       function updateUserUi() {
@@ -1557,11 +1562,13 @@
         appsListEl.innerHTML = "";
         currentAppId = null;
 
+        // Reset iframe
         appFrame.src = "";
         appFrame.classList.add("hidden");
         appFramePlaceholder.classList.remove("hidden");
         currentAppTitle.textContent = t("appPlaceholder");
 
+        // Home state by default → show cards, hide app-view
         appsCard.classList.remove("hidden");
         btnHome.classList.add("hidden");
         appView.classList.add("hidden");
@@ -1723,7 +1730,7 @@
         if (!base) return;
         var sep = base.indexOf("?") === -1 ? "?" : "&";
         var finalUrl =
-          base + sep + "appid=" + encodeURIComponent(currentUser.userId);
+          base + sep + "appid=" + encodeURIComponent(currentUser.userId || "");
 
         appFramePlaceholder.classList.add("hidden");
         appFrame.classList.remove("hidden");
@@ -1737,8 +1744,10 @@
       function goHome() {
         if (!currentApps || !currentApps.length) return;
 
+        // Show cards again
         appsCard.classList.remove("hidden");
 
+        // Reset iframe and hide viewer
         appFrame.classList.add("hidden");
         appFramePlaceholder.classList.remove("hidden");
         currentAppTitle.textContent = t("appPlaceholder");
@@ -1823,9 +1832,11 @@
       setStatus("statusIdle", null);
       showStep("mobile");
 
-      if (currentSessionKey) {
-        authMe();
-      }
+      // We are not using authMe() automatically yet
+      // If you implement auth.me backend, you can re-enable:
+      // if (currentSessionKey) {
+      //   authMe();
+      // }
     })();
   </script>
 </body>
