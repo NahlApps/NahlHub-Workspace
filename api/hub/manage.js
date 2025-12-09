@@ -1,150 +1,76 @@
-// api/hub/manage.js
-//
-// Proxy between NahlHub frontend and Google Apps Script backend.
-// - Expects NAHL_HUB_GAS_URL in environment variables.
-// - Forwards POST JSON body to GAS as JSON.
-// - Forwards GET query params to GAS.
-// - Ensures both appId and appid are present for compatibility.
-//
+// pages/api/hub/manage.js
+// NahlHub – proxy between front-end and Apps Script backend
 
-const GAS_URL = process.env.NAHL_HUB_GAS_URL;
+// 1) Set this env var in Vercel:
+//    NAHL_HUB_BACKEND_URL = https://script.google.com/macros/s/XXXX/exec
+//
+// Or, during testing, you can hard-code it below instead of using env.
+
+const GAS_WEBAPP_URL =
+  process.env.NAHL_HUB_BACKEND_URL ||
+  ''; // <== set this via env, or temporarily put your full /exec URL here.
 
 export default async function handler(req, res) {
-  // Basic config check
-  if (!GAS_URL) {
-    console.error("❌ NAHL_HUB_GAS_URL env variable is not set.");
-    return res.status(500).json({
-      success: false,
-      error: "Server configuration error: NAHL_HUB_GAS_URL not configured",
-    });
-  }
+  // --- Basic CORS (so you can call from any origin, including local dev) ---
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Allow only GET / POST (and OPTIONS for safety)
-  if (req.method === "OPTIONS") {
-    // Minimal CORS support if needed
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  if (req.method !== "GET" && req.method !== "POST") {
-    return res.status(405).json({
+  if (req.method !== 'POST') {
+    return res
+      .status(405)
+      .json({ success: false, error: 'Only POST is allowed on this endpoint.' });
+  }
+
+  if (!GAS_WEBAPP_URL) {
+    // This avoids a crash if env var is not set
+    return res.status(500).json({
       success: false,
-      error: `Method ${req.method} not allowed`,
+      error:
+        'NAHL_HUB_BACKEND_URL is not configured. Set it to your Apps Script /exec URL in Vercel env.',
     });
   }
 
   try {
-    if (req.method === "POST") {
-      // Next.js already parses JSON into req.body
-      const payload = (req.body && typeof req.body === "object") ? req.body : {};
+    // Forward JSON body to Apps Script
+    const payload = req.body || {};
 
-      // Ensure action exists (frontend should always send it)
-      const action = (payload.action || "").trim();
-      if (!action) {
-        return res.status(400).json({
-          success: false,
-          error: "Missing action in request body",
-        });
-      }
+    const upstreamResponse = await fetch(GAS_WEBAPP_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
 
-      // For compatibility with Apps Script handler using appId/appid
-      if (payload.appId && !payload.appid) {
-        payload.appid = payload.appId;
-      }
+    const text = await upstreamResponse.text();
 
-      console.log("➡️ Forwarding POST to GAS:", {
-        url: GAS_URL,
-        action,
-      });
-
-      const gasRes = await fetch(GAS_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const text = await gasRes.text();
-      let data;
-
-      try {
-        data = JSON.parse(text);
-      } catch (err) {
-        console.error("❌ GAS returned non-JSON response:", text);
-        return res.status(500).json({
-          success: false,
-          error: "Backend did not return valid JSON",
-          raw: text,
-        });
-      }
-
-      // If GAS responded with an error HTTP code, surface it but still send JSON body.
-      if (!gasRes.ok) {
-        console.error("❌ GAS error status:", gasRes.status, data);
-        return res.status(500).json({
-          success: false,
-          error: data.error || `Apps Script error (HTTP ${gasRes.status})`,
-          detail: data,
-        });
-      }
-
-      console.log("✅ GAS response:", data);
-      return res.status(200).json(data);
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (parseErr) {
+      console.error('❌ Apps Script did NOT return valid JSON. Raw body:', text);
+      data = {
+        success: false,
+        error: 'Upstream (Apps Script) did not return valid JSON.',
+        raw: text,
+      };
     }
 
-    // ---------------------- GET (e.g., health) ----------------------
-    if (req.method === "GET") {
-      const url = new URL(GAS_URL);
-
-      // Forward query params to GAS
-      Object.entries(req.query || {}).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((v) => url.searchParams.append(key, v));
-        } else if (value !== undefined) {
-          url.searchParams.append(key, value);
-        }
-      });
-
-      console.log("➡️ Forwarding GET to GAS:", url.toString());
-
-      const gasRes = await fetch(url.toString(), {
-        method: "GET",
-      });
-
-      const text = await gasRes.text();
-      let data;
-
-      try {
-        data = JSON.parse(text);
-      } catch (err) {
-        console.error("❌ GAS returned non-JSON response (GET):", text);
-        return res.status(500).json({
-          success: false,
-          error: "Backend did not return valid JSON (GET)",
-          raw: text,
-        });
-      }
-
-      if (!gasRes.ok) {
-        console.error("❌ GAS error status (GET):", gasRes.status, data);
-        return res.status(500).json({
-          success: false,
-          error: data.error || `Apps Script error (HTTP ${gasRes.status})`,
-          detail: data,
-        });
-      }
-
-      console.log("✅ GAS GET response:", data);
-      return res.status(200).json(data);
-    }
+    // If Apps Script itself returned 500, we propagate that,
+    // but still respond with JSON so the front-end can show the error.
+    return res
+      .status(upstreamResponse.ok ? 200 : upstreamResponse.status)
+      .json(data);
   } catch (err) {
-    console.error("❌ Unexpected error in /api/hub/manage:", err);
+    console.error('❌ Error in /api/hub/manage proxy:', err);
     return res.status(500).json({
       success: false,
-      error: err?.message || String(err),
+      error: 'Proxy error calling Apps Script: ' + err.message,
     });
   }
 }
