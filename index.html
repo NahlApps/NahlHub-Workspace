@@ -738,8 +738,8 @@
 
     .app-frame-wrap {
       width: 100%;
-      height: calc(100vh - 210px);
-      max-height: calc(100vh - 200px);
+      height: calc(100vh - 250px);
+      max-height: calc(100vh - 230px);
     }
 
     .app-frame {
@@ -865,8 +865,8 @@
         margin: 0;
       }
       .app-frame-wrap {
-        height: calc(100vh - 210px);
-        max-height: calc(100vh - 190px);
+        height: calc(100vh - 250px);
+        max-height: calc(100vh - 230px);
       }
       .apps-list {
         max-height: 220px;
@@ -950,7 +950,7 @@
           </div>
         </div>
         <div class="auth-modal-body">
-          <!-- Step 1: Mobile (inside popup) -->
+          <!-- Step 1: Mobile -->
           <section id="stepMobile" class="card" style="margin: 0">
             <div class="card-header">
               <div>
@@ -994,7 +994,7 @@
             </div>
           </section>
 
-          <!-- Step 2: OTP (inside popup) -->
+          <!-- Step 2: OTP -->
           <section id="stepOtp" class="card hidden" style="margin: 0">
             <div class="card-header">
               <div>
@@ -1022,21 +1022,21 @@
                   inputmode="numeric"
                   maxlength="1"
                 />
-              <input
+                <input
                   class="otp-input"
                   id="otp2"
                   type="tel"
                   inputmode="numeric"
                   maxlength="1"
                 />
-              <input
+                <input
                   class="otp-input"
                   id="otp3"
                   type="tel"
                   inputmode="numeric"
                   maxlength="1"
                 />
-              <input
+                <input
                   class="otp-input"
                   id="otp4"
                   type="tel"
@@ -1064,7 +1064,7 @@
 
     <!-- Main -->
     <main class="main-panel">
-      <!-- Welcome (used only after login if needed; we hide after login) -->
+      <!-- Welcome -->
       <section class="welcome-card" id="welcomeCard">
         <div class="welcome-header-line">
           <div>
@@ -1076,9 +1076,35 @@
         </div>
       </section>
 
-      <!-- Step 3: Apps (optional hub mode) -->
+      <!-- Step 3: Apps + Marketplace -->
       <section id="stepApps" class="apps-layout hidden">
-        <!-- Home cards -->
+        <!-- Workspace + Tabs Bar -->
+        <div class="card" id="workspaceBarCard">
+          <div class="card-header">
+            <div class="field-row" style="flex:1; align-items: flex-end;">
+              <div class="field-group" style="flex:1;">
+                <label
+                  class="field-label"
+                  for="workspaceSelect"
+                  data-i18n="workspaceLabel"
+                >
+                  مساحة العمل
+                </label>
+                <select id="workspaceSelect" class="input"></select>
+              </div>
+              <div class="field-row" style="gap: 6px; white-space: nowrap;">
+                <button id="tabApps" type="button" class="chip-btn active">
+                  🧩 <span data-i18n="tabApps">التطبيقات</span>
+                </button>
+                <button id="tabMarketplace" type="button" class="chip-btn">
+                  🛒 <span data-i18n="tabMarketplace">المتجر</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Apps card -->
         <div class="card" id="appsCard">
           <div class="card-header">
             <div>
@@ -1100,6 +1126,24 @@
           </div>
         </div>
 
+        <!-- Marketplace card -->
+        <div class="card hidden" id="marketplaceCard">
+          <div class="card-header">
+            <div>
+              <div class="card-title" data-i18n="marketplaceTitle">
+                متجر التطبيقات
+              </div>
+              <div class="card-caption" data-i18n="marketplaceCaption">
+                اختر مساحة العمل ثم قم بتثبيت التطبيقات المناسبة لفريقك.
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="marketplaceTemplates" class="apps-list"></div>
+          </div>
+        </div>
+
+        <!-- App viewer -->
         <div class="app-view hidden" id="appView">
           <div class="app-view-header">
             <div id="currentAppTitle" class="card-caption">
@@ -1141,23 +1185,21 @@
     (function () {
       "use strict";
 
-      // 🔗 API endpoint (Vercel proxy)
       var API_URL = "/api/hub/manage";
-
-      // 🔑 Fixed appId for OTP multi-tenant separation
-      var HUB_APP_ID = "NAHLHUB";
-
       var STORAGE_SESSION_KEY = "nahlhub_session_key";
       var STORAGE_LANG = "nahlhub_lang";
       var STORAGE_THEME = "nahlhub_theme";
 
       var currentLang = localStorage.getItem(STORAGE_LANG) || "ar";
       var currentTheme = localStorage.getItem(STORAGE_THEME) || "light";
-      var currentSessionKey =
-        localStorage.getItem(STORAGE_SESSION_KEY) || null;
+      var currentSessionKey = localStorage.getItem(STORAGE_SESSION_KEY) || null;
+
       var currentUser = null;
-      var currentApps = [];
+      var currentUserId = null;
       var currentMobileRaw = "";
+      var currentApps = [];
+      var currentWorkspaces = [];
+      var currentWorkspaceId = null;
       var currentAppId = null;
 
       var bodyEl = document.body;
@@ -1183,6 +1225,12 @@
       var btnVerifyOtp = document.getElementById("btnVerifyOtp");
       var btnChangeMobile = document.getElementById("btnChangeMobile");
 
+      var workspaceSelect = document.getElementById("workspaceSelect");
+      var tabApps = document.getElementById("tabApps");
+      var tabMarketplace = document.getElementById("tabMarketplace");
+      var marketplaceCard = document.getElementById("marketplaceCard");
+      var marketplaceTemplates = document.getElementById("marketplaceTemplates");
+
       var appsCard = document.getElementById("appsCard");
       var appsListEl = document.getElementById("appsList");
       var appView = document.getElementById("appView");
@@ -1199,7 +1247,6 @@
 
       var btnAppsMenu = document.getElementById("btnAppsMenu");
       var appsMenuPanel = document.getElementById("appsMenuPanel");
-
       var btnHome = document.getElementById("btnHome");
 
       var tDict = {
@@ -1211,7 +1258,7 @@
         welcomeTitle: { ar: "مرحباً 👋", en: "Welcome 👋" },
         welcomeSub: {
           ar: "ادخل برقم الجوال ثم اختر التطبيق.",
-          en: "Enter your mobile then choose an app."
+          en: "Enter your mobile, then choose an app."
         },
         step1Title: { ar: "رقم الجوال", en: "Mobile number" },
         step1Sub: { ar: "ادخل رقم الجوال.", en: "Enter your mobile." },
@@ -1248,9 +1295,39 @@
           ar: "حدث خطأ. حاول مرة أخرى.",
           en: "Something went wrong. Try again."
         },
-        statusOtpVerified: {
-          ar: "تم التحقق من الرمز بنجاح.",
-          en: "Code verified successfully."
+        workspaceLabel: {
+          ar: "مساحة العمل",
+          en: "Workspace"
+        },
+        tabApps: { ar: "التطبيقات", en: "Apps" },
+        tabMarketplace: { ar: "المتجر", en: "Marketplace" },
+        marketplaceTitle: {
+          ar: "متجر التطبيقات",
+          en: "App Marketplace"
+        },
+        marketplaceCaption: {
+          ar: "اختر مساحة العمل ثم قم بتثبيت التطبيقات المناسبة لفريقك.",
+          en: "Choose a workspace and install the right apps for your team."
+        },
+        statusLoadingWorkspaces: {
+          ar: "يتم تحميل مساحات العمل...",
+          en: "Loading workspaces..."
+        },
+        statusLoadingApps: {
+          ar: "يتم تحميل التطبيقات...",
+          en: "Loading apps..."
+        },
+        statusLoadingMarketplace: {
+          ar: "يتم تحميل المتجر...",
+          en: "Loading marketplace..."
+        },
+        statusInstallApp: {
+          ar: "جاري تثبيت التطبيق...",
+          en: "Installing app..."
+        },
+        statusInstallAppOk: {
+          ar: "تم تثبيت التطبيق بنجاح 🎉",
+          en: "App installed successfully 🎉"
         }
       };
 
@@ -1280,14 +1357,7 @@
           mobileInput.placeholder = "5XXXXXXXX";
         }
 
-        if (currentUser) {
-          var suffix = " · " + (currentUser.mobile || "");
-          var greetName =
-            currentLang === "ar"
-              ? "مرحباً " + (currentUser.name || "")
-              : "Hi " + (currentUser.name || "");
-          userNameLabel.textContent = greetName + suffix;
-        }
+        updateUserUi();
       }
 
       function applyTheme() {
@@ -1330,7 +1400,7 @@
         }
       }
 
-      function postJson(payload) {
+      function callHubApi(payload) {
         return fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1339,12 +1409,13 @@
           return res
             .json()
             .catch(function () {
-              throw new Error("Invalid JSON from backend.");
+              throw new Error("Server did not return valid JSON.");
             });
         });
       }
 
-      // OTP behaviour (L → R)
+      /* OTP behaviour */
+
       otpInputs.forEach(function (input, idx) {
         input.addEventListener("input", function (e) {
           var value = e.target.value.replace(/\D/g, "");
@@ -1402,12 +1473,7 @@
         btnSendOtp.disabled = true;
         setStatus("statusSendingOtp", null);
 
-        // 🔁 Updated action + appId
-        postJson({
-          action: "sendOtp",
-          appId: HUB_APP_ID,
-          mobile: mobile
-        })
+        callHubApi({ action: "sendOtp", mobile: mobile })
           .then(function (res) {
             if (!res || !res.success) {
               var msg =
@@ -1447,10 +1513,8 @@
         btnVerifyOtp.disabled = true;
         setStatus("statusVerifying", null);
 
-        // 🔁 Updated action + appId
-        postJson({
+        callHubApi({
           action: "verifyOtp",
-          appId: HUB_APP_ID,
           mobile: currentMobileRaw,
           otp: otp
         })
@@ -1467,32 +1531,30 @@
               return;
             }
 
-            // Save sessionKey if backend returns it
             currentSessionKey = res.sessionKey || null;
             if (currentSessionKey) {
               localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
             }
 
-            // 🔀 Two modes:
-            // 1) Hub mode: backend returns user + apps
-            // 2) Login-only mode: backend only returns redirectUrl
-            if (res.user || res.apps) {
-              currentUser =
-                res.user || { mobile: currentMobileRaw, name: "" };
-              currentApps = res.apps || [];
+            // Backend should return user info; fallback to mobile only
+            currentUser = res.user || {
+              userId: res.userId || "",
+              name: res.name || "",
+              mobile: currentMobileRaw
+            };
+            currentUserId =
+              (currentUser && currentUser.userId) ||
+              res.userId ||
+              null;
 
-              if (welcomeCard) welcomeCard.classList.add("hidden");
-              updateUserUi();
-              renderApps();
-              showStep("apps");
-              setStatus("statusIdle", null);
-            } else {
-              // Login-only mode → open redirect URL (if provided) and hide OTP dialog
-              if (res.redirectUrl) {
-                window.open(res.redirectUrl, "_blank");
-              }
-              authOverlay.classList.add("hidden");
-              setStatus("statusOtpVerified", "ok");
+            if (welcomeCard) welcomeCard.classList.add("hidden");
+            updateUserUi();
+            showStep("apps");
+            setStatus("statusIdle", null);
+
+            // Load workspaces & apps/marketplace
+            if (currentUserId) {
+              loadWorkspaces();
             }
           })
           .catch(function (err) {
@@ -1504,32 +1566,26 @@
           });
       }
 
-      // (Optional) authMe for future sessions – not used yet
-      function authMe() {
-        if (!currentSessionKey) {
-          setStatus("statusIdle", null);
-          showStep("mobile");
-          return;
-        }
-        // If you later implement auth.me in backend, you can use it here.
-        setStatus("statusIdle", null);
-        showStep("mobile");
-      }
-
       function logout() {
-        var key = currentSessionKey;
         currentSessionKey = null;
         localStorage.removeItem(STORAGE_SESSION_KEY);
         currentUser = null;
+        currentUserId = null;
         currentApps = [];
+        currentWorkspaces = [];
+        currentWorkspaceId = null;
         currentAppId = null;
+
+        appsListEl.innerHTML = "";
+        marketplaceTemplates.innerHTML = "";
+        workspaceSelect.innerHTML = "";
 
         appFrame.src = "";
         appFrame.classList.add("hidden");
         appFramePlaceholder.classList.remove("hidden");
         currentAppTitle.textContent = t("appPlaceholder");
-        appsListEl.innerHTML = "";
         appsCard.classList.remove("hidden");
+        marketplaceCard.classList.add("hidden");
         btnAppsMenu.classList.add("hidden");
         appsMenuPanel.classList.add("hidden");
         btnHome.classList.add("hidden");
@@ -1539,10 +1595,6 @@
 
         setStatus("statusIdle", null);
         showStep("mobile");
-
-        if (!key) return;
-        // Optional: call backend logout if you implement it later
-        // postJson({ action: "auth.logout", sessionKey: key }).catch(function () {});
       }
 
       function updateUserUi() {
@@ -1550,7 +1602,7 @@
           userNameLabel.textContent = "";
           return;
         }
-        var suffix = " · " + (currentUser.mobile || "");
+        var suffix = currentUser.mobile ? " · " + currentUser.mobile : "";
         var greetName =
           currentLang === "ar"
             ? "مرحباً " + (currentUser.name || "")
@@ -1558,17 +1610,252 @@
         userNameLabel.textContent = greetName + suffix;
       }
 
+      /* Workspaces + Apps + Marketplace */
+
+      function renderWorkspaceSelect() {
+        workspaceSelect.innerHTML = "";
+        currentWorkspaces.forEach(function (ws) {
+          var opt = document.createElement("option");
+          opt.value = ws.workspaceId;
+          opt.textContent = ws.name + " (" + (ws.role || "member") + ")";
+          workspaceSelect.appendChild(opt);
+        });
+      }
+
+      function loadWorkspaces() {
+        if (!currentUserId) return;
+
+        setStatus("statusLoadingWorkspaces", null);
+
+        callHubApi({
+          action: "workspace.listForUser",
+          userId: currentUserId
+        })
+          .then(function (res) {
+            if (!res || !res.success) {
+              setStatus(
+                (res && res.error) ||
+                  (currentLang === "ar"
+                    ? "تعذر تحميل مساحات العمل."
+                    : "Failed to load workspaces."),
+                "error"
+              );
+              return;
+            }
+
+            currentWorkspaces = res.items || [];
+            renderWorkspaceSelect();
+
+            if (currentWorkspaces.length > 0) {
+              currentWorkspaceId = currentWorkspaces[0].workspaceId;
+              workspaceSelect.value = currentWorkspaceId;
+              loadWorkspaceApps();
+              loadMarketplaceTemplates();
+            } else {
+              setStatus(
+                currentLang === "ar"
+                  ? "لا توجد مساحات عمل. اطلب من المشرف إنشاء واحدة."
+                  : "No workspaces yet. Ask an admin to create one.",
+                "error"
+              );
+            }
+
+            setStatus("statusIdle", null);
+          })
+          .catch(function (err) {
+            console.error("loadWorkspaces error:", err);
+            setStatus("statusError", "error");
+          });
+      }
+
+      function loadWorkspaceApps() {
+        if (!currentWorkspaceId) return;
+
+        setStatus("statusLoadingApps", null);
+
+        callHubApi({
+          action: "marketplace.listWorkspaceApps",
+          workspaceId: currentWorkspaceId
+        })
+          .then(function (res) {
+            if (!res || !res.success) {
+              setStatus(
+                (res && res.error) ||
+                  (currentLang === "ar"
+                    ? "تعذر تحميل التطبيقات."
+                    : "Failed to load apps."),
+                "error"
+              );
+              return;
+            }
+            currentApps = res.items || [];
+            renderApps();
+            setStatus("statusIdle", null);
+          })
+          .catch(function (err) {
+            console.error("loadWorkspaceApps error:", err);
+            setStatus("statusError", "error");
+          });
+      }
+
+      function loadMarketplaceTemplates() {
+        marketplaceTemplates.innerHTML = "";
+
+        if (!currentWorkspaceId) {
+          marketplaceTemplates.textContent =
+            currentLang === "ar"
+              ? "اختر مساحة عمل أولاً."
+              : "Select a workspace first.";
+          return;
+        }
+
+        setStatus("statusLoadingMarketplace", null);
+
+        callHubApi({
+          action: "marketplace.listTemplates",
+          workspaceId: currentWorkspaceId
+        })
+          .then(function (res) {
+            if (!res || !res.success) {
+              setStatus(
+                (res && res.error) ||
+                  (currentLang === "ar"
+                    ? "تعذر تحميل المتجر."
+                    : "Failed to load marketplace."),
+                "error"
+              );
+              return;
+            }
+
+            var items = res.items || [];
+            if (!items.length) {
+              marketplaceTemplates.textContent =
+                currentLang === "ar"
+                  ? "لا توجد قوالب متاحة حالياً."
+                  : "No templates available currently.";
+              setStatus("statusIdle", null);
+              return;
+            }
+
+            items.forEach(function (tpl) {
+              var card = document.createElement("div");
+              card.className = "app-card";
+
+              var header = document.createElement("div");
+              header.className = "app-card-header";
+
+              var icon = document.createElement("div");
+              icon.className = "app-card-icon";
+              icon.textContent = "🧩";
+
+              var title = document.createElement("div");
+              title.className = "app-card-title";
+              title.textContent = tpl.name || tpl.templateId;
+
+              header.appendChild(icon);
+              header.appendChild(title);
+
+              var body = document.createElement("div");
+              body.className = "app-card-body";
+              body.textContent =
+                tpl.shortDesc || tpl.description || "";
+
+              var footer = document.createElement("div");
+              footer.className = "app-card-footer";
+
+              var catSpan = document.createElement("span");
+              catSpan.textContent = tpl.category || "";
+
+              var btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "btn btn-primary";
+              btn.style.padding = "4px 10px";
+              btn.style.fontSize = "11px";
+
+              if (tpl.installed) {
+                btn.textContent =
+                  currentLang === "ar" ? "مثبّت" : "Installed";
+                btn.disabled = true;
+              } else {
+                btn.textContent =
+                  currentLang === "ar" ? "تثبيت" : "Install";
+                btn.addEventListener("click", function (e) {
+                  e.stopPropagation();
+                  installTemplate(tpl.templateId);
+                });
+              }
+
+              footer.appendChild(catSpan);
+              footer.appendChild(btn);
+
+              card.appendChild(header);
+              card.appendChild(body);
+              card.appendChild(footer);
+
+              marketplaceTemplates.appendChild(card);
+            });
+
+            setStatus("statusIdle", null);
+          })
+          .catch(function (err) {
+            console.error("loadMarketplaceTemplates error:", err);
+            setStatus("statusError", "error");
+          });
+      }
+
+      function installTemplate(templateId) {
+        if (!currentWorkspaceId || !currentUserId) {
+          setStatus(
+            currentLang === "ar"
+              ? "تأكد من اختيار مساحة العمل وتسجيل الدخول."
+              : "Make sure you selected a workspace and are logged in.",
+            "error"
+          );
+          return;
+        }
+
+        setStatus("statusInstallApp", null);
+
+        callHubApi({
+          action: "marketplace.installApp",
+          workspaceId: currentWorkspaceId,
+          templateId: templateId,
+          userId: currentUserId
+        })
+          .then(function (res) {
+            if (!res || !res.success) {
+              setStatus(
+                (res && res.error) ||
+                  (currentLang === "ar"
+                    ? "تعذر تثبيت التطبيق."
+                    : "Failed to install app."),
+                "error"
+              );
+              return;
+            }
+
+            setStatus("statusInstallAppOk", "ok");
+            // Reload apps + marketplace
+            loadWorkspaceApps();
+            loadMarketplaceTemplates();
+          })
+          .catch(function (err) {
+            console.error("installTemplate error:", err);
+            setStatus("statusError", "error");
+          });
+      }
+
+      /* Apps rendering + open in iframe */
+
       function renderApps() {
         appsListEl.innerHTML = "";
         currentAppId = null;
 
-        // Reset iframe
         appFrame.src = "";
         appFrame.classList.add("hidden");
         appFramePlaceholder.classList.remove("hidden");
         currentAppTitle.textContent = t("appPlaceholder");
 
-        // Home state by default → show cards, hide app-view
         appsCard.classList.remove("hidden");
         btnHome.classList.add("hidden");
         appView.classList.add("hidden");
@@ -1586,8 +1873,7 @@
 
         currentApps.forEach(function (app) {
           var card = document.createElement("div");
-          card.className =
-            "app-card" + (app.pinned ? " app-card-pinned" : "");
+          card.className = "app-card";
           card.dataset.appId = app.appId;
 
           var header = document.createElement("div");
@@ -1599,22 +1885,14 @@
 
           var title = document.createElement("div");
           title.className = "app-card-title";
-          var name =
-            currentLang === "ar"
-              ? app.appNameAr || app.appNameEn
-              : app.appNameEn || app.appNameAr;
-          title.textContent = name || app.appId;
+          title.textContent = app.name || app.appId;
 
           header.appendChild(icon);
           header.appendChild(title);
 
           var body = document.createElement("div");
           body.className = "app-card-body";
-          var desc =
-            currentLang === "ar"
-              ? app.descriptionAr || app.descriptionEn
-              : app.descriptionEn || app.descriptionAr;
-          body.textContent = desc || "";
+          body.textContent = app.description || "";
 
           var footer = document.createElement("div");
           footer.className = "app-card-footer";
@@ -1623,14 +1901,14 @@
           catSpan.textContent = app.category || "";
 
           var pinnedSpan = document.createElement("span");
-          if (app.pinned) {
+          if (app.status === "installed") {
             pinnedSpan.className = "badge-pinned";
             pinnedSpan.textContent =
-              currentLang === "ar" ? "مثبّت" : "Pinned";
+              currentLang === "ar" ? "مثبّت" : "Installed";
           }
 
           footer.appendChild(catSpan);
-          if (app.pinned) footer.appendChild(pinnedSpan);
+          if (pinnedSpan.textContent) footer.appendChild(pinnedSpan);
 
           card.appendChild(header);
           card.appendChild(body);
@@ -1662,11 +1940,7 @@
 
           var title = document.createElement("div");
           title.className = "apps-menu-item-title";
-          var name =
-            currentLang === "ar"
-              ? app.appNameAr || app.appNameEn
-              : app.appNameEn || app.appNameAr;
-          title.textContent = name || app.appId;
+          title.textContent = app.name || app.appId;
 
           var cat = document.createElement("div");
           cat.className = "apps-menu-item-cat";
@@ -1679,9 +1953,10 @@
           dot.style.width = "8px";
           dot.style.height = "8px";
           dot.style.borderRadius = "999px";
-          dot.style.background = app.pinned
-            ? "rgba(250,204,21,0.95)"
-            : "rgba(34,197,94,0.9)";
+          dot.style.background =
+            app.status === "installed"
+              ? "rgba(250,204,21,0.95)"
+              : "rgba(34,197,94,0.9)";
 
           item.appendChild(left);
           item.appendChild(dot);
@@ -1710,7 +1985,7 @@
       }
 
       function openAppFromHome(app) {
-        appsCard.classList.add("hidden");
+        appsCard.classList.remove("hidden"); // keep list visible
         btnHome.classList.remove("hidden");
         appView.classList.remove("hidden");
         openApp(app);
@@ -1720,14 +1995,19 @@
         if (!app || !currentUser) return;
         currentAppId = app.appId;
 
-        var name =
-          currentLang === "ar"
-            ? app.appNameAr || app.appNameEn
-            : app.appNameEn || app.appNameAr;
-        currentAppTitle.textContent = name || "";
+        currentAppTitle.textContent = app.name || "";
 
-        var base = (app.baseUrl || "").trim();
-        if (!base) return;
+        var base = (app.baseUrl || app.defaultRoute || "").trim();
+        if (!base) {
+          setStatus(
+            currentLang === "ar"
+              ? "لم يتم إعداد رابط التطبيق بعد."
+              : "App URL is not configured yet.",
+            "error"
+          );
+          return;
+        }
+
         var sep = base.indexOf("?") === -1 ? "?" : "&";
         var finalUrl =
           base + sep + "appid=" + encodeURIComponent(currentUser.userId || "");
@@ -1744,10 +2024,6 @@
       function goHome() {
         if (!currentApps || !currentApps.length) return;
 
-        // Show cards again
-        appsCard.classList.remove("hidden");
-
-        // Reset iframe and hide viewer
         appFrame.classList.add("hidden");
         appFramePlaceholder.classList.remove("hidden");
         currentAppTitle.textContent = t("appPlaceholder");
@@ -1757,7 +2033,8 @@
         appView.classList.add("hidden");
       }
 
-      // Events
+      /* Events */
+
       btnSendOtp.addEventListener("click", sendOtp);
       mobileInput.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
@@ -1790,6 +2067,13 @@
           renderApps();
           buildAppsMenu();
         }
+        if (!authOverlay.classList.contains("hidden")) {
+          // keep correct placeholder text
+          mobileInput.placeholder = "5XXXXXXXX";
+        }
+        if (!marketplaceCard.classList.contains("hidden")) {
+          loadMarketplaceTemplates();
+        }
       });
 
       btnLangEn.addEventListener("click", function () {
@@ -1800,6 +2084,12 @@
         if (currentApps.length) {
           renderApps();
           buildAppsMenu();
+        }
+        if (!authOverlay.classList.contains("hidden")) {
+          mobileInput.placeholder = "5XXXXXXXX";
+        }
+        if (!marketplaceCard.classList.contains("hidden")) {
+          loadMarketplaceTemplates();
         }
       });
 
@@ -1826,17 +2116,37 @@
         goHome();
       });
 
-      // Init
+      workspaceSelect.addEventListener("change", function () {
+        currentWorkspaceId = workspaceSelect.value || null;
+        if (!currentWorkspaceId) return;
+        loadWorkspaceApps();
+        loadMarketplaceTemplates();
+      });
+
+      tabApps.addEventListener("click", function () {
+        tabApps.classList.add("active");
+        tabMarketplace.classList.remove("active");
+        appsCard.classList.remove("hidden");
+        marketplaceCard.classList.add("hidden");
+      });
+
+      tabMarketplace.addEventListener("click", function () {
+        tabMarketplace.classList.add("active");
+        tabApps.classList.remove("active");
+        appsCard.classList.add("hidden");
+        marketplaceCard.classList.remove("hidden");
+        loadMarketplaceTemplates();
+      });
+
+      /* Init */
+
       applyTheme();
       applyLanguage();
       setStatus("statusIdle", null);
       showStep("mobile");
 
-      // We are not using authMe() automatically yet
-      // If you implement auth.me backend, you can re-enable:
-      // if (currentSessionKey) {
-      //   authMe();
-      // }
+      // NOTE: For now we don't auto-restore session (no auth.me endpoint),
+      // so we always start from mobile → OTP.
     })();
   </script>
 </body>
