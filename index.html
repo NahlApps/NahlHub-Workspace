@@ -1146,9 +1146,6 @@
       var STORAGE_LANG = "nahlhub_lang";
       var STORAGE_THEME = "nahlhub_theme";
 
-      // 🔹 NahlHub App ID (multi-tenant)
-      var HUB_APP_ID = null;
-
       var currentLang = localStorage.getItem(STORAGE_LANG) || "ar";
       var currentTheme = localStorage.getItem(STORAGE_THEME) || "light";
       var currentSessionKey =
@@ -1254,11 +1251,6 @@
         return entry[currentLang] || entry.ar || key;
       }
 
-      function getQueryParam(name) {
-        var params = new URLSearchParams(window.location.search);
-        return params.get(name);
-      }
-
       function applyLanguage() {
         document.documentElement.lang = currentLang;
         document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
@@ -1309,8 +1301,7 @@
         if (type === "ok") statusPill.classList.add("ok");
         else if (type === "error") statusPill.classList.add("error");
 
-        var appPart = HUB_APP_ID ? "AppID=" + HUB_APP_ID + " · " : "";
-        statusText.textContent = appPart + text;
+        statusText.textContent = text;
       }
 
       function showStep(name) {
@@ -1334,10 +1325,6 @@
 
       function postJson(payload) {
         payload = payload || {};
-        // 🔹 Always send appId if available
-        if (HUB_APP_ID && !payload.appId && !payload.appid) {
-          payload.appId = HUB_APP_ID;
-        }
 
         return fetch(API_URL, {
           method: "POST",
@@ -1392,11 +1379,6 @@
       }
 
       function sendOtp() {
-        if (!HUB_APP_ID) {
-          setStatus("App ID is missing (?appid=...)", "error");
-          return;
-        }
-
         var mobile = (mobileInput.value || "").trim();
         if (!mobile) {
           setStatus(
@@ -1435,11 +1417,6 @@
       }
 
       function verifyOtp() {
-        if (!HUB_APP_ID) {
-          setStatus("App ID is missing (?appid=...)", "error");
-          return;
-        }
-
         var otp = readOtp();
         if (!otp || otp.length !== 4) {
           setStatus(
@@ -1495,7 +1472,7 @@
       }
 
       function authMe() {
-        if (!currentSessionKey || !HUB_APP_ID) {
+        if (!currentSessionKey) {
           setStatus("statusIdle", null);
           showStep("mobile");
           return;
@@ -1840,27 +1817,15 @@
         goHome();
       });
 
-      // 🔹 Init
+      // Init
       applyTheme();
       applyLanguage();
-
-      // Read App ID from URL
-      HUB_APP_ID =
-        getQueryParam("appid") || getQueryParam("appId") || "";
-
-      if (!HUB_APP_ID) {
-        // App ID missing – disable auth actions
-        btnSendOtp.disabled = true;
-        btnVerifyOtp.disabled = true;
-        setStatus("App ID is missing (?appid=...)", "error");
-      } else {
-        setStatus("statusIdle", null);
-        if (currentSessionKey) {
-          authMe();
-        }
-      }
-
+      setStatus("statusIdle", null);
       showStep("mobile");
+
+      if (currentSessionKey) {
+        authMe();
+      }
     })();
   </script>
 </body>
