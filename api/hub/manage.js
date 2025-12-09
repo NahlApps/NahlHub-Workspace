@@ -1,128 +1,166 @@
 // pages/api/hub/manage.js
 
-// ✅ Vercel / Next.js API route that proxies to Google Apps Script (NahlHub backend)
+// ✅ Temporary mock backend for NahlHub
+// This file is self-contained and does NOT call Google Apps Script.
+// It is only for development / UI testing.
 
-const APPS_SCRIPT_URL = process.env.NAHLHUB_APPS_SCRIPT_URL;
+const MOCK_SESSION_KEY = "NH-MOCK-SESSION-12345";
 
-/**
- * Helper: build the Apps Script URL with original query params.
- */
-function buildAppsScriptUrl(query) {
-  if (!APPS_SCRIPT_URL) {
-    throw new Error("Missing NAHLHUB_APPS_SCRIPT_URL env variable.");
+// Fake user (you can adjust as you like)
+const MOCK_USER = {
+  userId: "USR-0001",
+  mobile: "500000000",
+  name: "ضيف نحل هب", // or "NahlHub Guest"
+};
+
+// Fake apps list (opened inside the iframe)
+const MOCK_APPS = [
+  {
+    appId: "APP-NAHLTIME",
+    appNameAr: "NahlTime – حجوزات الغسيل",
+    appNameEn: "NahlTime – Car Wash Bookings",
+    descriptionAr: "تطبيق لحجز مواعيد غسيل السيارة.",
+    descriptionEn: "App to schedule car wash appointments.",
+    category: "خدمات / Services",
+    baseUrl: "https://nahl-time-pro.vercel.app",
+    pinned: true,
+  },
+  {
+    appId: "APP-LAUNDRY",
+    appNameAr: "Laundry Basket – إدارة المغسلة",
+    appNameEn: "Laundry Basket – Laundry Manager",
+    descriptionAr: "متابعة الفواتير والرسائل للعملاء.",
+    descriptionEn: "Track orders and send WhatsApp updates.",
+    category: "إدارة / Management",
+    baseUrl: "https://laundry-basket-portal.vercel.app",
+    pinned: false,
+  },
+  {
+    appId: "APP-DEMO",
+    appNameAr: "تطبيق تجريبي",
+    appNameEn: "Demo App",
+    descriptionAr: "تطبيق تجريبي مرتبط بنحل هب.",
+    descriptionEn: "Demo app connected to NahlHub.",
+    category: "تجريبي / Demo",
+    baseUrl: "https://example.com",
+    pinned: false,
+  },
+];
+
+function json(res, status, payload) {
+  res.status(status).json(payload);
+}
+
+export default function handler(req, res) {
+  const method = req.method || "GET";
+
+  if (method !== "POST") {
+    // For now we only support POST from the frontend
+    return json(res, 405, {
+      success: false,
+      error: "Method not allowed. Use POST.",
+    });
   }
 
-  const url = new URL(APPS_SCRIPT_URL);
+  const body = req.body || {};
+  const action = body.action;
 
-  // Copy all query params from the incoming request
-  if (query) {
-    Object.keys(query).forEach((key) => {
-      const value = query[key];
-      if (Array.isArray(value)) {
-        value.forEach((v) => url.searchParams.append(key, v));
-      } else if (value !== undefined) {
-        url.searchParams.append(key, value);
+  if (!action) {
+    return json(res, 400, {
+      success: false,
+      error: "Missing 'action' in request body.",
+    });
+  }
+
+  // 🔹 Handle actions
+  switch (action) {
+    case "auth.requestOtp": {
+      const mobile = (body.mobile || "").trim();
+      if (!mobile) {
+        return json(res, 400, {
+          success: false,
+          error: "Mobile is required.",
+        });
       }
-    });
-  }
 
-  // For generic GET calls with no `action`, we can default (not really used for hub, but safe)
-  if (!url.searchParams.has("action") && (query && Object.keys(query).length)) {
-    url.searchParams.set("action", "list");
-  }
+      // In real backend: generate OTP, save to sheet, send via WhatsApp.
+      // Here: just pretend it worked.
+      console.log("📲 [Mock] Sending OTP to:", mobile);
 
-  return url.toString();
-}
-
-/**
- * Helper: forward request to Apps Script and normalize to JSON.
- */
-async function forwardToAppsScript(method, query, body) {
-  const targetUrl = buildAppsScriptUrl(query);
-
-  const fetchOptions = {
-    method,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  if (method === "POST") {
-    // Ensure we send JSON string body
-    fetchOptions.body = JSON.stringify(body || {});
-  }
-
-  const resp = await fetch(targetUrl, fetchOptions);
-
-  const rawText = await resp.text();
-
-  // Try to parse JSON; if fails, wrap it in a JSON error envelope
-  try {
-    const data = JSON.parse(rawText);
-    return {
-      ok: resp.ok,
-      status: resp.status,
-      data,
-    };
-  } catch (err) {
-    console.error("❌ Apps Script did not return valid JSON", {
-      status: resp.status,
-      rawSnippet: rawText.slice(0, 500),
-    });
-
-    return {
-      ok: false,
-      status: 500,
-      data: {
-        success: false,
-        error: "Invalid JSON from Apps Script backend.",
-        statusCodeFromAppsScript: resp.status,
-        rawBodySnippet: rawText.slice(0, 500),
-      },
-    };
-  }
-}
-
-/**
- * Main handler
- */
-export default async function handler(req, res) {
-  try {
-    if (!APPS_SCRIPT_URL) {
-      console.error("❌ NAHLHUB_APPS_SCRIPT_URL is not set.");
-      return res.status(500).json({
-        success: false,
-        error:
-          "Server misconfigured: NAHLHUB_APPS_SCRIPT_URL env variable is not set.",
+      return json(res, 200, {
+        success: true,
+        message: "Mock OTP sent.",
       });
     }
 
-    const method = req.method || "GET";
+    case "auth.verifyOtp": {
+      const mobile = (body.mobile || "").trim();
+      const otp = (body.otp || "").trim();
 
-    if (method !== "GET" && method !== "POST") {
-      return res
-        .status(405)
-        .json({ success: false, error: "Method not allowed" });
+      if (!mobile || !otp) {
+        return json(res, 400, {
+          success: false,
+          error: "Mobile and OTP are required.",
+        });
+      }
+
+      // In real backend: check OTP in sheet.
+      // Here: accept any 4-digit OTP.
+      if (otp.length !== 4) {
+        return json(res, 400, {
+          success: false,
+          error: "Invalid OTP format.",
+        });
+      }
+
+      console.log("✅ [Mock] OTP verified for:", mobile, "OTP:", otp);
+
+      const user = {
+        ...MOCK_USER,
+        mobile,
+      };
+
+      return json(res, 200, {
+        success: true,
+        sessionKey: MOCK_SESSION_KEY,
+        user,
+        apps: MOCK_APPS,
+      });
     }
 
-    const query = req.query || {};
-    const body = method === "POST" ? req.body || {} : null;
+    case "auth.me": {
+      const sessionKey = body.sessionKey;
+      if (sessionKey !== MOCK_SESSION_KEY) {
+        return json(res, 401, {
+          success: false,
+          error: "Invalid or expired session.",
+        });
+      }
 
-    const result = await forwardToAppsScript(method, query, body);
+      return json(res, 200, {
+        success: true,
+        user: MOCK_USER,
+        apps: MOCK_APPS,
+      });
+    }
 
-    // Always respond with JSON
-    return res.status(result.status || 200).json(result.data);
-  } catch (err) {
-    console.error("❌ Error in /api/hub/manage:", err);
-    return res.status(500).json({
-      success: false,
-      error: "Unexpected error in hub API.",
-      details: err.message || String(err),
-    });
+    case "auth.logout": {
+      const sessionKey = body.sessionKey;
+      console.log("👋 [Mock] Logout for session:", sessionKey);
+      // In real backend: delete session from sheet.
+      return json(res, 200, {
+        success: true,
+      });
+    }
+
+    default:
+      return json(res, 400, {
+        success: false,
+        error: `Unknown action: ${action}`,
+      });
   }
 }
 
-// Optional: keep default body parsing (JSON) enabled
 export const config = {
   api: {
     bodyParser: true,
