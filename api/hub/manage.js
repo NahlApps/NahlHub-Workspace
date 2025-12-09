@@ -1,76 +1,74 @@
 // pages/api/hub/manage.js
-// NahlHub – proxy between front-end and Apps Script backend
 
-// 1) Set this env var in Vercel:
-//    NAHL_HUB_BACKEND_URL = https://script.google.com/macros/s/XXXX/exec
-//
-// Or, during testing, you can hard-code it below instead of using env.
+// IMPORTANT:
+// Set NAHL_HUB_APPS_SCRIPT_URL in your environment to the deployed
+// Apps Script web-app /exec URL.
 
-const GAS_WEBAPP_URL =
-  process.env.NAHL_HUB_BACKEND_URL ||
-  ''; // <== set this via env, or temporarily put your full /exec URL here.
+const SCRIPT_URL = process.env.NAHL_HUB_APPS_SCRIPT_URL;
 
 export default async function handler(req, res) {
-  // --- Basic CORS (so you can call from any origin, including local dev) ---
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method !== 'POST') {
-    return res
-      .status(405)
-      .json({ success: false, error: 'Only POST is allowed on this endpoint.' });
-  }
-
-  if (!GAS_WEBAPP_URL) {
-    // This avoids a crash if env var is not set
+  if (!SCRIPT_URL) {
     return res.status(500).json({
       success: false,
-      error:
-        'NAHL_HUB_BACKEND_URL is not configured. Set it to your Apps Script /exec URL in Vercel env.',
+      error: 'Missing env var NAHL_HUB_APPS_SCRIPT_URL'
     });
   }
 
+  const method = req.method || 'GET';
+
   try {
-    // Forward JSON body to Apps Script
-    const payload = req.body || {};
+    // Build target URL (include query params for GET)
+    const url = new URL(SCRIPT_URL);
 
-    const upstreamResponse = await fetch(GAS_WEBAPP_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
+    if (method === 'GET') {
+      Object.entries(req.query || {}).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          // Take first value if array
+          url.searchParams.set(key, value[0]);
+        } else if (value != null) {
+          url.searchParams.set(key, String(value));
+        }
+      });
 
-    const text = await upstreamResponse.text();
-
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (parseErr) {
-      console.error('❌ Apps Script did NOT return valid JSON. Raw body:', text);
-      data = {
-        success: false,
-        error: 'Upstream (Apps Script) did not return valid JSON.',
-        raw: text,
-      };
+      // If no action is provided in GET, you *could* default to health or list
+      if (!url.searchParams.get('action')) {
+        url.searchParams.set('action', 'health');
+      }
     }
 
-    // If Apps Script itself returned 500, we propagate that,
-    // but still respond with JSON so the front-end can show the error.
-    return res
-      .status(upstreamResponse.ok ? 200 : upstreamResponse.status)
-      .json(data);
+    const fetchOptions = {
+      method,
+      headers: {}
+    };
+
+    if (method === 'POST') {
+      fetchOptions.headers['Content-Type'] = 'application/json';
+      fetchOptions.body = JSON.stringify(req.body || {});
+    }
+
+    const backendRes = await fetch(url.toString(), fetchOptions);
+
+    const text = await backendRes.text();
+
+    let json;
+    try {
+      json = JSON.parse(text);
+    } catch (err) {
+      console.error('❌ Invalid JSON from Apps Script. Raw response:', text);
+      return res.status(502).json({
+        success: false,
+        error: 'Backend did not return valid JSON'
+      });
+    }
+
+    // Always return JSON; if backend used non-2xx, mark as 500 here
+    const status = backendRes.ok ? 200 : 500;
+    return res.status(status).json(json);
   } catch (err) {
     console.error('❌ Error in /api/hub/manage proxy:', err);
     return res.status(500).json({
       success: false,
-      error: 'Proxy error calling Apps Script: ' + err.message,
+      error: 'Proxy error: ' + (err && err.message ? err.message : String(err))
     });
   }
 }
