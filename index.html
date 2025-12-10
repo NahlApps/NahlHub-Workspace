@@ -25,7 +25,6 @@
       --border-light: rgba(15, 23, 42, 0.08);
       --border-dark: rgba(148, 163, 184, 0.25);
       --accent: #f4ce14;
-      --accent-soft: rgba(244, 206, 20, 0.12);
       --text-light: #0f172a;
       --text-dark: #e5e7eb;
       --muted-light: #6b7280;
@@ -92,12 +91,12 @@
     }
 
     body[data-theme="light"] .topbar {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.72);
       border-color: var(--border-light);
     }
 
     body[data-theme="dark"] .topbar {
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.8);
       border-color: var(--border-dark);
     }
 
@@ -208,6 +207,88 @@
       border-radius: 999px;
       padding: 5px 7px;
       font-size: 11px;
+    }
+
+    /* Apps burger menu (header) */
+
+    .apps-menu-btn {
+      border-radius: 999px;
+      padding: 5px 9px;
+      font-size: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .apps-menu-panel {
+      position: absolute;
+      top: 48px;
+      inset-inline-end: 10px;
+      min-width: 200px;
+      max-width: 260px;
+      max-height: 260px;
+      overflow-y: auto;
+      border-radius: 16px;
+      border: 1px solid;
+      padding: 6px;
+      z-index: 20;
+    }
+
+    body[data-theme="light"] .apps-menu-panel {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.4);
+      box-shadow: 0 18px 30px rgba(15, 23, 42, 0.16);
+    }
+
+    body[data-theme="dark"] .apps-menu-panel {
+      background: rgba(15, 23, 42, 0.98);
+      border-color: rgba(148, 163, 184, 0.6);
+      box-shadow: 0 18px 34px rgba(15, 23, 42, 0.8);
+    }
+
+    .apps-menu-item {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      padding: 6px 8px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      text-align: start;
+      transition: background var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .apps-menu-item-title {
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .apps-menu-item-cat {
+      font-size: 11px;
+      opacity: 0.6;
+    }
+
+    body[data-theme="light"] .apps-menu-item:hover {
+      background: rgba(248, 250, 252, 0.9);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    body[data-theme="dark"] .apps-menu-item:hover {
+      background: rgba(30, 64, 175, 0.2);
+      border-color: rgba(129, 140, 248, 0.6);
+    }
+
+    .apps-menu-item.active {
+      border-color: rgba(250, 204, 21, 0.9);
+      background: rgba(250, 204, 21, 0.14);
     }
 
     /* Status pill */
@@ -366,6 +447,45 @@
       opacity: 0.85;
     }
 
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+
+    body[data-theme="light"] .input {
+      background: rgba(248, 250, 252, 0.95);
+      border-color: rgba(148, 163, 184, 0.5);
+      color: var(--text-light);
+    }
+
+    body[data-theme="dark"] .input {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(148, 163, 184, 0.6);
+      color: var(--text-dark);
+    }
+
+    .input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
+      background: rgba(255, 251, 235, 0.9);
+    }
+
+    body[data-theme="dark"] .input:focus {
+      background: rgba(15, 23, 42, 0.98);
+    }
+
     .btn {
       border-radius: 999px;
       border: none;
@@ -420,7 +540,7 @@
       background: rgba(31, 41, 55, 0.9);
     }
 
-    /* OTP row: LTR */
+    /* OTP row: left to right */
 
     .otp-row {
       display: flex;
@@ -465,291 +585,168 @@
       background: rgba(15, 23, 42, 1);
     }
 
-    /* Apps sections layout */
+    /* Apps layout + sections */
 
     .apps-layout {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
       min-height: 0;
       flex: 1;
     }
 
-    .apps-header-row {
+    .hub-header-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    /* Workspace selector – redesigned */
+    @media (min-width: 640px) {
+      .hub-header-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
 
-    .workspace-card {
-      flex: 1;
-      min-width: 260px;
+    .workspace-select-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .workspace-select-label {
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .workspace-select-pill {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
       border-radius: 999px;
-      padding: 8px 12px;
+      padding: 4px 8px 4px 10px;
       border: 1px solid;
       cursor: pointer;
-      position: relative;
-      transition: box-shadow var(--transition-fast),
-        border-color var(--transition-fast), background var(--transition-fast),
-        transform var(--transition-fast);
+      max-width: 280px;
     }
 
-    body[data-theme="light"] .workspace-card {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: rgba(148, 163, 184, 0.35);
-    }
-
-    body[data-theme="dark"] .workspace-card {
-      background: rgba(15, 23, 42, 0.95);
+    body[data-theme="light"] .workspace-select-pill {
+      background: rgba(255, 255, 255, 0.96);
       border-color: rgba(148, 163, 184, 0.6);
     }
 
-    .workspace-card:hover {
-      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
-      border-color: rgba(250, 204, 21, 0.7);
-      transform: translateY(-0.5px);
+    body[data-theme="dark"] .workspace-select-pill {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(148, 163, 184, 0.7);
     }
 
-    .workspace-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-
-    .workspace-label {
-      font-size: 11px;
-      opacity: 0.7;
-    }
-
-    .workspace-name-row {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    .workspace-name {
+    .workspace-select-pill select {
+      border: none;
+      outline: none;
+      background: transparent;
+      font: inherit;
       font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 220px;
+      width: 100%;
+      color: inherit;
+      padding: 4px 0;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      direction: rtl;
     }
 
-    .workspace-role-pill {
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: rgba(34, 197, 94, 0.1);
-      color: #15803d;
+    [dir="ltr"] .workspace-select-pill select {
+      direction: ltr;
     }
 
-    body[data-theme="dark"] .workspace-role-pill {
-      background: rgba(34, 197, 94, 0.2);
-      color: #bbf7d0;
-    }
-
-    .workspace-dropdown-icon {
-      width: 24px;
-      height: 24px;
+    .workspace-pill-icon {
+      width: 20px;
+      height: 20px;
       border-radius: 999px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 13px;
-      border: 1px solid transparent;
-    }
-
-    body[data-theme="light"] .workspace-dropdown-icon {
-      background: rgba(248, 250, 252, 0.9);
-      border-color: rgba(148, 163, 184, 0.45);
-    }
-
-    body[data-theme="dark"] .workspace-dropdown-icon {
-      background: rgba(15, 23, 42, 0.9);
-      border-color: rgba(148, 163, 184, 0.7);
-    }
-
-    .workspace-menu {
-      position: absolute;
-      inset-inline-start: 0;
-      inset-block-start: 110%;
-      min-width: 100%;
-      max-width: 340px;
-      border-radius: 18px;
-      border: 1px solid;
-      padding: 6px;
-      z-index: 15;
-      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
-    }
-
-    body[data-theme="light"] .workspace-menu {
-      background: #ffffff;
-      border-color: rgba(148, 163, 184, 0.4);
-    }
-
-    body[data-theme="dark"] .workspace-menu {
-      background: rgba(15, 23, 42, 0.98);
-      border-color: rgba(148, 163, 184, 0.65);
-    }
-
-    .workspace-menu-item {
-      width: 100%;
-      border-radius: 12px;
-      border: 1px solid transparent;
-      padding: 6px 8px;
       font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-      background: transparent;
-      color: inherit;
-      cursor: pointer;
-      text-align: start;
-      transition: background var(--transition-fast),
-        border-color var(--transition-fast), transform var(--transition-fast);
+      background: rgba(244, 206, 20, 0.2);
+      flex-shrink: 0;
     }
 
-    .workspace-menu-item-main {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .workspace-menu-item-name {
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .workspace-menu-item-meta {
-      font-size: 11px;
+    .workspace-pill-meta {
+      font-size: 10px;
       opacity: 0.7;
     }
 
-    .workspace-menu-item-role {
-      font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: rgba(34, 197, 94, 0.08);
-      color: #15803d;
+    .workspace-pill-chevron {
+      font-size: 12px;
+      opacity: 0.7;
+      flex-shrink: 0;
     }
 
-    body[data-theme="dark"] .workspace-menu-item-role {
-      background: rgba(34, 197, 94, 0.16);
-      color: #bbf7d0;
-    }
-
-    body[data-theme="light"] .workspace-menu-item:hover {
-      background: rgba(248, 250, 252, 0.9);
-      border-color: rgba(148, 163, 184, 0.4);
-    }
-
-    body[data-theme="dark"] .workspace-menu-item:hover {
-      background: rgba(30, 64, 175, 0.2);
-      border-color: rgba(129, 140, 248, 0.6);
-    }
-
-    .workspace-menu-item.active {
-      border-color: rgba(250, 204, 21, 0.9);
-      background: rgba(250, 204, 21, 0.12);
-    }
-
-    /* View toggle buttons (Apps / Marketplace) */
-
-    .view-toggle-group {
+    .hub-nav-chips {
       display: inline-flex;
       border-radius: 999px;
       padding: 3px;
-      border: 1px solid transparent;
-      background: transparent;
+      border: 1px solid;
       gap: 2px;
     }
 
-    body[data-theme="light"] .view-toggle-group {
-      border-color: rgba(148, 163, 184, 0.35);
-      background: rgba(255, 255, 255, 0.9);
-    }
-
-    body[data-theme="dark"] .view-toggle-group {
+    body[data-theme="light"] .hub-nav-chips {
+      background: rgba(255, 255, 255, 0.96);
       border-color: rgba(148, 163, 184, 0.5);
-      background: rgba(15, 23, 42, 0.95);
     }
 
-    .view-toggle-btn {
+    body[data-theme="dark"] .hub-nav-chips {
+      background: rgba(15, 23, 42, 0.98);
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    .hub-nav-btn {
       border-radius: 999px;
       border: none;
-      padding: 5px 10px;
+      background: transparent;
       font-size: 11px;
+      padding: 5px 12px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      background: transparent;
+      gap: 4px;
       color: inherit;
-      transition: background var(--transition-fast),
-        color var(--transition-fast), box-shadow var(--transition-fast),
-        transform var(--transition-fast);
+      transition: background var(--transition-fast), color var(--transition-fast),
+        box-shadow var(--transition-fast), transform var(--transition-fast);
     }
 
-    .view-toggle-btn span.icon {
+    .hub-nav-btn span.icon {
       font-size: 13px;
     }
 
-    .view-toggle-btn.active {
+    .hub-nav-btn.active {
       background: var(--accent);
       color: #111827;
-      box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
+      box-shadow: 0 8px 18px rgba(250, 204, 21, 0.5);
       transform: translateY(-0.5px);
     }
 
-    .view-toggle-btn:not(.active):hover {
-      background: rgba(148, 163, 184, 0.18);
+    .hub-nav-btn:not(.active):hover {
+      background: rgba(148, 163, 184, 0.2);
     }
 
-    body[data-theme="dark"] .view-toggle-btn:not(.active):hover {
+    body[data-theme="dark"] .hub-nav-btn:not(.active):hover {
       background: rgba(31, 41, 55, 0.9);
     }
 
-    /* Apps list / marketplace cards */
-
-    .apps-section-card {
-      border-radius: var(--surface-radius);
-      padding: 12px 14px 14px;
-      border: 1px solid;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+    #appsCard {
+      padding-bottom: 12px;
     }
 
-    body[data-theme="light"] .apps-section-card {
-      background: #ffffff;
-      border-color: var(--border-light);
-    }
-
-    body[data-theme="dark"] .apps-section-card {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: var(--border-dark);
-    }
-
-    .apps-grid {
+    .apps-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
       gap: 10px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding-top: 4px;
     }
 
     .app-card {
@@ -759,11 +756,11 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
+      cursor: pointer;
       position: relative;
       transition: background var(--transition-fast),
         border-color var(--transition-fast), transform var(--transition-fast),
         box-shadow var(--transition-fast);
-      cursor: pointer;
     }
 
     body[data-theme="light"] .app-card {
@@ -785,20 +782,12 @@
     .app-card-header {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 8px;
-    }
-
-    .app-card-main {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
     }
 
     .app-card-icon {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 999px;
       display: flex;
       align-items: center;
@@ -806,25 +795,19 @@
       font-size: 16px;
       background: rgba(244, 206, 20, 0.15);
       color: #92400e;
-      flex-shrink: 0;
     }
 
     body[data-theme="dark"] .app-card-icon {
-      background: rgba(250, 204, 21, 0.16);
-      color: #fbbf24;
+      background: rgba(250, 204, 21, 0.14);
+      color: #facc15;
     }
 
     .app-card-title {
       font-size: 13px;
       font-weight: 600;
-      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .app-card-tagline {
-      font-size: 11px;
-      opacity: 0.75;
+      white-space: nowrap;
     }
 
     .app-card-body {
@@ -839,112 +822,73 @@
       align-items: center;
       justify-content: space-between;
       font-size: 11px;
-      opacity: 0.82;
-      margin-top: 4px;
+      opacity: 0.75;
+      margin-top: 2px;
     }
 
-    .badge-soft {
+    .badge-pinned {
       border-radius: 999px;
       padding: 2px 6px;
       font-size: 10px;
-      background: rgba(148, 163, 184, 0.14);
-    }
-
-    .badge-installed {
-      border-radius: 999px;
-      padding: 2px 7px;
-      font-size: 10px;
-      background: rgba(250, 204, 21, 0.15);
+      background: rgba(250, 204, 21, 0.16);
       color: #92400e;
     }
 
-    body[data-theme="dark"] .badge-installed {
+    body[data-theme="dark"] .badge-pinned {
       background: rgba(250, 204, 21, 0.22);
       color: #facc15;
     }
 
-    .app-card-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-pill-sm {
+    .badge-type {
       border-radius: 999px;
-      border: none;
-      padding: 4px 9px;
+      padding: 2px 6px;
       font-size: 10px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(148, 163, 184, 0.18);
-      color: inherit;
-      transition: background var(--transition-fast), transform var(--transition-fast);
+      background: rgba(148, 163, 184, 0.16);
+      opacity: 0.9;
     }
 
-    .btn-pill-sm.primary {
-      background: var(--accent);
-      color: #111827;
-    }
-
-    .btn-pill-sm:hover {
-      transform: translateY(-0.5px);
-    }
-
-    /* App View */
-
-    .app-view-card {
-      border-radius: var(--surface-radius);
-      padding: 12px 14px;
+    .app-view {
+      flex: 1;
+      border-radius: 14px;
       border: 1px solid;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 240px;
+      overflow: hidden;
+      min-height: 220px;
     }
 
-    body[data-theme="light"] .app-view-card {
+    body[data-theme="light"] .app-view {
       background: #ffffff;
       border-color: var(--border-light);
     }
 
-    body[data-theme="dark"] .app-view-card {
+    body[data-theme="dark"] .app-view {
       background: rgba(15, 23, 42, 0.96);
       border-color: var(--border-dark);
     }
 
     .app-view-header {
+      padding: 7px 10px;
+      font-size: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
       border-bottom: 1px solid;
-      padding-bottom: 6px;
     }
 
     body[data-theme="light"] .app-view-header {
       border-color: rgba(148, 163, 184, 0.25);
+      background: rgba(248, 250, 252, 0.96);
     }
 
     body[data-theme="dark"] .app-view-header {
       border-color: rgba(51, 65, 85, 0.9);
-    }
-
-    .app-view-title {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .app-view-sub {
-      font-size: 11px;
-      opacity: 0.7;
+      background: rgba(15, 23, 42, 0.98);
     }
 
     .app-frame-wrap {
       width: 100%;
       height: calc(100vh - 230px);
-      max-height: calc(100vh - 220px);
-      margin-top: 4px;
+      max-height: calc(100vh - 210px);
     }
 
     .app-frame {
@@ -971,7 +915,82 @@
       display: none !important;
     }
 
-    /* Auth popup overlay */
+    /* Marketplace layout */
+
+    .marketplace-columns {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 900px) {
+      .marketplace-columns {
+        grid-template-columns: 1.1fr 1.1fr;
+      }
+    }
+
+    .marketplace-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 250px;
+      overflow-y: auto;
+      margin-top: 4px;
+    }
+
+    .marketplace-item {
+      border-radius: 16px;
+      border: 1px solid;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    body[data-theme="light"] .marketplace-item {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    body[data-theme="dark"] .marketplace-item {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(148, 163, 184, 0.55);
+    }
+
+    .marketplace-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .marketplace-item-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .marketplace-item-tags {
+      font-size: 10px;
+      opacity: 0.75;
+    }
+
+    .marketplace-item-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      margin-top: 4px;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .gift-placeholder {
+      font-size: 12px;
+      opacity: 0.75;
+      line-height: 1.6;
+    }
+
+    /* AUTH POPUP OVERLAY */
 
     .auth-overlay {
       position: fixed;
@@ -1060,52 +1079,30 @@
       gap: 10px;
     }
 
-    .input {
-      flex: 1;
-      border-radius: 999px;
-      border: 1px solid;
-      padding: 8px 12px;
-      font-size: 13px;
-      outline: none;
-      transition: border-color var(--transition-fast),
-        box-shadow var(--transition-fast), background var(--transition-fast);
-    }
-
-    body[data-theme="light"] .input {
-      background: rgba(248, 250, 252, 0.95);
-      border-color: rgba(148, 163, 184, 0.5);
-      color: var(--text-light);
-    }
-
-    body[data-theme="dark"] .input {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: rgba(148, 163, 184, 0.6);
-      color: var(--text-dark);
-    }
-
-    .input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
-      background: rgba(255, 251, 235, 0.9);
-    }
-
-    body[data-theme="dark"] .input:focus {
-      background: rgba(15, 23, 42, 0.98);
-    }
-
     @media (min-width: 768px) {
       .app-shell {
         padding: 6px 10px;
       }
+      .main-panel {
+        max-width: 100%;
+        width: 100%;
+        margin: 0;
+      }
       .app-frame-wrap {
-        height: calc(100vh - 210px);
-        max-height: calc(100vh - 190px);
+        height: calc(100vh - 230px);
+        max-height: calc(100vh - 210px);
+      }
+      .apps-list {
+        max-height: 220px;
       }
     }
   </style>
 </head>
 <body data-theme="light">
   <div class="app-shell">
+    <!-- Apps burger panel -->
+    <div id="appsMenuPanel" class="apps-menu-panel hidden"></div>
+
     <!-- Top bar -->
     <header class="topbar">
       <div class="topbar-left">
@@ -1118,6 +1115,15 @@
         </div>
       </div>
       <div class="topbar-right">
+        <button
+          class="chip-btn chip-btn-mini apps-menu-btn hidden"
+          id="btnAppsMenu"
+          type="button"
+        >
+          <span class="icon">☰</span>
+          <span data-i18n="appsTitle">تطبيقاتك</span>
+        </button>
+
         <div class="chip-group">
           <button
             class="chip-btn"
@@ -1168,7 +1174,7 @@
           </div>
         </div>
         <div class="auth-modal-body">
-          <!-- Step 1: Mobile -->
+          <!-- Step 1: Mobile (inside popup) -->
           <section id="stepMobile" class="card" style="margin: 0">
             <div class="card-header">
               <div>
@@ -1189,16 +1195,18 @@
                 >
                   رقم الجوال
                 </label>
-                <input
-                  id="mobileInput"
-                  class="input"
-                  type="tel"
-                  inputmode="tel"
-                  autocomplete="tel"
-                  placeholder="5XXXXXXXX"
-                />
+                <div class="field-row">
+                  <input
+                    id="mobileInput"
+                    class="input"
+                    type="tel"
+                    inputmode="tel"
+                    autocomplete="tel"
+                    placeholder="5XXXXXXXX"
+                  />
+                </div>
               </div>
-              <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+              <div class="field-row" style="justify-content: flex-end">
                 <button
                   id="btnSendOtp"
                   class="btn btn-primary"
@@ -1210,7 +1218,7 @@
             </div>
           </section>
 
-          <!-- Step 2: OTP -->
+          <!-- Step 2: OTP (inside popup) -->
           <section id="stepOtp" class="card hidden" style="margin: 0">
             <div class="card-header">
               <div>
@@ -1261,7 +1269,8 @@
                 />
               </div>
               <div
-                style="display:flex; justify-content:flex-end; margin-top:10px;"
+                class="field-row"
+                style="justify-content: flex-end; margin-top: 10px"
               >
                 <button
                   id="btnVerifyOtp"
@@ -1279,168 +1288,193 @@
 
     <!-- Main -->
     <main class="main-panel">
-      <!-- Welcome -->
+      <!-- Welcome (after login we hide it) -->
       <section class="welcome-card" id="welcomeCard">
         <div class="welcome-header-line">
           <div>
             <div class="welcome-title" data-i18n="welcomeTitle">مرحباً 👋</div>
             <div class="welcome-sub" data-i18n="welcomeSub">
-              ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.
+              ادخل برقم الجوال ثم اختر التطبيق.
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Apps + Marketplace layout (after login) -->
+      <!-- Hub (after login) -->
       <section id="stepApps" class="apps-layout hidden">
-        <!-- Workspace row -->
-        <div class="apps-header-row">
-          <!-- Workspace selector card -->
-          <div
-            class="workspace-card"
-            id="workspaceCard"
-          >
-            <div class="workspace-meta">
-              <div class="workspace-label" data-i18n="workspaceLabel">
+        <!-- Hub header: workspace + nav chips + logout -->
+        <div class="card">
+          <div class="card-header hub-header-row">
+            <div class="workspace-select-wrap">
+              <div class="workspace-select-label" data-i18n="workspaceLabel">
                 مساحة العمل
               </div>
-              <div class="workspace-name-row">
-                <div
-                  class="workspace-name"
-                  id="workspaceName"
-                >
-                  —
+              <div class="workspace-select-pill">
+                <div class="workspace-pill-icon">🏢</div>
+                <div style="flex:1; min-width:0;">
+                  <select id="workspaceSelect">
+                    <!-- options added via JS -->
+                  </select>
+                  <div id="workspaceMeta" class="workspace-pill-meta"></div>
                 </div>
-                <span
-                  class="workspace-role-pill"
-                  id="workspaceRole"
+                <div class="workspace-pill-chevron">▾</div>
+              </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px; justify-content:flex-end;">
+              <div class="hub-nav-chips">
+                <button
+                  type="button"
+                  class="hub-nav-btn active"
+                  id="navYourApps"
+                  data-section="apps"
                 >
-                  —
+                  <span class="icon">🧩</span>
+                  <span data-i18n="navApps">تطبيقاتك</span>
+                </button>
+                <button
+                  type="button"
+                  class="hub-nav-btn"
+                  id="navMarketplace"
+                  data-section="marketplace"
+                >
+                  <span class="icon">🏬</span>
+                  <span data-i18n="navMarketplace">متجر التطبيقات</span>
+                </button>
+                <button
+                  type="button"
+                  class="hub-nav-btn"
+                  id="navGift"
+                  data-section="gift"
+                >
+                  <span class="icon">🎁</span>
+                  <span data-i18n="navGift">محرك الهدايا</span>
+                </button>
+              </div>
+
+              <button
+                class="btn-ghost"
+                type="button"
+                id="btnLogout"
+              >
+                <span data-i18n="logout">تسجيل خروج</span>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-caption" id="userNameLabel"></div>
+          </div>
+        </div>
+
+        <!-- SECTION: YOUR APPS -->
+        <section id="appsSection">
+          <div class="card" id="appsCard">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="appsTitle">
+                  تطبيقاتك
+                </div>
+                <div class="card-caption" data-i18n="appsSubtitle">
+                  التطبيقات المثبتة في مساحة العمل الحالية.
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div id="appsList" class="apps-list"></div>
+            </div>
+          </div>
+
+          <div class="app-view hidden" id="appView">
+            <div class="app-view-header">
+              <div id="currentAppTitle" class="card-caption">
+                <span data-i18n="appPlaceholder">
+                  اختر تطبيقاً من الشاشة الرئيسية.
+                </span>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button
+                  id="btnHome"
+                  class="btn-ghost hidden"
+                  type="button"
+                  aria-label="Home"
+                >
+                  🏠
+                </button>
+              </div>
+            </div>
+            <div class="app-frame-wrap">
+              <iframe
+                id="appFrame"
+                class="app-frame hidden"
+                src=""
+                title="NahlHub App"
+              ></iframe>
+              <div
+                id="appFramePlaceholder"
+                class="app-frame-placeholder"
+              >
+                <span data-i18n="appPlaceholder">
+                  اختر تطبيقاً من الشاشة الرئيسية.
                 </span>
               </div>
             </div>
-            <div class="workspace-dropdown-icon">
-              <span id="workspaceChevron">▾</span>
-            </div>
-            <div
-              id="workspaceMenu"
-              class="workspace-menu hidden"
-            ></div>
-          </div>
-
-          <!-- View toggle (Apps / Marketplace) -->
-          <div class="view-toggle-group">
-            <button
-              id="btnViewApps"
-              type="button"
-              class="view-toggle-btn active"
-            >
-              <span class="icon">⚙️</span>
-              <span data-i18n="viewApps">Apps</span>
-            </button>
-            <button
-              id="btnViewMarketplace"
-              type="button"
-              class="view-toggle-btn"
-            >
-              <span class="icon">🛒</span>
-              <span data-i18n="viewMarketplace">Marketplace</span>
-            </button>
-          </div>
-
-          <button
-            class="btn-ghost"
-            type="button"
-            id="btnLogout"
-          >
-            <span data-i18n="logout">تسجيل خروج</span>
-          </button>
-        </div>
-
-        <!-- Your apps section -->
-        <section id="sectionApps" class="apps-section-card">
-          <div class="card-header" style="padding:0;">
-            <div>
-              <div class="card-title" data-i18n="yourAppsTitle">
-                تطبيقاتك
-              </div>
-              <div
-                class="card-caption"
-                id="userNameLabel"
-              ></div>
-            </div>
-          </div>
-          <div class="card-body">
-            <div id="appsGrid" class="apps-grid"></div>
           </div>
         </section>
 
-        <!-- Marketplace section -->
-        <section
-          id="sectionMarketplace"
-          class="apps-section-card hidden"
-        >
-          <div class="card-header" style="padding:0;">
-            <div>
-              <div class="card-title" data-i18n="marketplaceTitle">
-                App Marketplace
-              </div>
-              <div
-                class="card-caption"
-                data-i18n="marketplaceSub"
-              >
-                اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.
+        <!-- SECTION: MARKETPLACE -->
+        <section id="marketplaceSection" class="hidden">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="marketplaceTitle">
+                  متجر التطبيقات
+                </div>
+                <div class="card-caption" data-i18n="marketplaceSub">
+                  ثبّت تطبيقات منفردة أو مجموعات Modules لمساحة العمل الحالية.
+                </div>
               </div>
             </div>
-          </div>
-          <div class="card-body">
-            <div id="marketplaceGrid" class="apps-grid"></div>
+            <div class="card-body">
+              <div class="marketplace-columns">
+                <!-- Apps only -->
+                <div>
+                  <div class="card-title" style="font-size:13px;" data-i18n="marketplaceApps">
+                    تطبيقات منفردة
+                  </div>
+                  <div id="marketplaceAppsList" class="marketplace-list"></div>
+                </div>
+
+                <!-- Modules (bundles of apps) -->
+                <div>
+                  <div class="card-title" style="font-size:13px;" data-i18n="marketplaceModules">
+                    Modules (حزم من التطبيقات)
+                  </div>
+                  <div id="marketplaceModulesList" class="marketplace-list"></div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <!-- App view (Gift Engine, NahlTime, etc.) -->
-        <section
-          id="sectionAppView"
-          class="app-view-card hidden"
-        >
-          <div class="app-view-header">
-            <div>
-              <div
-                id="appViewTitle"
-                class="app-view-title"
-              >
-                Gift Engine
-              </div>
-              <div
-                id="appViewSub"
-                class="app-view-sub"
-                data-i18n="appViewSub"
-              >
-                التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.
+        <!-- SECTION: GIFT ENGINE -->
+        <section id="giftSection" class="hidden">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="giftTitle">
+                  محرك الهدايا
+                </div>
+                <div class="card-caption" data-i18n="giftSub">
+                  استخدم Modules خاصة للهدايا، النقاط، والقسائم لعملائك.
+                </div>
               </div>
             </div>
-            <button
-              id="btnBackFromApp"
-              type="button"
-              class="btn-ghost"
-            >
-              ← <span data-i18n="backToApps">التطبيقات</span>
-            </button>
-          </div>
-          <div class="app-frame-wrap">
-            <iframe
-              id="appFrame"
-              class="app-frame hidden"
-              src=""
-              title="NahlHub App"
-            ></iframe>
-            <div
-              id="appFramePlaceholder"
-              class="app-frame-placeholder"
-            >
-              <span data-i18n="appPlaceholder">
-                اختر تطبيقاً من قائمة التطبيقات أو من المتجر.
-              </span>
+            <div class="card-body">
+              <div class="gift-placeholder" data-i18n="giftPlaceholder">
+                سيتم تشغيل محرك الهدايا من خلال Modules خاصة في Marketplace
+                (مثل Loyalty, Coupons, Referral). عند تثبيت هذه الـ Modules،
+                ستظهر هنا لوحة تحكم للهدايا والبرامج التسويقية. ✨
+              </div>
             </div>
           </div>
         </section>
@@ -1453,47 +1487,38 @@
       "use strict";
 
       var API_URL = "/api/hub/manage";
-
       var STORAGE_SESSION_KEY = "nahlhub_session_key";
       var STORAGE_LANG = "nahlhub_lang";
       var STORAGE_THEME = "nahlhub_theme";
 
-      var currentLang =
-        localStorage.getItem(STORAGE_LANG) || "ar";
-      var currentTheme =
-        localStorage.getItem(STORAGE_THEME) || "light";
-      var currentSessionKey =
-        localStorage.getItem(STORAGE_SESSION_KEY) || null;
+      var currentLang = localStorage.getItem(STORAGE_LANG) || "ar";
+      var currentTheme = localStorage.getItem(STORAGE_THEME) || "light";
+      var currentSessionKey = localStorage.getItem(STORAGE_SESSION_KEY) || null;
 
       var currentUser = null;
-      var currentMobileRaw = "";
-      var currentWorkspaces = [];
+      var workspaces = [];
       var currentWorkspaceId = null;
-      var currentWorkspaceRole = "";
-      var currentWorkspaceApps = [];
-      var currentTemplates = [];
 
-      // 'apps' | 'marketplace' | 'app'
-      var currentMainView = "apps";
+      var allWorkspaceApps = {}; // workspaceId -> [apps]
+      var marketplaceTemplates = []; // all templates (apps + modules) for current workspace
+      var currentApps = []; // apps for current workspace
+      var currentAppId = null;
+      var currentMobileRaw = "";
+      var currentSection = "apps";
 
       var bodyEl = document.body;
       var statusPill = document.getElementById("statusPill");
       var statusText = document.getElementById("statusText");
 
-      var welcomeCard =
-        document.getElementById("welcomeCard");
+      var welcomeCard = document.getElementById("welcomeCard");
 
-      var authOverlay =
-        document.getElementById("authOverlay");
-      var stepMobile =
-        document.getElementById("stepMobile");
+      var authOverlay = document.getElementById("authOverlay");
+      var stepMobile = document.getElementById("stepMobile");
       var stepOtp = document.getElementById("stepOtp");
       var stepApps = document.getElementById("stepApps");
 
-      var mobileInput =
-        document.getElementById("mobileInput");
-      var btnSendOtp =
-        document.getElementById("btnSendOtp");
+      var mobileInput = document.getElementById("mobileInput");
+      var btnSendOtp = document.getElementById("btnSendOtp");
 
       var otpInputs = [
         document.getElementById("otp1"),
@@ -1501,57 +1526,41 @@
         document.getElementById("otp3"),
         document.getElementById("otp4")
       ];
-      var btnVerifyOtp =
-        document.getElementById("btnVerifyOtp");
-      var btnChangeMobile =
-        document.getElementById("btnChangeMobile");
+      var btnVerifyOtp = document.getElementById("btnVerifyOtp");
+      var btnChangeMobile = document.getElementById("btnChangeMobile");
 
-      var workspaceCard =
-        document.getElementById("workspaceCard");
-      var workspaceMenu =
-        document.getElementById("workspaceMenu");
-      var workspaceNameEl =
-        document.getElementById("workspaceName");
-      var workspaceRoleEl =
-        document.getElementById("workspaceRole");
-
-      var btnViewApps =
-        document.getElementById("btnViewApps");
-      var btnViewMarketplace =
-        document.getElementById("btnViewMarketplace");
-
-      var sectionApps =
-        document.getElementById("sectionApps");
-      var sectionMarketplace =
-        document.getElementById("sectionMarketplace");
-      var sectionAppView =
-        document.getElementById("sectionAppView");
-
-      var appsGrid = document.getElementById("appsGrid");
-      var marketplaceGrid =
-        document.getElementById("marketplaceGrid");
-
-      var appFrame =
-        document.getElementById("appFrame");
-      var appFramePlaceholder =
-        document.getElementById("appFramePlaceholder");
-      var appViewTitle =
-        document.getElementById("appViewTitle");
-
-      var btnBackFromApp =
-        document.getElementById("btnBackFromApp");
+      var appsCard = document.getElementById("appsCard");
+      var appsListEl = document.getElementById("appsList");
+      var appView = document.getElementById("appView");
+      var appFrame = document.getElementById("appFrame");
+      var appFramePlaceholder = document.getElementById("appFramePlaceholder");
+      var currentAppTitle = document.getElementById("currentAppTitle");
+      var userNameLabel = document.getElementById("userNameLabel");
       var btnLogout = document.getElementById("btnLogout");
 
       var btnTheme = document.getElementById("btnTheme");
-      var themeIcon =
-        document.getElementById("themeIcon");
-      var btnLangAr =
-        document.getElementById("btnLangAr");
-      var btnLangEn =
-        document.getElementById("btnLangEn");
+      var themeIcon = document.getElementById("themeIcon");
+      var btnLangAr = document.getElementById("btnLangAr");
+      var btnLangEn = document.getElementById("btnLangEn");
 
-      var userNameLabel =
-        document.getElementById("userNameLabel");
+      var btnAppsMenu = document.getElementById("btnAppsMenu");
+      var appsMenuPanel = document.getElementById("appsMenuPanel");
+
+      var btnHome = document.getElementById("btnHome");
+
+      var navYourApps = document.getElementById("navYourApps");
+      var navMarketplace = document.getElementById("navMarketplace");
+      var navGift = document.getElementById("navGift");
+
+      var appsSection = document.getElementById("appsSection");
+      var marketplaceSection = document.getElementById("marketplaceSection");
+      var giftSection = document.getElementById("giftSection");
+
+      var workspaceSelect = document.getElementById("workspaceSelect");
+      var workspaceMeta = document.getElementById("workspaceMeta");
+
+      var marketplaceAppsList = document.getElementById("marketplaceAppsList");
+      var marketplaceModulesList = document.getElementById("marketplaceModulesList");
 
       var tDict = {
         hubTitle: { ar: "NahlHub", en: "NahlHub" },
@@ -1561,8 +1570,8 @@
         },
         welcomeTitle: { ar: "مرحباً 👋", en: "Welcome 👋" },
         welcomeSub: {
-          ar: "ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.",
-          en: "Enter your mobile, then choose workspace and app."
+          ar: "ادخل برقم الجوال ثم اختر التطبيق.",
+          en: "Enter your mobile then choose an app."
         },
         step1Title: { ar: "رقم الجوال", en: "Mobile number" },
         step1Sub: { ar: "ادخل رقم الجوال.", en: "Enter your mobile." },
@@ -1575,61 +1584,71 @@
         },
         changeMobile: { ar: "تعديل الرقم", en: "Change number" },
         btnVerify: { ar: "تأكيد", en: "Confirm" },
+        appsTitle: { ar: "تطبيقاتك", en: "Your apps" },
+        appsSubtitle: {
+          ar: "التطبيقات المثبتة في مساحة العمل الحالية.",
+          en: "Apps installed in the current workspace."
+        },
         logout: { ar: "تسجيل خروج", en: "Logout" },
+        appPlaceholder: {
+          ar: "اختر تطبيقاً من الشاشة الرئيسية.",
+          en: "Choose an app from the home cards."
+        },
         statusIdle: { ar: "جاهز.", en: "Ready." },
         statusSendingOtp: {
           ar: "يتم إرسال الرمز...",
           en: "Sending code..."
         },
         statusOtpSent: {
-          ar: "تم إرسال الرمز.",
-          en: "Code sent."
+          ar: "تم إرسال الرمز إلى واتساب.",
+          en: "Code sent to WhatsApp."
         },
         statusVerifying: { ar: "يتم التحقق...", en: "Verifying..." },
+        statusNoApps: {
+          ar: "لا توجد تطبيقات متاحة.",
+          en: "No apps available."
+        },
+        statusNoWorkspaces: {
+          ar: "لا توجد مساحات عمل مرتبطة بهذا الحساب.",
+          en: "No workspaces for this account."
+        },
         statusError: {
           ar: "حدث خطأ. حاول مرة أخرى.",
           en: "Something went wrong. Try again."
         },
-        statusNoWorkspaces: {
-          ar: "لا توجد مساحات عمل متاحة.",
-          en: "No workspaces available."
-        },
-        statusLoadingWorkspace: {
-          ar: "جاري تحميل مساحات العمل...",
-          en: "Loading workspaces..."
-        },
-        statusLoadingApps: {
-          ar: "جاري تحميل التطبيقات...",
-          en: "Loading apps..."
-        },
-        statusLoadingMarketplace: {
-          ar: "جاري تحميل متجر التطبيقات...",
-          en: "Loading marketplace..."
-        },
         workspaceLabel: { ar: "مساحة العمل", en: "Workspace" },
-        yourAppsTitle: { ar: "تطبيقاتك", en: "Your apps" },
-        marketplaceTitle: {
-          ar: "App Marketplace",
-          en: "App Marketplace"
-        },
+        navApps: { ar: "تطبيقاتك", en: "Your apps" },
+        navMarketplace: { ar: "متجر التطبيقات", en: "Marketplace" },
+        navGift: { ar: "محرك الهدايا", en: "Gift engine" },
+        marketplaceTitle: { ar: "متجر التطبيقات", en: "App Marketplace" },
         marketplaceSub: {
-          ar: "اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.",
-          en: "Choose a workspace and install the right apps for your team."
+          ar: "ثبّت تطبيقات منفردة أو Modules لمساحة العمل الحالية.",
+          en: "Install single apps or Modules into the current workspace."
         },
-        viewApps: { ar: "التطبيقات", en: "Apps" },
-        viewMarketplace: { ar: "المتجر", en: "Marketplace" },
-        appPlaceholder: {
-          ar: "اختر تطبيقاً من قائمة التطبيقات أو من المتجر.",
-          en: "Choose an app from your apps or from the marketplace."
+        marketplaceApps: {
+          ar: "تطبيقات منفردة",
+          en: "Single apps"
         },
-        appViewSub: {
-          ar: "التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.",
-          en: "The app is shown inside NahlHub. Use Back to return to apps."
+        marketplaceModules: {
+          ar: "Modules (حزم من التطبيقات)",
+          en: "Modules (bundles of apps)"
         },
-        backToApps: {
-          ar: "التطبيقات",
-          en: "Apps"
-        }
+        giftTitle: {
+          ar: "محرك الهدايا",
+          en: "Gift Engine"
+        },
+        giftSub: {
+          ar: "برامج ولاء وهدايا مبنية على Modules من المتجر.",
+          en: "Loyalty and gift programs powered by Modules from the marketplace."
+        },
+        giftPlaceholder: {
+          ar: "سيتم تشغيل محرك الهدايا من خلال Modules خاصة في Marketplace (مثل Loyalty, Coupons, Referral). عند تثبيت هذه الـ Modules، ستظهر هنا لوحة تحكم للهدايا والبرامج التسويقية. ✨",
+          en: "The gift engine will be powered by special Modules in the Marketplace (e.g. Loyalty, Coupons, Referral). Once these Modules are installed, a control panel will appear here for gifts and marketing programs. ✨"
+        },
+        btnInstallApp: { ar: "تثبيت التطبيق", en: "Install app" },
+        btnInstallModule: { ar: "تثبيت Module", en: "Install module" },
+        statusInstalling: { ar: "جاري التثبيت...", en: "Installing..." },
+        statusInstalled: { ar: "تم التثبيت بنجاح.", en: "Installed successfully." }
       };
 
       function t(key) {
@@ -1640,8 +1659,7 @@
 
       function applyLanguage() {
         document.documentElement.lang = currentLang;
-        document.documentElement.dir =
-          currentLang === "ar" ? "rtl" : "ltr";
+        document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
 
         var nodes = document.querySelectorAll("[data-i18n]");
         nodes.forEach(function (node) {
@@ -1660,12 +1678,14 @@
         }
 
         updateUserUi();
+        renderWorkspacesDropdown();
+        renderApps();
+        renderMarketplace();
       }
 
       function applyTheme() {
         bodyEl.setAttribute("data-theme", currentTheme);
-        themeIcon.textContent =
-          currentTheme === "light" ? "🌞" : "🌙";
+        themeIcon.textContent = currentTheme === "light" ? "🌞" : "🌙";
       }
 
       function setStatus(msgKeyOrText, type) {
@@ -1675,27 +1695,13 @@
           return;
         }
         var text =
-          tDict[msgKeyOrText] &&
-          tDict[msgKeyOrText][currentLang]
+          tDict[msgKeyOrText] && tDict[msgKeyOrText][currentLang]
             ? t(msgKeyOrText)
             : msgKeyOrText;
         statusPill.classList.remove("ok", "error");
         if (type === "ok") statusPill.classList.add("ok");
-        else if (type === "error")
-          statusPill.classList.add("error");
+        else if (type === "error") statusPill.classList.add("error");
         statusText.textContent = text;
-      }
-
-      function postJson(payload) {
-        return fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload || {})
-        }).then(function (res) {
-          return res.json().catch(function () {
-            throw new Error("Invalid JSON from backend.");
-          });
-        });
       }
 
       function showStep(name) {
@@ -1717,7 +1723,20 @@
         }
       }
 
-      // OTP behavior
+      function callHubApi(action, payload) {
+        var body = Object.assign({}, payload || {}, { action: action });
+        return fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        }).then(function (res) {
+          return res.json().catch(function () {
+            throw new Error("Server did not return valid JSON.");
+          });
+        });
+      }
+
+      // OTP behaviour (L → R)
       otpInputs.forEach(function (input, idx) {
         input.addEventListener("input", function (e) {
           var value = e.target.value.replace(/\D/g, "");
@@ -1734,10 +1753,7 @@
           if (e.key === "ArrowLeft" && idx > 0) {
             otpInputs[idx - 1].focus();
           }
-          if (
-            e.key === "ArrowRight" &&
-            idx < otpInputs.length - 1
-          ) {
+          if (e.key === "ArrowRight" && idx < otpInputs.length - 1) {
             otpInputs[idx + 1].focus();
           }
           if (e.key === "Enter") {
@@ -1765,9 +1781,7 @@
         var mobile = (mobileInput.value || "").trim();
         if (!mobile) {
           setStatus(
-            currentLang === "ar"
-              ? "أدخل رقم الجوال."
-              : "Enter your mobile.",
+            currentLang === "ar" ? "أدخل رقم الجوال." : "Enter your mobile.",
             "error"
           );
           mobileInput.focus();
@@ -1776,9 +1790,9 @@
 
         currentMobileRaw = mobile;
         btnSendOtp.disabled = true;
-        setStatus("statusSendingOtp");
+        setStatus("statusSendingOtp", null);
 
-        postJson({ action: "sendOtp", mobile: mobile })
+        callHubApi("auth.requestOtp", { mobile: mobile })
           .then(function (res) {
             if (!res || !res.success) {
               var msg =
@@ -1793,7 +1807,8 @@
             clearOtpInputs();
             showStep("otp");
           })
-          .catch(function () {
+          .catch(function (err) {
+            console.error(err);
             setStatus("statusError", "error");
           })
           .finally(function () {
@@ -1815,10 +1830,9 @@
         }
 
         btnVerifyOtp.disabled = true;
-        setStatus("statusVerifying");
+        setStatus("statusVerifying", null);
 
-        postJson({
-          action: "verifyOtp",
+        callHubApi("auth.verifyOtp", {
           mobile: currentMobileRaw,
           otp: otp
         })
@@ -1835,31 +1849,53 @@
               return;
             }
 
-            currentSessionKey = res.sessionKey || null;
-            currentUser = res.user || null;
-            if (currentSessionKey) {
-              localStorage.setItem(
-                STORAGE_SESSION_KEY,
-                currentSessionKey
-              );
-            }
-
-            if (welcomeCard)
-              welcomeCard.classList.add("hidden");
-            updateUserUi();
-
-            // load workspaces + apps
-            loadWorkspaces().then(function () {
-              showStep("apps");
-              setStatus("statusIdle");
-            });
+            handleLoginSuccess(res);
           })
-          .catch(function () {
+          .catch(function (err) {
+            console.error(err);
             setStatus("statusError", "error");
           })
           .finally(function () {
             btnVerifyOtp.disabled = false;
           });
+      }
+
+      function handleLoginSuccess(res) {
+        currentSessionKey = res.sessionKey || null;
+        if (currentSessionKey) {
+          localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
+        }
+
+        currentUser = res.user || null;
+        workspaces = res.workspaces || [];
+        marketplaceTemplates = res.marketplaceTemplates || res.templates || [];
+        allWorkspaceApps = {};
+
+        // Optional: initial apps array from backend (flattened)
+        if (Array.isArray(res.apps)) {
+          res.apps.forEach(function (app) {
+            var wsId = app.workspaceId || "default";
+            if (!allWorkspaceApps[wsId]) allWorkspaceApps[wsId] = [];
+            allWorkspaceApps[wsId].push(app);
+          });
+        }
+
+        if (welcomeCard) welcomeCard.classList.add("hidden");
+        updateUserUi();
+        renderWorkspacesDropdown();
+
+        if (!workspaces.length) {
+          setStatus("statusNoWorkspaces", "error");
+        } else {
+          // Select first workspace by default
+          currentWorkspaceId = workspaces[0].workspaceId || workspaces[0].id;
+          workspaceSelect.value = currentWorkspaceId;
+          updateWorkspaceContext();
+        }
+
+        showStep("apps");
+        setHubSection("apps");
+        setStatus("statusIdle", null);
       }
 
       function updateUserUi() {
@@ -1875,494 +1911,557 @@
         userNameLabel.textContent = greetName + suffix;
       }
 
-      function logout() {
-        currentSessionKey = null;
-        localStorage.removeItem(STORAGE_SESSION_KEY);
-        currentUser = null;
-        currentWorkspaces = [];
-        currentWorkspaceId = null;
-        currentWorkspaceApps = [];
-        currentTemplates = [];
-        appsGrid.innerHTML = "";
-        marketplaceGrid.innerHTML = "";
-        workspaceNameEl.textContent = "—";
-        workspaceRoleEl.textContent = "—";
-        setMainView("apps");
+      function renderWorkspacesDropdown() {
+        if (!workspaceSelect) return;
 
-        if (welcomeCard)
-          welcomeCard.classList.remove("hidden");
-        setStatus("statusIdle");
-        showStep("mobile");
-      }
-
-      /* -------- Workspace & views ---------- */
-
-      function setMainView(view) {
-        currentMainView = view;
-        sectionApps.classList.toggle(
-          "hidden",
-          view !== "apps"
-        );
-        sectionMarketplace.classList.toggle(
-          "hidden",
-          view !== "marketplace"
-        );
-        sectionAppView.classList.toggle(
-          "hidden",
-          view !== "app"
-        );
-
-        btnViewApps.classList.toggle(
-          "active",
-          view === "apps"
-        );
-        btnViewMarketplace.classList.toggle(
-          "active",
-          view === "marketplace"
-        );
-      }
-
-      function buildWorkspaceMenu() {
-        workspaceMenu.innerHTML = "";
-        if (!currentWorkspaces.length) {
-          var empty = document.createElement("div");
-          empty.className = "card-caption";
-          empty.style.padding = "6px 4px";
-          empty.textContent = t("statusNoWorkspaces");
-          workspaceMenu.appendChild(empty);
+        workspaceSelect.innerHTML = "";
+        if (!workspaces || !workspaces.length) {
+          var opt = document.createElement("option");
+          opt.value = "";
+          opt.textContent =
+            currentLang === "ar"
+              ? "لا توجد مساحات عمل"
+              : "No workspaces";
+          workspaceSelect.appendChild(opt);
+          workspaceMeta.textContent = "";
           return;
         }
 
-        currentWorkspaces.forEach(function (ws) {
-          var btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "workspace-menu-item";
-          if (ws.workspaceId === currentWorkspaceId) {
-            btn.classList.add("active");
-          }
-
-          var main = document.createElement("div");
-          main.className = "workspace-menu-item-main";
-
-          var name = document.createElement("div");
-          name.className = "workspace-menu-item-name";
-          name.textContent = ws.name || ws.workspaceId;
-
-          var meta = document.createElement("div");
-          meta.className = "workspace-menu-item-meta";
-          meta.textContent =
-            (ws.slug || "") +
-            (ws.plan ? " · " + ws.plan : "");
-
-          main.appendChild(name);
-          main.appendChild(meta);
-
-          var rolePill =
-            document.createElement("span");
-          rolePill.className = "workspace-menu-item-role";
-          rolePill.textContent = ws.role || "member";
-
-          btn.appendChild(main);
-          btn.appendChild(rolePill);
-
-          btn.addEventListener("click", function (e) {
-            e.stopPropagation();
-            selectWorkspace(ws.workspaceId);
-            workspaceMenu.classList.add("hidden");
-          });
-
-          workspaceMenu.appendChild(btn);
+        workspaces.forEach(function (ws) {
+          var opt = document.createElement("option");
+          opt.value = ws.workspaceId || ws.id;
+          var name = ws.name || ws.slug || opt.value;
+          opt.textContent = name;
+          workspaceSelect.appendChild(opt);
         });
-      }
 
-      function selectWorkspace(workspaceId) {
-        var ws = currentWorkspaces.find(function (w) {
-          return w.workspaceId === workspaceId;
-        });
-        if (!ws) return;
-
-        currentWorkspaceId = workspaceId;
-        currentWorkspaceRole = ws.role || "member";
-
-        workspaceNameEl.textContent =
-          ws.name || ws.workspaceId;
-        workspaceRoleEl.textContent =
-          ws.role === "admin" ? "admin" : "member";
-
-        buildWorkspaceMenu();
-        setStatus("statusLoadingApps");
-        loadWorkspaceData();
-      }
-
-      function loadWorkspaces() {
-        if (!currentUser || !currentUser.userId) {
-          return Promise.resolve();
+        if (!currentWorkspaceId) {
+          currentWorkspaceId = workspaces[0].workspaceId || workspaces[0].id;
         }
-        setStatus("statusLoadingWorkspace");
-        return postJson({
-          action: "workspace.listForUser",
-          userId: currentUser.userId
-        })
-          .then(function (res) {
-            currentWorkspaces =
-              (res && res.items) || [];
-            if (
-              !currentWorkspaces ||
-              !currentWorkspaces.length
-            ) {
-              setStatus("statusNoWorkspaces", "error");
-              return;
-            }
-            selectWorkspace(
-              currentWorkspaces[0].workspaceId
-            );
-          })
-          .catch(function () {
-            setStatus("statusError", "error");
-          });
+        workspaceSelect.value = currentWorkspaceId;
+
+        var ws = workspaces.find(function (w) {
+          return (
+            w.workspaceId === currentWorkspaceId || w.id === currentWorkspaceId
+          );
+        });
+        if (ws) {
+          var meta =
+            (currentLang === "ar" ? "الخطة: " : "Plan: ") +
+            (ws.plan || "free");
+          if (ws.role) {
+            meta +=
+              " · " +
+              (currentLang === "ar" ? "دورك: " : "Role: ") +
+              ws.role;
+          }
+          workspaceMeta.textContent = meta;
+        }
       }
 
-      function loadWorkspaceData() {
-        if (!currentWorkspaceId) return;
+      function updateWorkspaceContext() {
+        if (!currentWorkspaceId) {
+          currentApps = [];
+          renderApps();
+          renderMarketplace();
+          return;
+        }
 
-        Promise.all([
-          postJson({
-            action: "marketplace.listWorkspaceApps",
-            workspaceId: currentWorkspaceId
-          }),
-          postJson({
-            action: "marketplace.listTemplates",
+        // 1) Apps for this workspace (from cache)
+        currentApps = allWorkspaceApps[currentWorkspaceId] || [];
+
+        // 2) If no apps cached yet, we can fetch
+        if (!currentApps.length && currentUser) {
+          callHubApi("marketplace.listWorkspaceApps", {
             workspaceId: currentWorkspaceId
           })
-        ])
-          .then(function (results) {
-            var appsRes = results[0] || {};
-            var tplRes = results[1] || {};
-            currentTemplates = tplRes.items || [];
-
-            var tplById = {};
-            currentTemplates.forEach(function (tpl) {
-              tplById[tpl.templateId] = tpl;
-            });
-
-            currentWorkspaceApps = (appsRes.items || []).map(
-              function (app) {
-                var tpl =
-                  tplById[app.templateId] || {};
-                return {
-                  workspaceAppId:
-                    app.workspaceAppId,
-                  appId: app.appId,
-                  templateId: app.templateId,
-                  name:
-                    app.name ||
-                    tpl.name ||
-                    app.templateId,
-                  category: tpl.category || "",
-                  shortDesc:
-                    tpl.shortDesc || "",
-                  status: app.status || "",
-                  visibleInHub:
-                    app.visibleInHub || "",
-                  defaultRoute:
-                    tpl.defaultRoute || "",
-                  iconUrl: tpl.iconUrl || "",
-                  featureTags:
-                    tpl.featureTags || ""
-                };
+            .then(function (res) {
+              if (res && res.success && Array.isArray(res.items)) {
+                allWorkspaceApps[currentWorkspaceId] = res.items;
+                currentApps = res.items;
+                renderApps();
+              } else {
+                renderApps();
               }
-            );
+            })
+            .catch(function (err) {
+              console.error(err);
+              renderApps();
+            });
+        } else {
+          renderApps();
+        }
 
-            renderApps();
-            renderMarketplace();
-            setStatus("statusIdle");
-          })
-          .catch(function () {
-            setStatus("statusError", "error");
-          });
+        // 3) Marketplace templates for this workspace
+        loadMarketplaceForWorkspace();
       }
 
       function renderApps() {
-        appsGrid.innerHTML = "";
-        if (
-          !currentWorkspaceApps ||
-          !currentWorkspaceApps.length
-        ) {
-          var empty = document.createElement("div");
-          empty.className = "card-caption";
-          empty.textContent =
-            currentLang === "ar"
-              ? "لا توجد تطبيقات مثبتة في هذه المساحة."
-              : "No apps installed in this workspace.";
-          appsGrid.appendChild(empty);
+        appsListEl.innerHTML = "";
+        currentAppId = null;
+
+        appFrame.src = "";
+        appFrame.classList.add("hidden");
+        appFramePlaceholder.classList.remove("hidden");
+        currentAppTitle.textContent = t("appPlaceholder");
+
+        appsCard.classList.remove("hidden");
+        btnHome.classList.add("hidden");
+        appView.classList.add("hidden");
+
+        if (!currentApps || !currentApps.length) {
+          setStatus("statusNoApps", "error");
+          btnAppsMenu.classList.add("hidden");
+          appsMenuPanel.classList.add("hidden");
+          appView.classList.add("hidden");
           return;
         }
 
-        currentWorkspaceApps.forEach(function (app) {
-          var card = document.createElement("article");
-          card.className = "app-card";
+        btnAppsMenu.classList.remove("hidden");
+        buildAppsMenu();
 
-          var header =
-            document.createElement("div");
+        currentApps.forEach(function (app) {
+          var card = document.createElement("div");
+          card.className =
+            "app-card" + (app.pinned ? " app-card-pinned" : "");
+          card.dataset.appId = app.appId;
+
+          var header = document.createElement("div");
           header.className = "app-card-header";
 
-          var main =
-            document.createElement("div");
-          main.className = "app-card-main";
-
-          var icon =
-            document.createElement("div");
+          var icon = document.createElement("div");
           icon.className = "app-card-icon";
-          icon.textContent = "⋯";
+          icon.textContent = app.iconEmoji || "⋯";
 
-          var titleWrap =
-            document.createElement("div");
-          var title =
-            document.createElement("div");
+          var title = document.createElement("div");
           title.className = "app-card-title";
-          title.textContent =
-            app.name || app.templateId;
-
-          var tagLine =
-            document.createElement("div");
-          tagLine.className = "app-card-tagline";
-          tagLine.textContent = app.category || "";
-
-          titleWrap.appendChild(title);
-          titleWrap.appendChild(tagLine);
-
-          main.appendChild(icon);
-          main.appendChild(titleWrap);
-
-          var statusBadge =
-            document.createElement("span");
-          statusBadge.className =
-            "badge-installed";
-          statusBadge.textContent =
+          var name =
             currentLang === "ar"
-              ? "مثبّت"
-              : "Installed";
+              ? app.appNameAr || app.appNameEn || app.name
+              : app.appNameEn || app.appNameAr || app.name;
+          title.textContent = name || app.appId;
 
-          header.appendChild(main);
-          header.appendChild(statusBadge);
+          header.appendChild(icon);
+          header.appendChild(title);
 
-          var body =
-            document.createElement("div");
+          var body = document.createElement("div");
           body.className = "app-card-body";
-          body.textContent = app.shortDesc || "";
+          var desc =
+            currentLang === "ar"
+              ? app.descriptionAr || app.descriptionEn || app.description
+              : app.descriptionEn || app.descriptionAr || app.description;
+          body.textContent = desc || "";
 
-          var footer =
-            document.createElement("div");
+          var footer = document.createElement("div");
           footer.className = "app-card-footer";
 
-          var cat =
-            document.createElement("span");
-          cat.textContent =
-            app.category || "—";
+          var catSpan = document.createElement("span");
+          catSpan.textContent = app.category || "";
 
-          var actions =
-            document.createElement("div");
-          actions.className = "app-card-actions";
-
-          var openBtn =
-            document.createElement("button");
-          openBtn.type = "button";
-          openBtn.className =
-            "btn-pill-sm primary";
-          openBtn.textContent =
-            currentLang === "ar"
-              ? "فتح التطبيق"
-              : "Open app";
-
-          openBtn.addEventListener(
-            "click",
-            function (e) {
-              e.stopPropagation();
-              openWorkspaceApp(app);
-            }
-          );
-
-          actions.appendChild(openBtn);
-          footer.appendChild(cat);
-          footer.appendChild(actions);
-
-          card.appendChild(header);
-          card.appendChild(body);
-          card.appendChild(footer);
-
-          card.addEventListener(
-            "click",
-            function () {
-              openWorkspaceApp(app);
-            }
-          );
-
-          appsGrid.appendChild(card);
-        });
-      }
-
-      function renderMarketplace() {
-        marketplaceGrid.innerHTML = "";
-        if (!currentTemplates.length) {
-          var empty = document.createElement("div");
-          empty.className = "card-caption";
-          empty.textContent =
-            currentLang === "ar"
-              ? "لا توجد تطبيقات في المتجر."
-              : "No apps available in marketplace.";
-          marketplaceGrid.appendChild(empty);
-          return;
-        }
-
-        currentTemplates.forEach(function (tpl) {
-          var card = document.createElement("article");
-          card.className = "app-card";
-
-          var header =
-            document.createElement("div");
-          header.className = "app-card-header";
-
-          var main =
-            document.createElement("div");
-          main.className = "app-card-main";
-
-          var icon =
-            document.createElement("div");
-          icon.className = "app-card-icon";
-          icon.textContent = "✴";
-
-          var titleWrap =
-            document.createElement("div");
-          var title =
-            document.createElement("div");
-          title.className = "app-card-title";
-          title.textContent =
-            tpl.name || tpl.templateId;
-
-          var tagLine =
-            document.createElement("div");
-          tagLine.className = "app-card-tagline";
-          tagLine.textContent = tpl.category || "";
-
-          titleWrap.appendChild(title);
-          titleWrap.appendChild(tagLine);
-
-          main.appendChild(icon);
-          main.appendChild(titleWrap);
-
-          var statusSpan =
-            document.createElement("span");
-          statusSpan.className = "badge-soft";
-          statusSpan.textContent =
-            tpl.planRequired || "free";
-
-          header.appendChild(main);
-          header.appendChild(statusSpan);
-
-          var body =
-            document.createElement("div");
-          body.className = "app-card-body";
-          body.textContent = tpl.shortDesc || "";
-
-          var footer =
-            document.createElement("div");
-          footer.className = "app-card-footer";
-
-          var tags =
-            document.createElement("span");
-          tags.textContent = tpl.featureTags || "";
-
-          var actions =
-            document.createElement("div");
-          actions.className = "app-card-actions";
-
-          var installBtn =
-            document.createElement("button");
-          installBtn.type = "button";
-          installBtn.className =
-            "btn-pill-sm primary";
-
-          var isInstalled = !!tpl.installed;
-
-          installBtn.textContent = isInstalled
-            ? currentLang === "ar"
-              ? "مثبّت"
-              : "Installed"
-            : currentLang === "ar"
-            ? "تثبيت"
-            : "Install";
-
-          if (isInstalled) {
-            installBtn.disabled = true;
+          var pinnedSpan = document.createElement("span");
+          if (app.pinned) {
+            pinnedSpan.className = "badge-pinned";
+            pinnedSpan.textContent =
+              currentLang === "ar" ? "مثبّت" : "Pinned";
           }
 
-          installBtn.addEventListener(
-            "click",
-            function (e) {
-              e.stopPropagation();
-              if (isInstalled) return;
-              installTemplate(tpl);
-            }
-          );
-
-          actions.appendChild(installBtn);
-          footer.appendChild(tags);
-          footer.appendChild(actions);
+          footer.appendChild(catSpan);
+          if (app.pinned) footer.appendChild(pinnedSpan);
 
           card.appendChild(header);
           card.appendChild(body);
           card.appendChild(footer);
 
-          marketplaceGrid.appendChild(card);
+          card.addEventListener("click", function () {
+            openAppFromHome(app);
+          });
+
+          appsListEl.appendChild(card);
+        });
+
+        setStatus("statusIdle", null);
+      }
+
+      function buildAppsMenu() {
+        appsMenuPanel.innerHTML = "";
+        if (!currentApps || !currentApps.length) return;
+
+        currentApps.forEach(function (app) {
+          var item = document.createElement("button");
+          item.type = "button";
+          item.className = "apps-menu-item";
+          item.dataset.appId = app.appId;
+
+          var left = document.createElement("div");
+          left.style.display = "flex";
+          left.style.flexDirection = "column";
+          left.style.gap = "2px";
+          left.style.flex = "1";
+
+          var title = document.createElement("div");
+          title.className = "apps-menu-item-title";
+          var name =
+            currentLang === "ar"
+              ? app.appNameAr || app.appNameEn || app.name
+              : app.appNameEn || app.appNameAr || app.name;
+          title.textContent = name || app.appId;
+
+          var cat = document.createElement("div");
+          cat.className = "apps-menu-item-cat";
+          cat.textContent = app.category || "";
+
+          left.appendChild(title);
+          left.appendChild(cat);
+
+          var dot = document.createElement("div");
+          dot.style.width = "8px";
+          dot.style.height = "8px";
+          dot.style.borderRadius = "999px";
+          dot.style.background = app.pinned
+            ? "rgba(250,204,21,0.95)"
+            : "rgba(34,197,94,0.9)";
+
+          item.appendChild(left);
+          item.appendChild(dot);
+
+          item.addEventListener("click", function (e) {
+            e.stopPropagation();
+            openApp(app);
+            appsMenuPanel.classList.add("hidden");
+          });
+
+          appsMenuPanel.appendChild(item);
+        });
+
+        updateAppsMenuActiveState();
+      }
+
+      function updateAppsMenuActiveState() {
+        var items = appsMenuPanel.querySelectorAll(".apps-menu-item");
+        items.forEach(function (item) {
+          if (item.dataset.appId === currentAppId) {
+            item.classList.add("active");
+          } else {
+            item.classList.remove("active");
+          }
         });
       }
 
-      function installTemplate(tpl) {
-        if (!currentWorkspaceId || !currentUser) return;
-        setStatus("statusLoadingMarketplace");
+      function openAppFromHome(app) {
+        appsCard.classList.add("hidden");
+        btnHome.classList.remove("hidden");
+        appView.classList.remove("hidden");
+        openApp(app);
+      }
 
-        postJson({
-          action: "marketplace.installApp",
-          workspaceId: currentWorkspaceId,
-          templateId: tpl.templateId,
-          userId: currentUser.userId
+      function openApp(app) {
+        if (!app || !currentUser) return;
+        currentAppId = app.appId;
+
+        var name =
+          currentLang === "ar"
+            ? app.appNameAr || app.appNameEn || app.name
+            : app.appNameEn || app.appNameAr || app.name;
+        currentAppTitle.textContent = name || "";
+
+        var base = (app.baseUrl || "").trim();
+        if (!base) return;
+        var sep = base.indexOf("?") === -1 ? "?" : "&";
+        // For now: pass userId as appid in query
+        var finalUrl =
+          base + sep + "appid=" + encodeURIComponent(currentUser.userId);
+
+        appFramePlaceholder.classList.add("hidden");
+        appFrame.classList.remove("hidden");
+        appFrame.src = finalUrl;
+
+        btnHome.classList.remove("hidden");
+        appView.classList.remove("hidden");
+        updateAppsMenuActiveState();
+      }
+
+      function goHome() {
+        if (!currentApps || !currentApps.length) return;
+
+        appsCard.classList.remove("hidden");
+
+        appFrame.classList.add("hidden");
+        appFramePlaceholder.classList.remove("hidden");
+        currentAppTitle.textContent = t("appPlaceholder");
+        currentAppId = null;
+        updateAppsMenuActiveState();
+
+        appView.classList.add("hidden");
+      }
+
+      function logout() {
+        var key = currentSessionKey;
+        currentSessionKey = null;
+        localStorage.removeItem(STORAGE_SESSION_KEY);
+        currentUser = null;
+        workspaces = [];
+        currentWorkspaceId = null;
+        allWorkspaceApps = {};
+        marketplaceTemplates = [];
+        currentApps = [];
+        currentAppId = null;
+
+        appFrame.src = "";
+        appFrame.classList.add("hidden");
+        appFramePlaceholder.classList.remove("hidden");
+        currentAppTitle.textContent = t("appPlaceholder");
+        appsListEl.innerHTML = "";
+        appsCard.classList.remove("hidden");
+        btnAppsMenu.classList.add("hidden");
+        appsMenuPanel.classList.add("hidden");
+        btnHome.classList.add("hidden");
+        appView.classList.add("hidden");
+
+        marketplaceAppsList.innerHTML = "";
+        marketplaceModulesList.innerHTML = "";
+
+        workspaceSelect.innerHTML = "";
+        workspaceMeta.textContent = "";
+
+        if (welcomeCard) welcomeCard.classList.remove("hidden");
+
+        setHubSection("apps");
+        setStatus("statusIdle", null);
+        showStep("mobile");
+
+        if (!key) return;
+        // optional backend logout
+        callHubApi("auth.logout", { sessionKey: key }).catch(function () {});
+      }
+
+      function setHubSection(section) {
+        currentSection = section;
+
+        // nav active states
+        [navYourApps, navMarketplace, navGift].forEach(function (btn) {
+          if (btn.dataset.section === section) btn.classList.add("active");
+          else btn.classList.remove("active");
+        });
+
+        // show one section only
+        if (section === "apps") {
+          appsSection.classList.remove("hidden");
+          marketplaceSection.classList.add("hidden");
+          giftSection.classList.add("hidden");
+        } else if (section === "marketplace") {
+          appsSection.classList.add("hidden");
+          marketplaceSection.classList.remove("hidden");
+          giftSection.classList.add("hidden");
+        } else if (section === "gift") {
+          appsSection.classList.add("hidden");
+          marketplaceSection.classList.add("hidden");
+          giftSection.classList.remove("hidden");
+        }
+      }
+
+      function loadMarketplaceForWorkspace() {
+        if (!currentWorkspaceId) {
+          marketplaceTemplates = [];
+          renderMarketplace();
+          return;
+        }
+
+        callHubApi("marketplace.listTemplates", {
+          workspaceId: currentWorkspaceId
         })
           .then(function (res) {
-            if (!res || !res.success) {
-              setStatus(
-                (res && res.error) || "Install failed",
-                "error"
-              );
-              return;
+            if (res && res.success && Array.isArray(res.items)) {
+              marketplaceTemplates = res.items;
+            } else {
+              marketplaceTemplates = [];
             }
-            loadWorkspaceData();
+            renderMarketplace();
           })
-          .catch(function () {
-            setStatus("statusError", "error");
+          .catch(function (err) {
+            console.error(err);
+            marketplaceTemplates = [];
+            renderMarketplace();
           });
       }
 
-      function openWorkspaceApp(app) {
-        if (!app || !app.defaultRoute) {
-          setStatus(
+      function renderMarketplace() {
+        marketplaceAppsList.innerHTML = "";
+        marketplaceModulesList.innerHTML = "";
+
+        if (!marketplaceTemplates || !marketplaceTemplates.length) {
+          var emptyText =
             currentLang === "ar"
-              ? "رابط التطبيق غير مهيأ."
-              : "App URL is not configured yet.",
-            "error"
-          );
-          setMainView("apps");
+              ? "لا توجد عناصر متاحة في المتجر."
+              : "No items available in the marketplace.";
+          var p1 = document.createElement("div");
+          p1.textContent = emptyText;
+          p1.style.fontSize = "12px";
+          p1.style.opacity = "0.8";
+          marketplaceAppsList.appendChild(p1);
           return;
         }
-        appViewTitle.textContent =
-          app.name || app.templateId;
-        appFramePlaceholder.classList.add("hidden");
-        appFrame.classList.remove("hidden");
-        appFrame.src = app.defaultRoute; // no ?appid
-        setMainView("app");
+
+        var apps = [];
+        var modules = [];
+
+        marketplaceTemplates.forEach(function (tpl) {
+          var type =
+            tpl.templateType || tpl.type || (tpl.isModule ? "module" : "app");
+          if (type === "module" || type === "MODULE") {
+            modules.push(tpl);
+          } else {
+            apps.push(tpl);
+          }
+        });
+
+        if (!apps.length) {
+          var emptyApps = document.createElement("div");
+          emptyApps.style.fontSize = "12px";
+          emptyApps.style.opacity = "0.8";
+          emptyApps.textContent =
+            currentLang === "ar"
+              ? "لا توجد تطبيقات منفردة."
+              : "No single apps.";
+          marketplaceAppsList.appendChild(emptyApps);
+        } else {
+          apps.forEach(function (tpl) {
+            marketplaceAppsList.appendChild(
+              buildMarketplaceItem(tpl, "app")
+            );
+          });
+        }
+
+        if (!modules.length) {
+          var emptyModules = document.createElement("div");
+          emptyModules.style.fontSize = "12px";
+          emptyModules.style.opacity = "0.8";
+          emptyModules.textContent =
+            currentLang === "ar"
+              ? "لا توجد Modules متاحة."
+              : "No Modules available.";
+          marketplaceModulesList.appendChild(emptyModules);
+        } else {
+          modules.forEach(function (tpl) {
+            marketplaceModulesList.appendChild(
+              buildMarketplaceItem(tpl, "module")
+            );
+          });
+        }
       }
 
-      /* -------- Event wiring ---------- */
+      function buildMarketplaceItem(tpl, kind) {
+        var root = document.createElement("div");
+        root.className = "marketplace-item";
 
+        var header = document.createElement("div");
+        header.className = "marketplace-item-header";
+
+        var title = document.createElement("div");
+        title.className = "marketplace-item-title";
+        title.textContent = tpl.name || tpl.templateId;
+
+        var typeBadge = document.createElement("div");
+        typeBadge.className = "badge-type";
+        typeBadge.textContent =
+          kind === "module"
+            ? currentLang === "ar"
+              ? "Module"
+              : "Module"
+            : currentLang === "ar"
+            ? "App"
+            : "App";
+
+        header.appendChild(title);
+        header.appendChild(typeBadge);
+
+        var body = document.createElement("div");
+        body.style.fontSize = "11px";
+        body.style.opacity = "0.8";
+        body.textContent = tpl.shortDesc || tpl.description || "";
+
+        var tags = document.createElement("div");
+        tags.className = "marketplace-item-tags";
+        tags.textContent = tpl.featureTags || "";
+
+        var footer = document.createElement("div");
+        footer.className = "marketplace-item-footer";
+
+        var plan = document.createElement("span");
+        plan.textContent =
+          (currentLang === "ar" ? "الخطة: " : "Plan: ") +
+          (tpl.planRequired || "any");
+
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "btn btn-primary";
+        btn.style.fontSize = "11px";
+        btn.style.padding = "4px 10px";
+        btn.textContent =
+          kind === "module" ? t("btnInstallModule") : t("btnInstallApp");
+
+        btn.addEventListener("click", function () {
+          installTemplate(tpl, kind, btn);
+        });
+
+        footer.appendChild(plan);
+        footer.appendChild(btn);
+
+        root.appendChild(header);
+        root.appendChild(body);
+        if (tpl.featureTags) root.appendChild(tags);
+        root.appendChild(footer);
+
+        return root;
+      }
+
+      function installTemplate(tpl, kind, btnEl) {
+        if (!currentWorkspaceId || !currentUser) return;
+
+        var payload = {
+          workspaceId: currentWorkspaceId,
+          templateId: tpl.templateId || tpl.id,
+          name: tpl.name,
+          userId: currentUser.userId
+        };
+
+        var action =
+          kind === "module"
+            ? "marketplace.installModule"
+            : "marketplace.installApp";
+
+        btnEl.disabled = true;
+        var originalText = btnEl.textContent;
+        btnEl.textContent = t("statusInstalling");
+        setStatus("statusInstalling", null);
+
+        callHubApi(action, payload)
+          .then(function (res) {
+            if (!res || !res.success) {
+              var msg =
+                (res && res.error) ||
+                (currentLang === "ar"
+                  ? "فشل التثبيت."
+                  : "Install failed.");
+              setStatus(msg, "error");
+              return;
+            }
+
+            setStatus("statusInstalled", "ok");
+
+            // refresh apps for this workspace
+            updateWorkspaceContext();
+          })
+          .catch(function (err) {
+            console.error(err);
+            setStatus("statusError", "error");
+          })
+          .finally(function () {
+            btnEl.disabled = false;
+            btnEl.textContent = originalText;
+          });
+      }
+
+      // Events
       btnSendOtp.addEventListener("click", sendOtp);
       mobileInput.addEventListener("keydown", function (e) {
         if (e.key === "Enter") {
@@ -2370,24 +2469,19 @@
           sendOtp();
         }
       });
+
       btnVerifyOtp.addEventListener("click", verifyOtp);
-      btnChangeMobile.addEventListener(
-        "click",
-        function () {
-          showStep("mobile");
-          setStatus("statusIdle");
-        }
-      );
+
+      btnChangeMobile.addEventListener("click", function () {
+        showStep("mobile");
+        setStatus("statusIdle", null);
+      });
 
       btnLogout.addEventListener("click", logout);
 
       btnTheme.addEventListener("click", function () {
-        currentTheme =
-          currentTheme === "light" ? "dark" : "light";
-        localStorage.setItem(
-          STORAGE_THEME,
-          currentTheme
-        );
+        currentTheme = currentTheme === "light" ? "dark" : "light";
+        localStorage.setItem(STORAGE_THEME, currentTheme);
         applyTheme();
       });
 
@@ -2395,63 +2489,77 @@
         currentLang = "ar";
         localStorage.setItem(STORAGE_LANG, currentLang);
         applyLanguage();
-        if (currentWorkspaceId) {
-          renderApps();
-          renderMarketplace();
-        }
+        setStatus("statusIdle", null);
       });
 
       btnLangEn.addEventListener("click", function () {
         currentLang = "en";
         localStorage.setItem(STORAGE_LANG, currentLang);
         applyLanguage();
-        if (currentWorkspaceId) {
-          renderApps();
-          renderMarketplace();
-        }
+        setStatus("statusIdle", null);
       });
 
-      btnViewApps.addEventListener("click", function () {
-        setMainView("apps");
+      btnAppsMenu.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (appsMenuPanel.classList.contains("hidden")) {
+          buildAppsMenu();
+          appsMenuPanel.classList.remove("hidden");
+        } else {
+          appsMenuPanel.classList.add("hidden");
+        }
       });
-
-      btnViewMarketplace.addEventListener(
-        "click",
-        function () {
-          setMainView("marketplace");
-        }
-      );
-
-      btnBackFromApp.addEventListener(
-        "click",
-        function () {
-          setMainView("apps");
-        }
-      );
-
-      workspaceCard.addEventListener(
-        "click",
-        function (e) {
-          e.stopPropagation();
-          workspaceMenu.classList.toggle("hidden");
-        }
-      );
 
       document.addEventListener("click", function () {
-        workspaceMenu.classList.add("hidden");
+        appsMenuPanel.classList.add("hidden");
       });
-      workspaceMenu.addEventListener(
-        "click",
-        function (e) {
-          e.stopPropagation();
-        }
-      );
+
+      appsMenuPanel.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
+
+      btnHome.addEventListener("click", function (e) {
+        e.stopPropagation();
+        goHome();
+      });
+
+      workspaceSelect.addEventListener("change", function () {
+        currentWorkspaceId = workspaceSelect.value || null;
+        renderWorkspacesDropdown();
+        updateWorkspaceContext();
+      });
+
+      navYourApps.addEventListener("click", function () {
+        setHubSection("apps");
+      });
+      navMarketplace.addEventListener("click", function () {
+        setHubSection("marketplace");
+      });
+      navGift.addEventListener("click", function () {
+        setHubSection("gift");
+      });
 
       // Init
       applyTheme();
       applyLanguage();
-      setStatus("statusIdle");
+      setStatus("statusIdle", null);
       showStep("mobile");
+
+      // Optional: resume session
+      if (currentSessionKey) {
+        callHubApi("auth.me", { sessionKey: currentSessionKey })
+          .then(function (res) {
+            if (!res || !res.success) {
+              throw new Error("Session invalid");
+            }
+            handleLoginSuccess(res);
+          })
+          .catch(function () {
+            currentSessionKey = null;
+            localStorage.removeItem(STORAGE_SESSION_KEY);
+            showStep("mobile");
+            setStatus("statusIdle", null);
+          });
+      }
     })();
   </script>
 </body>
