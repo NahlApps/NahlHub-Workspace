@@ -1,25 +1,15 @@
 // api/hub/manage.js
 // NahlHub – Vercel API → Apps Script proxy + GreenAPI OTP sender
 // ==================================================================
-// Env variables (Vercel → Project Settings → Environment Variables):
-//   HUB_BACKEND_URL         = <Apps Script Web App URL> (ends with /exec)
-//   GREEN_API_INSTANCE_ID   = <Green API instance id, e.g. 1100123456>
-//   GREEN_API_TOKEN         = <Green API token>
-//   GREEN_API_BASE_URL      = https://api.green-api.com   (optional; default)
-//   OTP_SENDER_COUNTRY_CODE = 966   (optional; default SA)
-//
-// Frontend calls this endpoint at:  /api/hub/manage
-// Actions handled:
-//   - sendOtp               → Apps Script generates OTP, GreenAPI sends it
-//   - verifyOtp             → proxied to Apps Script
-//   - hub.loadState         → proxied to Apps Script
-//   - workspace.create      → proxied to Apps Script
-//   - workspace.listForUser → proxied to Apps Script
-//   - marketplace.listTemplates
-//   - marketplace.installTemplate
-//   - marketplace.listWorkspaceApps
-//
-// All responses are JSON.
+// Actions used by frontend + backend:
+//   - sendOtp                     (special: Apps Script + WhatsApp)
+//   - verifyOtp                   (proxied to Apps Script)
+//   - hub.loadState               (proxied)
+//   - workspace.create            (proxied)
+//   - workspace.listForUser       (proxied)
+//   - marketplace.listTemplates   (proxied)
+//   - marketplace.installTemplate (proxied)
+//   - marketplace.listWorkspaceApps (proxied)
 
 const HUB_BACKEND_URL = process.env.HUB_BACKEND_URL;
 const GREEN_API_INSTANCE_ID = process.env.GREEN_API_INSTANCE_ID;
@@ -79,7 +69,6 @@ async function callHubBackend(payload) {
   try {
     data = JSON.parse(text);
   } catch (err) {
-    // Apps Script returned non-JSON (error page, etc.)
     throw new Error(
       `Apps Script returned non-JSON response (HTTP ${res.status}): ${text.slice(
         0,
@@ -221,7 +210,7 @@ export default async function handler(req, res) {
         return;
       }
 
-      const otp = hubRes.debugOtp; // dev-only; remove in production
+      const otp = hubRes.debugOtp; // dev-only; remove in production later
       if (!otp) {
         res.status(500).json(
           errorJson("Backend did not return OTP for sending.", 500, {
