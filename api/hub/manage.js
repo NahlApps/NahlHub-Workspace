@@ -2,10 +2,10 @@
 // NahlHub – Vercel API → Apps Script proxy + GreenAPI OTP sender
 // ==================================================================
 // Env variables (Vercel → Project Settings → Environment Variables):
-//   HUB_BACKEND_URL        = <Apps Script Web App URL> (ends with /exec)
-//   GREEN_API_INSTANCE_ID  = <Green API instance id, e.g. 1100123456>
-//   GREEN_API_TOKEN        = <Green API token>
-//   GREEN_API_BASE_URL     = https://api.green-api.com   (optional; default)
+//   HUB_BACKEND_URL         = <Apps Script Web App URL> (ends with /exec)
+//   GREEN_API_INSTANCE_ID   = <Green API instance id, e.g. 1100123456>
+//   GREEN_API_TOKEN         = <Green API token>
+//   GREEN_API_BASE_URL      = https://api.green-api.com   (optional; default)
 //   OTP_SENDER_COUNTRY_CODE = 966   (optional; default SA)
 //
 // Frontend calls this endpoint at:  /api/hub/manage
@@ -29,10 +29,13 @@ const GREEN_API_BASE_URL =
 const OTP_SENDER_COUNTRY_CODE =
   process.env.OTP_SENDER_COUNTRY_CODE || "966"; // default: Saudi
 
-// Small helper to build a standard error JSON
+// ------------------------------------------------------------------
+// Helpers
+// ------------------------------------------------------------------
+
 function errorJson(message, statusCode = 500, extra = {}) {
   return {
-    ok: false,
+    success: false,
     statusCode,
     error: message,
     ...extra,
@@ -40,20 +43,18 @@ function errorJson(message, statusCode = 500, extra = {}) {
 }
 
 // Normalize mobile to WhatsApp chatId format.
-// - Expects digits only; will prepend country code if needed.
-// - Returns e.g. "9665xxxxxxx@c.us".
+// Returns e.g. "9665xxxxxxx@c.us".
 function buildWhatsAppChatId(rawMobile) {
   if (!rawMobile) return null;
 
-  // Remove non-digits
   let digits = String(rawMobile).replace(/\D/g, "");
 
-  // If it starts with a leading zero, drop it.
+  // Drop leading 0
   if (digits.startsWith("0")) {
     digits = digits.slice(1);
   }
 
-  // If it does not start with country code, prepend default country code.
+  // Prepend country code if missing
   if (!digits.startsWith(OTP_SENDER_COUNTRY_CODE)) {
     digits = OTP_SENDER_COUNTRY_CODE + digits;
   }
@@ -78,8 +79,9 @@ async function callHubBackend(payload) {
   try {
     data = JSON.parse(text);
   } catch (err) {
+    // Apps Script returned non-JSON (error page, etc.)
     throw new Error(
-      `Apps Script returned non-JSON response (status ${res.status}): ${text.slice(
+      `Apps Script returned non-JSON response (HTTP ${res.status}): ${text.slice(
         0,
         200
       )}`
@@ -102,7 +104,7 @@ async function sendOtpViaGreenApi(mobile, otp) {
   if (!GREEN_API_INSTANCE_ID || !GREEN_API_TOKEN) {
     return {
       ok: false,
-      reason: "Missing GreenAPI credentials (instance / token).",
+      reason: "Missing GreenAPI credentials (instance or token).",
     };
   }
 
@@ -111,19 +113,14 @@ async function sendOtpViaGreenApi(mobile, otp) {
     return { ok: false, reason: "Invalid mobile number for WhatsApp." };
   }
 
-  const url = `${GREEN_API_BASE_URL.replace(
-    /\/$/,
-    ""
-  )}/waInstance${GREEN_API_INSTANCE_ID}/SendMessage/${GREEN_API_TOKEN}`;
+  const base = GREEN_API_BASE_URL.replace(/\/$/, "");
+  const url = `${base}/waInstance${GREEN_API_INSTANCE_ID}/SendMessage/${GREEN_API_TOKEN}`;
 
   const messageAr = `رمز الدخول لنحل هب: ${otp}\n\nصالح لمدة ١٠ دقائق. لا تشارك هذا الكود مع أي شخص.`;
   const messageEn = `Your NahlHub login code is: ${otp}\n\nValid for 10 minutes. Do not share this code with anyone.`;
   const finalMessage = `${messageAr}\n\n${messageEn}`;
 
-  const payload = {
-    chatId,
-    message: finalMessage,
-  };
+  const payload = { chatId, message: finalMessage };
 
   try {
     const res = await fetch(url, {
@@ -149,19 +146,19 @@ async function sendOtpViaGreenApi(mobile, otp) {
       };
     }
 
-    // GreenAPI often returns {"idMessage":"..."} on success
-    return {
-      ok: true,
-      raw: data || text,
-    };
+    return { ok: true, raw: data || text };
   } catch (err) {
     console.error("❌ GreenAPI fetch error:", err);
     return { ok: false, reason: err.message || String(err) };
   }
 }
 
+// ------------------------------------------------------------------
+// Main handler
+// ------------------------------------------------------------------
+
 export default async function handler(req, res) {
-  // Basic CORS (optional but handy for dev)
+  // Basic CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader(
@@ -181,12 +178,11 @@ export default async function handler(req, res) {
     return;
   }
 
-  try:
-  {
+  try {
     const payload =
       req.method === "GET"
         ? { ...(req.query || {}) }
-        : typeof req.body === "object"
+        : typeof req.body === "object" && req.body !== null
         ? req.body
         : {};
 
@@ -197,7 +193,9 @@ export default async function handler(req, res) {
       return;
     }
 
-    // Special handling for OTP to include GreenAPI sending
+    // --------------------------------------------------------------
+    // Special: sendOtp → call Apps Script + GreenAPI
+    // --------------------------------------------------------------
     if (action === "sendOtp") {
       const mobile = (payload.mobile || "").trim();
       const appId = (payload.appId || payload.appid || "").trim();
@@ -223,7 +221,7 @@ export default async function handler(req, res) {
         return;
       }
 
-      const otp = hubRes.debugOtp; // NOTE: only for dev; in prod you can stop returning it
+      const otp = hubRes.debugOtp; // dev-only; remove in production
       if (!otp) {
         res.status(500).json(
           errorJson("Backend did not return OTP for sending.", 500, {
@@ -233,11 +231,11 @@ export default async function handler(req, res) {
         return;
       }
 
-      // 2) Send via GreenAPI
+      // 2) Send via WhatsApp (GreenAPI)
       const waResult = await sendOtpViaGreenApi(mobile, otp);
 
       if (!waResult.ok) {
-        // Still success for frontend (OTP exists), but warn about WhatsApp send
+        // OTP is stored, but WhatsApp failed – still success for login flow
         res.status(200).json({
           success: true,
           otpStored: true,
@@ -255,7 +253,9 @@ export default async function handler(req, res) {
       return;
     }
 
-    // All other actions are just proxied to Apps Script
+    // --------------------------------------------------------------
+    // All other actions → proxy to Apps Script as-is
+    // --------------------------------------------------------------
     const backendResponse = await callHubBackend(payload);
     res.status(200).json(backendResponse);
   } catch (err) {
