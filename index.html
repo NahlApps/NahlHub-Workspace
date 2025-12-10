@@ -2,26 +2,19 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NahlHub – Hub</title>
-
-  <!-- Optional: Rounded font (you already like this one 😊) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;600;800&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg: #f5f7fa;
-      --card-bg: #ffffff;
+      --bg: #f3f4f6;
+      --card: #ffffff;
       --primary: #2563eb;
-      --primary-hover: #1d4ed8;
-      --danger: #dc2626;
-      --muted: #6b7280;
+      --primary-dark: #1d4ed8;
       --border: #e5e7eb;
-      --radius-lg: 16px;
-      --radius-sm: 10px;
-      --shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.06);
+      --text: #111827;
+      --muted: #6b7280;
+      --danger: #b91c1c;
     }
 
     * {
@@ -30,1269 +23,1166 @@
 
     body {
       margin: 0;
-      font-family: "M PLUS Rounded 1c", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top right, #e0f2fe 0, #f9fafb 45%, #eef2ff 100%);
-      color: #111827;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      background: var(--bg);
+      color: var(--text);
     }
 
     header {
-      padding: 14px 18px;
+      background: #0f172a;
+      color: #f9fafb;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      backdrop-filter: blur(12px);
-      background: rgba(255, 255, 255, 0.8);
-      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
-      position: sticky;
-      top: 0;
-      z-index: 10;
     }
 
-    header .logo {
+    header .brand {
       display: flex;
       align-items: center;
       gap: 10px;
+      font-weight: 700;
+      font-size: 18px;
     }
 
-    header .logo-icon {
-      width: 32px;
-      height: 32px;
+    header .brand span {
+      opacity: 0.9;
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    header .user-info {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header .user-info button {
+      background: transparent;
+      border: 1px solid #f9fafb33;
       border-radius: 999px;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 8px 18px rgba(34, 197, 94, 0.35);
-      font-size: 18px;
-      font-weight: 800;
-      color: #ecfdf5;
-    }
-
-    header .logo-text-main {
-      font-weight: 800;
-      font-size: 18px;
-    }
-
-    header .logo-text-sub {
-      font-size: 11px;
-      color: var(--muted);
-    }
-
-    header .header-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      color: #f9fafb;
+      padding: 4px 10px;
       font-size: 12px;
-      color: var(--muted);
+      cursor: pointer;
+    }
+
+    header .user-info button:hover {
+      background: #f9fafb11;
     }
 
     main {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 24px 16px 32px;
+      max-width: 1120px;
+      margin: 24px auto;
+      padding: 0 16px 40px;
     }
 
-    .page {
-      width: 100%;
-      max-width: 1080px;
+    .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
-      gap: 18px;
-      align-items: flex-start;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr);
+      gap: 20px;
     }
 
-    @media (max-width: 840px) {
-      .page {
+    @media (max-width: 900px) {
+      .layout {
         grid-template-columns: minmax(0, 1fr);
       }
     }
 
     .card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
-      border: 1px solid rgba(148, 163, 184, 0.15);
-      padding: 18px 18px 16px;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      gap: 8px;
-    }
-
-    .card-title {
-      font-size: 16px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .card-title-badge {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #dbeafe;
-    }
-
-    .card-subtitle {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .pill-steps {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 10px;
-      font-size: 11px;
-    }
-
-    .pill {
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: #f9fafb;
+      background: var(--card);
+      border-radius: 16px;
       border: 1px solid var(--border);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: #4b5563;
-      white-space: nowrap;
+      padding: 16px 18px 18px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
     }
 
-    .pill strong {
-      font-size: 11px;
-      color: #111827;
+    .card h2 {
+      font-size: 18px;
+      margin: 0 0 4px;
     }
 
-    .field {
-      margin-bottom: 10px;
-    }
-
-    .field label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .field small {
-      display: block;
-      font-size: 10px;
+    .card p.sub {
+      margin: 0 0 12px;
+      font-size: 13px;
       color: var(--muted);
-      margin-top: 2px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
     }
 
     input[type="text"],
     input[type="tel"],
     input[type="number"],
-    input[type="password"],
-    select {
+    input[type="email"] {
       width: 100%;
       padding: 8px 10px;
-      border-radius: var(--radius-sm);
+      border-radius: 10px;
       border: 1px solid var(--border);
-      font-family: inherit;
-      font-size: 13px;
+      font-size: 14px;
       outline: none;
-      background: #f9fafb;
-      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
     }
 
-    input:focus,
-    select:focus {
+    input:focus {
       border-color: var(--primary);
-      background: #ffffff;
-      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.1);
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.2);
     }
 
-    button {
-      font-family: inherit;
-      font-size: 13px;
+    button.primary {
+      background: var(--primary);
+      color: #ffffff;
       border-radius: 999px;
+      padding: 8px 16px;
       border: none;
-      padding: 8px 14px;
+      font-size: 14px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 6px;
-      transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
-      white-space: nowrap;
     }
 
-    button.btn-primary {
-      background: var(--primary);
-      color: #f9fafb;
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+    button.primary:hover {
+      background: var(--primary-dark);
     }
 
-    button.btn-primary:hover {
-      background: var(--primary-hover);
-      box-shadow: 0 10px 26px rgba(37, 99, 235, 0.3);
-      transform: translateY(-1px);
-    }
-
-    button.btn-outline {
-      background: #fff;
+    button.secondary {
+      background: transparent;
+      border-radius: 999px;
       border: 1px solid var(--border);
-      color: #111827;
+      padding: 7px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    button.btn-danger {
-      background: var(--danger);
-      color: #fef2f2;
+    button.secondary:hover {
+      background: #f9fafb;
     }
 
     button:disabled {
       opacity: 0.6;
       cursor: default;
-      transform: none;
-      box-shadow: none;
     }
 
-    .btn-row {
+    .row {
       display: flex;
       gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 4px;
+      align-items: center;
+    }
+
+    .row.space {
+      justify-content: space-between;
+    }
+
+    .mt-8 {
+      margin-top: 8px;
+    }
+
+    .mt-12 {
+      margin-top: 12px;
+    }
+
+    .mt-16 {
+      margin-top: 16px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
     }
 
     .status {
-      font-size: 11px;
-      margin-top: 6px;
-      min-height: 16px;
-    }
-
-    .status.ok {
-      color: #16a34a;
+      font-size: 13px;
+      margin-top: 8px;
     }
 
     .status.error {
       color: var(--danger);
     }
 
-    .status.muted {
+    .status.ok {
+      color: #15803d;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .stepper {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 12px;
       color: var(--muted);
     }
 
-    .otp-row {
-      display: grid;
-      grid-template-columns: 1.2fr auto;
-      gap: 8px;
-    }
-
-    @media (max-width: 480px) {
-      .otp-row {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .chips-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-top: 6px;
-    }
-
-    .chip {
-      font-size: 10px;
-      padding: 3px 8px;
+    .stepper span.badge {
+      padding: 2px 8px;
       border-radius: 999px;
-      background: #f3f4f6;
-      color: #4b5563;
+      border: 1px solid var(--border);
     }
 
-    /* App area */
-
-    #app-section {
-      display: none;
+    .stepper span.badge.active {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(37, 99, 235, 0.07);
     }
 
-    .app-top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .user-pill {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #f3f4ff;
-      border: 1px solid #e0e7ff;
-      font-size: 12px;
-    }
-
-    .user-avatar {
-      width: 24px;
-      height: 24px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #eef2ff;
-      font-weight: 700;
-      font-size: 12px;
-    }
-
-    .tag {
+    .pill {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      padding: 2px 7px;
+      gap: 6px;
+      padding: 4px 10px;
       border-radius: 999px;
-      font-size: 10px;
-      background: #eef2ff;
-      color: #4338ca;
-      border: 1px solid #e0e7ff;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 12px;
     }
 
     .section-title {
-      font-size: 13px;
-      font-weight: 700;
+      font-size: 14px;
+      font-weight: 600;
       margin-bottom: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
 
-    .section-title span {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--muted);
-    }
-
-    .workspace-row {
-      display: grid;
-      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.7fr);
-      gap: 10px;
-    }
-
-    @media (max-width: 720px) {
-      .workspace-row {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .list-box {
-      border-radius: 12px;
-      border: 1px dashed #e5e7eb;
-      background: #f9fafb;
-      padding: 8px 8px 6px;
-      max-height: 260px;
-      overflow: auto;
-      font-size: 12px;
-    }
-
-    .list-item {
-      padding: 6px 7px;
-      border-radius: 9px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 4px;
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-    }
-
-    .list-item-main {
+    .workspace-list {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+      margin-top: 6px;
     }
 
-    .list-item-title {
-      font-weight: 600;
+    .workspace-item {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .workspace-item span.slug {
+      color: var(--muted);
       font-size: 12px;
     }
 
-    .list-item-sub {
+    .workspace-item.active {
+      border-color: var(--primary);
+      background: #eff6ff;
+    }
+
+    .workspace-item .tag {
       font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .apps-list,
+    .templates-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+
+    .app-card,
+    .tpl-card {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .app-card h3,
+    .tpl-card h3 {
+      margin: 0 0 4px;
+      font-size: 13px;
+    }
+
+    .app-card p,
+    .tpl-card p {
+      margin: 0;
+      font-size: 12px;
       color: var(--muted);
     }
 
-    .badge {
-      font-size: 10px;
-      padding: 2px 7px;
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 2px 6px;
       border-radius: 999px;
       border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      color: #4b5563;
     }
 
-    footer {
-      text-align: center;
+    .label-muted {
       font-size: 11px;
       color: var(--muted);
-      padding: 8px 16px 14px;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo">
-      <div class="logo-icon">ن</div>
-      <div>
-        <div class="logo-text-main">NahlHub</div>
-        <div class="logo-text-sub">Hub لحلول التطبيقات السريعة</div>
-      </div>
+    <div class="brand">
+      🐝 NahlHub
+      <span>Hub – Workspaces & Apps</span>
     </div>
-    <div class="header-right">
-      <span class="tag">
-        <span>بيئة تجريبية</span> • <span>Beta</span>
-      </span>
+    <div class="user-info" id="headerUserInfo" style="display:none;">
+      <span id="headerUserName"></span>
+      <span id="headerUserMobile" class="small"></span>
+      <button type="button" id="btnLogout">تسجيل خروج</button>
     </div>
   </header>
 
   <main>
-    <div class="page">
-      <!-- Auth / Login Card -->
-      <section id="auth-section" class="card">
-        <div class="card-header">
-          <div>
-            <div class="card-title">
-              دخول إلى NahlHub
-              <span class="card-title-badge">تجربة سريعة بدون كلمة مرور</span>
-            </div>
-            <div class="card-subtitle">
-              استخدم رقم جوالك واستقبل رمز تحقق على الواتساب.
-            </div>
-          </div>
-        </div>
+    <!-- Auth Section -->
+    <section id="authSection" class="card">
+      <h2>تسجيل الدخول برقم الجوال</h2>
+      <p class="sub">
+        استخدم رقم جوالك لاستلام رمز الدخول عبر واتساب، بدون كلمة مرور.
+      </p>
 
-        <div class="pill-steps">
-          <div class="pill"><strong>١</strong> اكتب رقم جوالك</div>
-          <div class="pill"><strong>٢</strong> استقبل رمز OTP</div>
-          <div class="pill"><strong>٣</strong> الدخول للـ Hub وبيئات العمل</div>
-        </div>
+      <div class="stepper">
+        <span class="badge active" id="stepBadge1">1. رقم الجوال</span>
+        <span>›</span>
+        <span class="badge" id="stepBadge2">2. رمز التحقق</span>
+      </div>
 
-        <!-- Step 1: Mobile -->
-        <div class="field">
-          <label for="loginMobile">رقم الجوال</label>
-          <input id="loginMobile" type="tel" inputmode="tel" placeholder="مثال: 5xxxxxxxx" />
-          <small>سيتم إرسال رمز تحقق (OTP) على واتساب لنفس الرقم.</small>
-        </div>
-
-        <div class="btn-row">
-          <button id="btnSendOtp" class="btn-primary">
-            <span>إرسال رمز التحقق</span>
+      <div id="step1">
+        <label for="mobileInput">رقم الجوال (مثال: 5xxxxxxxx)</label>
+        <input
+          type="tel"
+          id="mobileInput"
+          placeholder="أدخل رقم جوالك"
+          autocomplete="tel"
+        />
+        <div class="row space mt-8">
+          <button class="primary" id="btnSendOtp">
+            إرسال رمز الدخول عبر واتساب
           </button>
+          <span class="small">سيتم الإرسال عبر Green API المتصل بالحساب.</span>
         </div>
+        <div id="sendOtpStatus" class="status"></div>
+      </div>
 
-        <div id="otpSendStatus" class="status muted"></div>
-
-        <hr style="border:none;border-top:1px dashed #e5e7eb;margin:10px 0 10px;" />
-
-        <!-- Step 2: OTP -->
-        <div class="field">
-          <label for="loginOtp">رمز التحقق (OTP)</label>
-          <div class="otp-row">
-            <input id="loginOtp" type="text" inputmode="numeric" maxlength="6" placeholder="أدخل الرمز المكون من 4 أرقام" />
-            <button id="btnVerifyOtp" class="btn-outline">
-              تأكيد الرمز والدخول
-            </button>
+      <div id="step2" class="mt-16 hidden">
+        <label for="otpInput">رمز التحقق المكون من 4 أرقام</label>
+        <input
+          type="text"
+          id="otpInput"
+          maxlength="4"
+          placeholder="أدخل الرمز"
+        />
+        <div class="row space mt-8">
+          <div class="row" style="gap:6px;">
+            <button class="primary" id="btnVerifyOtp">تأكيد الرمز والدخول</button>
+            <button class="secondary" id="btnBackToMobile">تعديل رقم الجوال</button>
           </div>
-          <small>الرمز صالح لمدة ١٠ دقائق. لا تشاركه مع أي شخص.</small>
+          <span class="small">ينتهي الرمز بعد ١٠ دقائق.</span>
         </div>
+        <div id="verifyOtpStatus" class="status"></div>
+      </div>
+    </section>
 
-        <div id="otpVerifyStatus" class="status"></div>
-
-        <div class="chips-row">
-          <span class="chip">🔐 لا توجد كلمة مرور</span>
-          <span class="chip">📲 يعتمد على رقم الجوال</span>
-          <span class="chip">🧪 مناسب لتجربة النماذج الأولية</span>
-        </div>
-      </section>
-
-      <!-- App / Hub Card -->
-      <section id="app-section" class="card">
-        <div class="card-header">
+    <!-- App Section -->
+    <section id="appSection" class="layout hidden">
+      <!-- Left: Workspaces -->
+      <div class="card">
+        <div class="row space">
           <div>
-            <div class="card-title">
-              لوحة NahlHub
-              <span class="card-title-badge">Workspaces & Marketplace</span>
-            </div>
-            <div class="card-subtitle">
-              أنشئ بيئات عمل، ثبّت تطبيقات جاهزة، وابدأ التجارب مع فريقك.
-            </div>
+            <div class="section-title">مساحات العمل (Workspaces)</div>
+            <p class="sub">أنشئ مساحة عمل لكل مشروع أو فريق.</p>
           </div>
-          <div class="app-top-bar">
-            <div id="userSummary" class="user-pill" style="display:none;">
-              <div class="user-avatar" id="userAvatar">👤</div>
-              <div>
-                <div id="userNameLabel">...</div>
-                <div style="font-size:10px;color:var(--muted);" id="userMobileLabel"></div>
-              </div>
-            </div>
-            <button id="btnLogout" class="btn-outline btn-sm" style="font-size:11px;padding-inline:10px;">
-              تسجيل خروج
-            </button>
+          <span class="pill" id="userPill">
+            مستخدم غير معروف
+          </span>
+        </div>
+
+        <div class="mt-8">
+          <label>إنشاء مساحة عمل جديدة</label>
+          <div class="row mt-4">
+            <input
+              type="text"
+              id="workspaceNameInput"
+              placeholder="مثال: Nahl Studio / Sponge & Soap / Client ABC"
+            />
+            <button class="primary" id="btnCreateWorkspace">إنشاء</button>
+          </div>
+          <div id="workspaceCreateStatus" class="status small"></div>
+        </div>
+
+        <div class="mt-16">
+          <div class="row space">
+            <span class="section-title">مساحاتي</span>
+            <span class="label-muted" id="workspaceCountLabel">0 مساحة</span>
+          </div>
+          <div class="workspace-list" id="workspaceList"></div>
+          <div id="workspaceListStatus" class="status small"></div>
+        </div>
+      </div>
+
+      <!-- Right: Apps + Marketplace -->
+      <div class="card">
+        <div class="row space">
+          <div>
+            <div class="section-title">التطبيقات & السوق</div>
+            <p class="sub" id="workspaceTitle">اختر مساحة عمل من القائمة اليمنى.</p>
+          </div>
+          <div class="chips">
+            <span class="chip">AppCatalog</span>
+            <span class="chip">Modules</span>
           </div>
         </div>
 
-        <div class="workspace-row">
-          <!-- Left: Workspaces -->
-          <div>
-            <div class="section-title">
-              بيئات العمل (Workspaces)
-              <span id="workspacesCountLabel"></span>
-            </div>
-
-            <div class="field">
-              <label for="wsName">إنشاء بيئة عمل جديدة</label>
-              <input id="wsName" type="text" placeholder="مثال: فريق الماركتنق، تجربة NahlHub #1..." />
-              <small>سيتم تعيينك كـ Admin لهذه البيئة ويمكنك دعوة أعضاء لاحقاً.</small>
-              <div class="btn-row">
-                <button id="btnCreateWorkspace" class="btn-primary">
-                  إنشاء Workspace
-                </button>
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="wsSelect">بيئات العمل الخاصة بك</label>
-              <select id="wsSelect">
-                <option value="">اختر بيئة عمل</option>
-              </select>
-              <small>اختر Workspace لعرض التطبيقات وتثبيت تطبيقات جديدة من Marketplace.</small>
-            </div>
-
-            <div id="workspaceStatus" class="status muted"></div>
-
-            <div class="list-box" id="wsListBox">
-              <div id="wsListEmpty" class="status muted">
-                لا توجد بيئات عمل بعد. أنشئ أول Workspace لبدء التجربة.
-              </div>
-              <div id="wsList"></div>
-            </div>
-          </div>
-
-          <!-- Right: Apps + Marketplace -->
-          <div>
-            <div class="section-title">
-              تطبيقات الـ Workspace
-              <span id="appsWorkspaceLabel"></span>
-            </div>
-
-            <div class="list-box" style="margin-bottom:10px;">
-              <div id="workspaceAppsStatus" class="status muted">
-                اختر Workspace من القائمة على اليسار لعرض التطبيقات المثبّتة.
-              </div>
-              <div id="workspaceAppsList"></div>
-            </div>
-
-            <div class="section-title">
-              Marketplace
-              <span>قوالب جاهزة للتثبيت</span>
-            </div>
-
-            <div class="list-box">
-              <div id="marketplaceStatus" class="status muted">
-                اختر Workspace ثم سيتم تحميل قائمة القوالب المتاحة.
-              </div>
-              <div id="marketplaceList"></div>
-            </div>
-          </div>
+        <div class="mt-12">
+          <div class="section-title">التطبيقات المثبتة في مساحة العمل</div>
+          <div class="apps-list" id="workspaceAppsList"></div>
+          <div id="workspaceAppsStatus" class="status small"></div>
         </div>
-      </section>
-    </div>
+
+        <div class="mt-16">
+          <div class="section-title">السوق – التطبيقات & الـ Modules</div>
+          <p class="small">
+            اختر تطبيق أو Module ثم اضغط "تثبيت في مساحة العمل".
+          </p>
+          <div class="templates-list" id="templatesList"></div>
+          <div id="templatesStatus" class="status small"></div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <footer>
-    NahlHub &copy; <span id="year"></span> – منصة سريعة لتجربة التطبيقات على جوجل شيت + API
-  </footer>
-
   <script>
-    // --------- Global state ---------
-    let nhSessionKey = null;
-    let nhCurrentUser = null;
-    let nhCurrentWorkspaceId = null;
+    const API_URL = "/api/hub/manage"; // Vercel API → Apps Script proxy
 
-    const apiEndpoint = "/api/hub/manage";
+    let sessionKey = null;
+    let currentUser = null;
+    let currentWorkspaceId = null;
 
-    // --------- Small helpers ---------
-    function qs(id) {
-      return document.getElementById(id);
-    }
-
-    function setStatus(el, text, type) {
-      if (!el) return;
-      el.textContent = text || "";
-      el.classList.remove("ok", "error", "muted");
-      if (type) el.classList.add(type);
-    }
-
-    function firstLetterOrEmoji(name) {
-      if (!name) return "👤";
-      const trimmed = name.trim();
-      if (!trimmed) return "👤";
-      return trimmed.charAt(0).toUpperCase();
-    }
-
-    function saveSessionToStorage() {
-      if (typeof localStorage === "undefined") return;
-      if (nhSessionKey) {
-        localStorage.setItem("nh_sessionKey", nhSessionKey);
-      } else {
-        localStorage.removeItem("nh_sessionKey");
-      }
-    }
-
-    function loadSessionFromStorage() {
-      if (typeof localStorage === "undefined") return null;
-      return localStorage.getItem("nh_sessionKey");
-    }
-
-    function showAppView() {
-      qs("auth-section").style.display = "none";
-      qs("app-section").style.display = "block";
-      updateUserSummary();
-    }
-
-    function showAuthView() {
-      qs("auth-section").style.display = "block";
-      qs("app-section").style.display = "none";
-    }
-
-    function updateUserSummary() {
-      const summary = qs("userSummary");
-      const avatar = qs("userAvatar");
-      const nameLabel = qs("userNameLabel");
-      const mobileLabel = qs("userMobileLabel");
-
-      if (!nhCurrentUser) {
-        summary.style.display = "none";
-        return;
-      }
-      summary.style.display = "flex";
-      avatar.textContent = firstLetterOrEmoji(nhCurrentUser.name || nhCurrentUser.mobile || "");
-      nameLabel.textContent = nhCurrentUser.name || "مستخدم NahlHub";
-      mobileLabel.textContent = nhCurrentUser.mobile || "";
-    }
-
-    async function apiCall(action, body = {}) {
-      const payload = Object.assign({ action }, body);
-      // Forward sessionKey for authenticated actions (future-safe)
-      if (nhSessionKey && !payload.sessionKey) {
-        payload.sessionKey = nhSessionKey;
-      }
-
-      const res = await fetch(apiEndpoint, {
+    // -------------------------------------------------------------
+    // Generic API helper
+    // -------------------------------------------------------------
+    async function hubApi(action, payload = {}) {
+      const body = { action, ...payload };
+      const res = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(body),
       });
 
       let data;
+      const text = await res.text();
       try {
-        data = await res.json();
+        data = JSON.parse(text);
       } catch (err) {
-        console.error("Failed to parse JSON from API:", err);
-        throw new Error("تعذر قراءة استجابة الخادم.");
+        console.error("Non-JSON response from API:", text);
+        throw new Error("Server returned invalid JSON");
       }
 
-      // If Apps Script returns success:false, we still get HTTP 200
+      if (!res.ok) {
+        const msg =
+          (data && (data.error || data.message)) ||
+          `HTTP ${res.status}`;
+        throw new Error(msg);
+      }
+
       return data;
     }
 
-    // --------- Auth: send OTP ---------
-    async function onSendOtpClick() {
-      const mobileInput = qs("loginMobile");
-      const statusEl = qs("otpSendStatus");
+    // -------------------------------------------------------------
+    // UI helpers
+    // -------------------------------------------------------------
+    function showAuthSection() {
+      document.getElementById("authSection").classList.remove("hidden");
+      document.getElementById("appSection").classList.add("hidden");
+      document.getElementById("headerUserInfo").style.display = "none";
+    }
 
-      const mobileRaw = (mobileInput.value || "").trim();
-      if (!mobileRaw) {
-        setStatus(statusEl, "من فضلك أدخل رقم الجوال أولاً.", "error");
+    function showAppSection() {
+      document.getElementById("authSection").classList.add("hidden");
+      document.getElementById("appSection").classList.remove("hidden");
+      document.getElementById("headerUserInfo").style.display = "flex";
+    }
+
+    function setStep(step) {
+      const b1 = document.getElementById("stepBadge1");
+      const b2 = document.getElementById("stepBadge2");
+      const s1 = document.getElementById("step1");
+      const s2 = document.getElementById("step2");
+
+      if (step === 1) {
+        b1.classList.add("active");
+        b2.classList.remove("active");
+        s1.classList.remove("hidden");
+        s2.classList.add("hidden");
+      } else {
+        b1.classList.remove("active");
+        b2.classList.add("active");
+        s1.classList.add("hidden");
+        s2.classList.remove("hidden");
+      }
+    }
+
+    function setStatus(id, msg, type = "info") {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg || "";
+      el.classList.remove("error", "ok");
+      if (type === "error") el.classList.add("error");
+      if (type === "ok") el.classList.add("ok");
+    }
+
+    function setLoading(button, isLoading, textWhenLoading, textNormal) {
+      if (!button) return;
+      button.disabled = isLoading;
+      if (isLoading) {
+        button.dataset.originalText = textNormal || button.textContent.trim();
+        button.textContent = textWhenLoading || "جاري التنفيذ...";
+      } else {
+        button.textContent =
+          textNormal || button.dataset.originalText || button.textContent;
+      }
+    }
+
+    // -------------------------------------------------------------
+    // Auth: send OTP
+    // -------------------------------------------------------------
+    async function onSendOtp() {
+      const mobileInput = document.getElementById("mobileInput");
+      const mobile = (mobileInput.value || "").trim();
+      const btn = document.getElementById("btnSendOtp");
+
+      setStatus("sendOtpStatus", "");
+      if (!mobile) {
+        setStatus("sendOtpStatus", "من فضلك أدخل رقم الجوال.", "error");
         return;
       }
 
-      const mobile = mobileRaw.replace(/\s+/g, "");
-      setStatus(statusEl, "جاري إرسال الرمز... ⏳", "muted");
-
-      const btn = qs("btnSendOtp");
-      btn.disabled = true;
-
       try {
-        const result = await apiCall("sendOtp", { mobile });
-
-        if (!result || !result.success) {
+        setLoading(btn, true, "جاري الإرسال...", "إرسال رمز الدخول عبر واتساب");
+        const resp = await hubApi("sendOtp", { mobile });
+        if (!resp.success) {
           setStatus(
-            statusEl,
-            result && result.error
-              ? "حدث خطأ أثناء إرسال الرمز: " + result.error
-              : "تعذر إرسال الرمز. حاول مرة أخرى.",
+            "sendOtpStatus",
+            resp.error || "تعذر إرسال رمز الدخول.",
             "error"
           );
           return;
         }
-
         setStatus(
-          statusEl,
-          "تم إنشاء الرمز بنجاح. راقب الواتساب على نفس الرقم لإستقبال OTP.",
+          "sendOtpStatus",
+          "تم إنشاء الرمز. سيتم إرساله عبر واتساب خلال لحظات.",
           "ok"
         );
+        setStep(2);
+        document.getElementById("otpInput").focus();
       } catch (err) {
         console.error("sendOtp error:", err);
         setStatus(
-          statusEl,
-          "تعذر الاتصال بالخادم. تأكد من اتصال الإنترنت ثم حاول مرة أخرى.",
+          "sendOtpStatus",
+          err.message || "خطأ غير متوقع أثناء إرسال الرمز.",
           "error"
         );
       } finally {
-        btn.disabled = false;
+        setLoading(btn, false, "جاري الإرسال...", "إرسال رمز الدخول عبر واتساب");
       }
     }
 
-    // --------- Auth: verify OTP ---------
-    async function onVerifyOtpClick() {
-      const mobileInput = qs("loginMobile");
-      const otpInput = qs("loginOtp");
-      const statusEl = qs("otpVerifyStatus");
+    // -------------------------------------------------------------
+    // Auth: verify OTP
+    // -------------------------------------------------------------
+    async function onVerifyOtp() {
+      const mobile = (document.getElementById("mobileInput").value || "").trim();
+      const otp = (document.getElementById("otpInput").value || "").trim();
+      const btn = document.getElementById("btnVerifyOtp");
 
-      const mobileRaw = (mobileInput.value || "").trim();
-      const otpRaw = (otpInput.value || "").trim();
-
-      if (!mobileRaw) {
-        setStatus(statusEl, "من فضلك أدخل نفس رقم الجوال الذي استقبل الرمز.", "error");
+      setStatus("verifyOtpStatus", "");
+      if (!mobile || !otp) {
+        setStatus(
+          "verifyOtpStatus",
+          "من فضلك أدخل رقم الجوال والرمز.",
+          "error"
+        );
         return;
       }
-      if (!otpRaw) {
-        setStatus(statusEl, "من فضلك أدخل رمز التحقق (OTP).", "error");
-        return;
-      }
-
-      const mobile = mobileRaw.replace(/\s+/g, "");
-      const otp = otpRaw.replace(/\s+/g, "");
-
-      setStatus(statusEl, "جاري التحقق من الرمز... ⏳", "muted");
-      const btn = qs("btnVerifyOtp");
-      btn.disabled = true;
 
       try {
-        const result = await apiCall("verifyOtp", { mobile, otp });
-
-        if (!result || !result.success) {
+        setLoading(btn, true, "جاري التحقق...", "تأكيد الرمز والدخول");
+        const resp = await hubApi("verifyOtp", { mobile, otp });
+        if (!resp.success) {
           setStatus(
-            statusEl,
-            result && result.error ? result.error : "رمز غير صحيح أو منتهي. حاول مرة أخرى.",
+            "verifyOtpStatus",
+            resp.error || "رمز غير صحيح أو منتهي.",
             "error"
           );
           return;
         }
 
-        // Expecting: result.sessionKey, result.user {userId, mobile, name}
-        nhSessionKey = result.sessionKey || null;
-        nhCurrentUser = result.user || null;
-        saveSessionToStorage();
+        // Save session & user
+        sessionKey = resp.sessionKey;
+        currentUser = resp.user || null;
+        if (sessionKey) {
+          localStorage.setItem("nh_sessionKey", sessionKey);
+        }
 
-        setStatus(statusEl, "تم التحقق بنجاح! جاري تحميل لوحة NahlHub...", "ok");
+        setStatus(
+          "verifyOtpStatus",
+          "تم التحقق بنجاح. يتم تحميل مساحات العمل...",
+          "ok"
+        );
 
-        // Switch view and load workspaces
-        showAppView();
-        await loadWorkspaces();
+        // Load full session via auth.me (gets apps, etc.)
+        await loadSessionViaMe();
       } catch (err) {
         console.error("verifyOtp error:", err);
         setStatus(
-          statusEl,
-          "تعذر الاتصال بالخادم أثناء التحقق. حاول مرة أخرى.",
+          "verifyOtpStatus",
+          err.message || "خطأ غير متوقع أثناء التحقق.",
           "error"
         );
       } finally {
-        btn.disabled = false;
+        setLoading(btn, false, "جاري التحقق...", "تأكيد الرمز والدخول");
       }
     }
 
-    // --------- Auth: restore session ---------
-    async function tryRestoreSession() {
-      const storedKey = loadSessionFromStorage();
-      if (!storedKey) return;
-
-      nhSessionKey = storedKey;
+    async function loadSessionViaMe() {
+      if (!sessionKey) return;
       try {
-        const result = await apiCall("auth.me", { sessionKey: storedKey });
-        if (!result || !result.success || !result.user) {
-          nhSessionKey = null;
-          nhCurrentUser = null;
-          saveSessionToStorage();
+        const resp = await hubApi("auth.me", { sessionKey });
+        if (!resp.success) {
+          console.warn("auth.me failed:", resp.error);
+          // If session invalid, go back to login
+          localStorage.removeItem("nh_sessionKey");
+          sessionKey = null;
+          currentUser = null;
+          showAuthSection();
           return;
         }
 
-        nhCurrentUser = result.user;
-        showAppView();
-        updateUserSummary();
-        await loadWorkspaces();
-      } catch (err) {
-        console.warn("Failed to restore session:", err);
-        nhSessionKey = null;
-        nhCurrentUser = null;
-        saveSessionToStorage();
-      }
-    }
+        currentUser = resp.user || currentUser;
+        // Update header
+        updateHeaderUser();
 
-    // --------- Logout ---------
-    async function onLogoutClick() {
-      try {
-        if (nhSessionKey) {
-          await apiCall("auth.logout", { sessionKey: nhSessionKey });
+        // Show app section
+        showAppSection();
+        // Load workspaces for user
+        if (currentUser && currentUser.userId) {
+          await loadWorkspaces(currentUser.userId);
         }
       } catch (err) {
-        console.warn("Logout error (ignored):", err);
+        console.error("auth.me error:", err);
+        showAuthSection();
       }
-      nhSessionKey = null;
-      nhCurrentUser = null;
-      nhCurrentWorkspaceId = null;
-      saveSessionToStorage();
-      clearWorkspaceUI();
-      showAuthView();
-      setStatus(qs("otpVerifyStatus"), "", "muted");
     }
 
-    // --------- Workspaces ---------
-    function clearWorkspaceUI() {
-      qs("wsSelect").innerHTML = '<option value="">اختر بيئة عمل</option>';
-      qs("wsList").innerHTML = "";
-      qs("wsListEmpty").style.display = "block";
-      setStatus(qs("workspaceStatus"), "", "muted");
-      setStatus(qs("workspaceAppsStatus"), "اختر Workspace لعرض التطبيقات المثبّتة.", "muted");
-      qs("workspaceAppsList").innerHTML = "";
-      setStatus(qs("marketplaceStatus"), "اختر Workspace ثم سيتم تحميل قائمة القوالب المتاحة.", "muted");
-      qs("marketplaceList").innerHTML = "";
-      qs("workspacesCountLabel").textContent = "";
-      qs("appsWorkspaceLabel").textContent = "";
+    function updateHeaderUser() {
+      const name = (currentUser && currentUser.name) || "مستخدم بدون اسم";
+      const mobile = currentUser && currentUser.mobile ? currentUser.mobile : "";
+      document.getElementById("headerUserName").textContent = name;
+      document.getElementById("headerUserMobile").textContent = mobile
+        ? "📱 " + mobile
+        : "";
+      document.getElementById("userPill").textContent = name;
     }
 
-    async function loadWorkspaces() {
-      if (!nhCurrentUser) return;
-      const statusEl = qs("workspaceStatus");
-      setStatus(statusEl, "جاري تحميل بيئات العمل... ⏳", "muted");
-
+    // -------------------------------------------------------------
+    // Logout
+    // -------------------------------------------------------------
+    async function onLogout() {
       try {
-        const result = await apiCall("workspace.listForUser", {
-          userId: nhCurrentUser.userId,
-        });
+        const key = sessionKey || localStorage.getItem("nh_sessionKey");
+        if (key) {
+          await hubApi("auth.logout", { sessionKey: key });
+        }
+      } catch (err) {
+        console.warn("logout error:", err);
+      }
+      sessionKey = null;
+      currentUser = null;
+      currentWorkspaceId = null;
+      localStorage.removeItem("nh_sessionKey");
+      showAuthSection();
+    }
 
-        if (!result || !result.success) {
+    // -------------------------------------------------------------
+    // Workspaces
+    // -------------------------------------------------------------
+    async function loadWorkspaces(userId) {
+      setStatus("workspaceListStatus", "جاري تحميل مساحات العمل...");
+      try {
+        const resp = await hubApi("workspace.listForUser", { userId });
+        if (!resp.success) {
           setStatus(
-            statusEl,
-            result && result.error
-              ? "تعذر تحميل بيئات العمل: " + result.error
-              : "تعذر تحميل بيئات العمل.",
+            "workspaceListStatus",
+            resp.error || "تعذر تحميل مساحات العمل.",
             "error"
           );
           return;
         }
 
-        const items = result.items || [];
-        renderWorkspaces(items);
-        setStatus(statusEl, items.length ? "" : "لا توجد بيئات عمل بعد.", items.length ? "muted" : "muted");
+        const items = resp.items || [];
+        renderWorkspaceList(items);
+        setStatus(
+          "workspaceListStatus",
+          items.length
+            ? "اختر مساحة عمل من القائمة."
+            : "لا يوجد مساحات عمل حتى الآن. أنشئ أول مساحة عمل.",
+          "ok"
+        );
       } catch (err) {
         console.error("loadWorkspaces error:", err);
-        setStatus(statusEl, "خطأ أثناء تحميل بيئات العمل.", "error");
+        setStatus(
+          "workspaceListStatus",
+          err.message || "خطأ غير متوقع أثناء تحميل المساحات.",
+          "error"
+        );
       }
     }
 
-    function renderWorkspaces(items) {
-      const wsSelect = qs("wsSelect");
-      const wsList = qs("wsList");
-      const emptyLabel = qs("wsListEmpty");
+    function renderWorkspaceList(items) {
+      const container = document.getElementById("workspaceList");
+      container.innerHTML = "";
+      const countLabel = document.getElementById("workspaceCountLabel");
+      countLabel.textContent = items.length + " مساحة";
 
-      wsSelect.innerHTML = '<option value="">اختر بيئة عمل</option>';
-      wsList.innerHTML = "";
-
-      if (!items || !items.length) {
-        emptyLabel.style.display = "block";
-        qs("workspacesCountLabel").textContent = "";
-        nhCurrentWorkspaceId = null;
-        qs("appsWorkspaceLabel").textContent = "";
+      if (!items.length) {
         return;
       }
-
-      emptyLabel.style.display = "none";
 
       items.forEach((ws) => {
-        const opt = document.createElement("option");
-        opt.value = ws.workspaceId;
-        opt.textContent = `${ws.name} (${ws.role || "member"})`;
-        wsSelect.appendChild(opt);
-
         const div = document.createElement("div");
-        div.className = "list-item";
-        const main = document.createElement("div");
-        main.className = "list-item-main";
-        const title = document.createElement("div");
-        title.className = "list-item-title";
-        title.textContent = ws.name;
-        const sub = document.createElement("div");
-        sub.className = "list-item-sub";
-        sub.textContent = `الخطة: ${ws.plan || "غير محددة"} • الدور: ${ws.role || "member"}`;
-        main.appendChild(title);
-        main.appendChild(sub);
+        div.className = "workspace-item";
+        div.dataset.workspaceId = ws.workspaceId;
 
-        const right = document.createElement("div");
-        right.style.display = "flex";
-        right.style.flexDirection = "column";
-        right.style.alignItems = "flex-end";
-        right.style.gap = "4px";
+        if (ws.workspaceId === currentWorkspaceId) {
+          div.classList.add("active");
+        }
 
-        const badge = document.createElement("div");
-        badge.className = "badge";
-        badge.textContent = ws.active === "Yes" ? "مفعل" : "غير مفعل";
+        const left = document.createElement("div");
+        const nameEl = document.createElement("div");
+        nameEl.textContent = ws.name;
+        const slugEl = document.createElement("div");
+        slugEl.className = "slug";
+        slugEl.textContent =
+          (ws.slug ? ws.slug + " · " : "") + (ws.plan || "free");
 
-        const btn = document.createElement("button");
-        btn.className = "btn-outline";
-        btn.style.fontSize = "11px";
-        btn.textContent = "اختيار";
-        btn.addEventListener("click", () => {
-          wsSelect.value = ws.workspaceId;
-          onWorkspaceChange();
+        left.appendChild(nameEl);
+        left.appendChild(slugEl);
+
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = ws.role === "admin" ? "Admin" : "Member";
+
+        div.appendChild(left);
+        div.appendChild(tag);
+
+        div.addEventListener("click", () => {
+          selectWorkspace(ws.workspaceId, ws.name);
         });
 
-        right.appendChild(badge);
-        right.appendChild(btn);
-
-        div.appendChild(main);
-        div.appendChild(right);
-        wsList.appendChild(div);
+        container.appendChild(div);
       });
 
-      qs("workspacesCountLabel").textContent = `(${items.length} Workspace)`;
+      // If no workspace selected yet, pick first
+      if (!currentWorkspaceId && items[0]) {
+        selectWorkspace(items[0].workspaceId, items[0].name);
+      }
     }
 
-    async function onCreateWorkspaceClick() {
-      if (!nhCurrentUser) return;
-
-      const input = qs("wsName");
-      const name = (input.value || "").trim();
-
-      if (!name) {
-        setStatus(qs("workspaceStatus"), "من فضلك أدخل اسم بيئة العمل.", "error");
+    async function onCreateWorkspace() {
+      if (!currentUser || !currentUser.userId) {
+        setStatus(
+          "workspaceCreateStatus",
+          "الرجاء تسجيل الدخول أولاً.",
+          "error"
+        );
         return;
       }
 
-      setStatus(qs("workspaceStatus"), "جاري إنشاء بيئة العمل... ⏳", "muted");
-      const btn = qs("btnCreateWorkspace");
-      btn.disabled = true;
+      const input = document.getElementById("workspaceNameInput");
+      const name = (input.value || "").trim();
+      const btn = document.getElementById("btnCreateWorkspace");
+
+      setStatus("workspaceCreateStatus", "");
+      if (!name) {
+        setStatus(
+          "workspaceCreateStatus",
+          "من فضلك أدخل اسم مساحة العمل.",
+          "error"
+        );
+        return;
+      }
 
       try {
-        const result = await apiCall("workspace.create", {
-          userId: nhCurrentUser.userId,
+        setLoading(btn, true, "جاري الإنشاء...", "إنشاء");
+        const resp = await hubApi("workspace.create", {
+          userId: currentUser.userId,
           name,
         });
 
-        if (!result || !result.success) {
+        if (!resp.success) {
           setStatus(
-            qs("workspaceStatus"),
-            result && result.error
-              ? "تعذر إنشاء Workspace: " + result.error
-              : "تعذر إنشاء Workspace.",
+            "workspaceCreateStatus",
+            resp.error || "تعذر إنشاء مساحة العمل.",
             "error"
           );
           return;
         }
 
+        setStatus(
+          "workspaceCreateStatus",
+          "تم إنشاء مساحة العمل بنجاح.",
+          "ok"
+        );
         input.value = "";
-        setStatus(qs("workspaceStatus"), "تم إنشاء بيئة العمل بنجاح.", "ok");
-        await loadWorkspaces();
+
+        // Reload workspaces
+        await loadWorkspaces(currentUser.userId);
       } catch (err) {
-        console.error("createWorkspace error:", err);
-        setStatus(qs("workspaceStatus"), "خطأ أثناء إنشاء Workspace.", "error");
+        console.error("workspace.create error:", err);
+        setStatus(
+          "workspaceCreateStatus",
+          err.message || "خطأ غير متوقع أثناء إنشاء المساحة.",
+          "error"
+        );
       } finally {
-        btn.disabled = false;
+        setLoading(btn, false, "جاري الإنشاء...", "إنشاء");
       }
     }
 
-    async function onWorkspaceChange() {
-      const select = qs("wsSelect");
-      const id = select.value || "";
-      nhCurrentWorkspaceId = id || null;
-      qs("appsWorkspaceLabel").textContent = id ? `Workspace: ${select.options[select.selectedIndex].textContent}` : "";
+    async function selectWorkspace(workspaceId, workspaceName) {
+      currentWorkspaceId = workspaceId;
 
-      if (!id) {
-        setStatus(qs("workspaceAppsStatus"), "اختر Workspace لعرض التطبيقات.", "muted");
-        qs("workspaceAppsList").innerHTML = "";
-        setStatus(qs("marketplaceStatus"), "اختر Workspace ثم سيتم تحميل قائمة القوالب المتاحة.", "muted");
-        qs("marketplaceList").innerHTML = "";
+      // update selected style
+      Array.from(
+        document.querySelectorAll(".workspace-item")
+      ).forEach((el) => {
+        el.classList.toggle(
+          "active",
+          el.dataset.workspaceId === workspaceId
+        );
+      });
+
+      document.getElementById("workspaceTitle").textContent =
+        "مساحة العمل الحالية: " + (workspaceName || workspaceId);
+
+      // load apps & templates
+      await loadWorkspaceApps(workspaceId);
+      await loadTemplates(workspaceId);
+    }
+
+    // -------------------------------------------------------------
+    // Workspace Apps
+    // -------------------------------------------------------------
+    async function loadWorkspaceApps(workspaceId) {
+      if (!workspaceId) return;
+      setStatus("workspaceAppsStatus", "جاري تحميل التطبيقات...");
+      const container = document.getElementById("workspaceAppsList");
+      container.innerHTML = "";
+
+      try {
+        const resp = await hubApi("marketplace.listWorkspaceApps", {
+          workspaceId,
+        });
+        if (!resp.success) {
+          setStatus(
+            "workspaceAppsStatus",
+            resp.error || "تعذر تحميل التطبيقات.",
+            "error"
+          );
+          return;
+        }
+
+        const items = resp.items || [];
+        if (!items.length) {
+          setStatus(
+            "workspaceAppsStatus",
+            "لا يوجد تطبيقات مثبتة في هذه المساحة.",
+            "info"
+          );
+          return;
+        }
+
+        items.forEach((app) => {
+          const card = document.createElement("div");
+          card.className = "app-card";
+
+          const left = document.createElement("div");
+          const title = document.createElement("h3");
+          title.textContent = app.nameAr || app.nameEn || app.templateId;
+          const desc = document.createElement("p");
+          desc.textContent =
+            "Template: " +
+            (app.templateId || "") +
+            " · Status: " +
+            (app.status || "");
+
+          left.appendChild(title);
+          left.appendChild(desc);
+
+          const right = document.createElement("div");
+          right.className = "chips";
+          const chip = document.createElement("span");
+          chip.className = "chip";
+          chip.textContent = app.visibleInHub === "Yes" ? "Visible" : "Hidden";
+          right.appendChild(chip);
+
+          card.appendChild(left);
+          card.appendChild(right);
+
+          container.appendChild(card);
+        });
+
+        setStatus(
+          "workspaceAppsStatus",
+          items.length + " تطبيق مثبت في هذه المساحة.",
+          "ok"
+        );
+      } catch (err) {
+        console.error("listWorkspaceApps error:", err);
+        setStatus(
+          "workspaceAppsStatus",
+          err.message || "خطأ غير متوقع أثناء تحميل التطبيقات.",
+          "error"
+        );
+      }
+    }
+
+    // -------------------------------------------------------------
+    // Marketplace Templates
+    // -------------------------------------------------------------
+    async function loadTemplates(workspaceId) {
+      setStatus("templatesStatus", "جاري تحميل السوق...");
+      const container = document.getElementById("templatesList");
+      container.innerHTML = "";
+
+      try {
+        const resp = await hubApi("marketplace.listTemplates", {
+          workspaceId: workspaceId || "",
+        });
+        if (!resp.success) {
+          setStatus(
+            "templatesStatus",
+            resp.error || "تعذر تحميل السوق.",
+            "error"
+          );
+          return;
+        }
+
+        const items = resp.items || [];
+        if (!items.length) {
+          setStatus(
+            "templatesStatus",
+            "لا يوجد قوالب متاحة حالياً.",
+            "info"
+          );
+          return;
+        }
+
+        items.forEach((tpl) => {
+          const card = document.createElement("div");
+          card.className = "tpl-card";
+
+          const left = document.createElement("div");
+          const title = document.createElement("h3");
+          title.textContent =
+            tpl.nameAr || tpl.nameEn || "Template " + tpl.templateId;
+
+          const desc = document.createElement("p");
+          desc.textContent =
+            (tpl.shortDescAr ||
+              tpl.shortDescEn ||
+              tpl.descriptionAr ||
+              tpl.descriptionEn ||
+              "") + "";
+
+          const chipsRow = document.createElement("div");
+          chipsRow.className = "chips";
+
+          if (tpl.type) {
+            const chipType = document.createElement("span");
+            chipType.className = "chip";
+            chipType.textContent =
+              tpl.type === "module" ? "Module" : "App";
+            chipsRow.appendChild(chipType);
+          }
+
+          if (tpl.category) {
+            const chipCat = document.createElement("span");
+            chipCat.className = "chip";
+            chipCat.textContent = tpl.category;
+            chipsRow.appendChild(chipCat);
+          }
+
+          if (tpl.planRequired) {
+            const chipPlan = document.createElement("span");
+            chipPlan.className = "chip";
+            chipPlan.textContent = "Plan: " + tpl.planRequired;
+            chipsRow.appendChild(chipPlan);
+          }
+
+          left.appendChild(title);
+          if (desc.textContent) left.appendChild(desc);
+          if (chipsRow.children.length) left.appendChild(chipsRow);
+
+          const right = document.createElement("div");
+          const btn = document.createElement("button");
+          btn.className = "primary";
+          btn.textContent = tpl.installed
+            ? "مثبت في المساحة ✓"
+            : "تثبيت في مساحة العمل";
+
+          if (tpl.installed) {
+            btn.disabled = true;
+          }
+
+          btn.addEventListener("click", () => {
+            onInstallTemplate(tpl);
+          });
+
+          right.appendChild(btn);
+
+          card.appendChild(left);
+          card.appendChild(right);
+
+          container.appendChild(card);
+        });
+
+        setStatus(
+          "templatesStatus",
+          items.length + " قالب متاح في السوق.",
+          "ok"
+        );
+      } catch (err) {
+        console.error("listTemplates error:", err);
+        setStatus(
+          "templatesStatus",
+          err.message || "خطأ غير متوقع أثناء تحميل السوق.",
+          "error"
+        );
+      }
+    }
+
+    async function onInstallTemplate(tpl) {
+      if (!currentWorkspaceId) {
+        setStatus(
+          "templatesStatus",
+          "الرجاء اختيار مساحة عمل أولاً.",
+          "error"
+        );
+        return;
+      }
+      if (!currentUser || !currentUser.userId) {
+        setStatus(
+          "templatesStatus",
+          "انتهت الجلسة. الرجاء تسجيل الدخول مرة أخرى.",
+          "error"
+        );
         return;
       }
 
-      await Promise.all([loadWorkspaceApps(id), loadMarketplace(id)]);
-    }
-
-    // --------- Workspace apps ---------
-    async function loadWorkspaceApps(workspaceId) {
-      const statusEl = qs("workspaceAppsStatus");
-      setStatus(statusEl, "جاري تحميل التطبيقات المثبّتة... ⏳", "muted");
-      qs("workspaceAppsList").innerHTML = "";
-
+      setStatus(
+        "templatesStatus",
+        "جاري تثبيت القالب في مساحة العمل...",
+        "info"
+      );
       try {
-        const result = await apiCall("marketplace.listWorkspaceApps", {
-          workspaceId,
-        });
-
-        if (!result || !result.success) {
-          setStatus(
-            statusEl,
-            result && result.error
-              ? "تعذر تحميل التطبيقات: " + result.error
-              : "تعذر تحميل التطبيقات.",
-            "error"
-          );
-          return;
-        }
-
-        const items = result.items || [];
-        renderWorkspaceApps(items);
-        setStatus(
-          statusEl,
-          items.length ? "" : "لا توجد تطبيقات مثبّتة بعد. يمكنك تثبيت قوالب من Marketplace.",
-          "muted"
-        );
-      } catch (err) {
-        console.error("loadWorkspaceApps error:", err);
-        setStatus(statusEl, "خطأ أثناء تحميل التطبيقات.", "error");
-      }
-    }
-
-    function renderWorkspaceApps(items) {
-      const container = qs("workspaceAppsList");
-      container.innerHTML = "";
-
-      if (!items || !items.length) return;
-
-      items.forEach((app) => {
-        const div = document.createElement("div");
-        div.className = "list-item";
-
-        const main = document.createElement("div");
-        main.className = "list-item-main";
-        const title = document.createElement("div");
-        title.className = "list-item-title";
-        title.textContent = app.nameAr || app.nameEn || app.appId || "App";
-
-        const sub = document.createElement("div");
-        sub.className = "list-item-sub";
-        sub.textContent = `Template: ${app.templateId || "—"} • Status: ${
-          app.status || "—"
-        }`;
-
-        main.appendChild(title);
-        main.appendChild(sub);
-
-        const right = document.createElement("div");
-        right.style.display = "flex";
-        right.style.flexDirection = "column";
-        right.style.alignItems = "flex-end";
-        right.style.gap = "4px";
-
-        const badge = document.createElement("div");
-        badge.className = "badge";
-        badge.textContent = app.visibleInHub === "Yes" ? "ظاهر في Hub" : "مخفي عن Hub";
-
-        right.appendChild(badge);
-
-        div.appendChild(main);
-        div.appendChild(right);
-
-        container.appendChild(div);
-      });
-    }
-
-    // --------- Marketplace ---------
-    async function loadMarketplace(workspaceId) {
-      const statusEl = qs("marketplaceStatus");
-      setStatus(statusEl, "جاري تحميل قوالب Marketplace... ⏳", "muted");
-      qs("marketplaceList").innerHTML = "";
-
-      try {
-        const result = await apiCall("marketplace.listTemplates", { workspaceId });
-
-        if (!result || !result.success) {
-          setStatus(
-            statusEl,
-            result && result.error
-              ? "تعذر تحميل Marketplace: " + result.error
-              : "تعذر تحميل Marketplace.",
-            "error"
-          );
-          return;
-        }
-
-        const items = result.items || [];
-        renderMarketplace(items);
-        setStatus(
-          statusEl,
-          items.length ? "" : "لا توجد قوالب متاحة حالياً في Marketplace.",
-          "muted"
-        );
-      } catch (err) {
-        console.error("loadMarketplace error:", err);
-        setStatus(statusEl, "خطأ أثناء تحميل Marketplace.", "error");
-      }
-    }
-
-    function renderMarketplace(items) {
-      const container = qs("marketplaceList");
-      container.innerHTML = "";
-
-      if (!items || !items.length) return;
-
-      items.forEach((tpl) => {
-        const div = document.createElement("div");
-        div.className = "list-item";
-
-        const main = document.createElement("div");
-        main.className = "list-item-main";
-
-        const title = document.createElement("div");
-        title.className = "list-item-title";
-        const label = tpl.nameAr || tpl.nameEn || tpl.code || tpl.templateId || "Template";
-        title.textContent = label;
-
-        const sub = document.createElement("div");
-        sub.className = "list-item-sub";
-        const typeLabel = tpl.type === "module" ? "موديول" : "تطبيق";
-        const cat = tpl.category || "عام";
-        sub.textContent = `${typeLabel} • التصنيف: ${cat}`;
-
-        main.appendChild(title);
-        main.appendChild(sub);
-
-        const right = document.createElement("div");
-        right.style.display = "flex";
-        right.style.flexDirection = "column";
-        right.style.alignItems = "flex-end";
-        right.style.gap = "4px";
-
-        const badge = document.createElement("div");
-        badge.className = "badge";
-        badge.textContent = tpl.installed ? "مثبّت" : "غير مثبّت";
-
-        const btn = document.createElement("button");
-        btn.style.fontSize = "11px";
-        if (tpl.installed) {
-          btn.className = "btn-outline";
-          btn.textContent = "مثبّت بالفعل";
-          btn.disabled = true;
-        } else {
-          btn.className = "btn-primary";
-          btn.textContent = "تثبيت";
-          btn.addEventListener("click", () => onInstallTemplateClick(tpl));
-        }
-
-        right.appendChild(badge);
-        right.appendChild(btn);
-        div.appendChild(main);
-        div.appendChild(right);
-
-        container.appendChild(div);
-      });
-    }
-
-    async function onInstallTemplateClick(tpl) {
-      if (!nhCurrentWorkspaceId || !nhCurrentUser) return;
-
-      const statusEl = qs("marketplaceStatus");
-      setStatus(statusEl, `جاري تثبيت ${tpl.nameAr || tpl.nameEn || "القالب"}... ⏳`, "muted");
-
-      try {
-        // Generic install – backend auto-detects app/module
-        const result = await apiCall("marketplace.install", {
-          workspaceId: nhCurrentWorkspaceId,
+        const resp = await hubApi("marketplace.install", {
+          workspaceId: currentWorkspaceId,
           templateId: tpl.templateId,
-          userId: nhCurrentUser.userId,
+          userId: currentUser.userId,
         });
 
-        if (!result || !result.success) {
+        if (!resp.success) {
           setStatus(
-            statusEl,
-            result && result.error
-              ? "تعذر تثبيت القالب: " + result.error
-              : "تعذر تثبيت القالب.",
+            "templatesStatus",
+            resp.error || "تعذر تثبيت القالب.",
             "error"
           );
           return;
         }
 
-        setStatus(statusEl, "تم تثبيت القالب بنجاح ✅", "ok");
+        setStatus(
+          "templatesStatus",
+          "تم تثبيت القالب بنجاح.",
+          "ok"
+        );
 
-        // Refresh lists
-        await loadWorkspaceApps(nhCurrentWorkspaceId);
-        await loadMarketplace(nhCurrentWorkspaceId);
+        // Reload apps + templates to reflect "installed" state
+        await loadWorkspaceApps(currentWorkspaceId);
+        await loadTemplates(currentWorkspaceId);
       } catch (err) {
-        console.error("installTemplate error:", err);
-        setStatus(statusEl, "خطأ أثناء تثبيت القالب.", "error");
+        console.error("install template error:", err);
+        setStatus(
+          "templatesStatus",
+          err.message || "خطأ غير متوقع أثناء التثبيت.",
+          "error"
+        );
       }
     }
 
-    // --------- Init ---------
-    function wireEvents() {
-      qs("btnSendOtp").addEventListener("click", (e) => {
-        e.preventDefault();
-        onSendOtpClick();
-      });
+    // -------------------------------------------------------------
+    // Initial load (restore session if exists)
+    // -------------------------------------------------------------
+    async function init() {
+      // Attach handlers
+      document
+        .getElementById("btnSendOtp")
+        .addEventListener("click", onSendOtp);
+      document
+        .getElementById("btnVerifyOtp")
+        .addEventListener("click", onVerifyOtp);
+      document
+        .getElementById("btnBackToMobile")
+        .addEventListener("click", () => setStep(1));
+      document
+        .getElementById("btnCreateWorkspace")
+        .addEventListener("click", onCreateWorkspace);
+      document
+        .getElementById("btnLogout")
+        .addEventListener("click", onLogout);
 
-      qs("btnVerifyOtp").addEventListener("click", (e) => {
-        e.preventDefault();
-        onVerifyOtpClick();
-      });
+      // Allow pressing Enter in OTP field
+      document
+        .getElementById("otpInput")
+        .addEventListener("keyup", (e) => {
+          if (e.key === "Enter") onVerifyOtp();
+        });
 
-      qs("btnLogout").addEventListener("click", (e) => {
-        e.preventDefault();
-        onLogoutClick();
-      });
-
-      qs("btnCreateWorkspace").addEventListener("click", (e) => {
-        e.preventDefault();
-        onCreateWorkspaceClick();
-      });
-
-      qs("wsSelect").addEventListener("change", (e) => {
-        e.preventDefault();
-        onWorkspaceChange();
-      });
-
-      // Enter key on OTP triggers verify
-      qs("loginOtp").addEventListener("keyup", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          onVerifyOtpClick();
-        }
-      });
-
-      // Enter on mobile triggers send OTP
-      qs("loginMobile").addEventListener("keyup", (e) => {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          onSendOtpClick();
-        }
-      });
+      // Try to restore existing session
+      const storedKey = localStorage.getItem("nh_sessionKey");
+      if (storedKey) {
+        sessionKey = storedKey;
+        await loadSessionViaMe();
+      } else {
+        showAuthSection();
+      }
     }
 
-    document.addEventListener("DOMContentLoaded", async () => {
-      qs("year").textContent = new Date().getFullYear();
-      wireEvents();
-      showAuthView();
-      await tryRestoreSession();
-    });
+    document.addEventListener("DOMContentLoaded", init);
   </script>
 </body>
 </html>
