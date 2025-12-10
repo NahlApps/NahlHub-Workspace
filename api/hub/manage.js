@@ -1,26 +1,24 @@
 // api/hub/manage.js
-// NahlHub – Vercel API → Apps Script proxy + GreenAPI OTP sender
+// NahlHub – Vercel API → Apps Script proxy
 // ==================================================================
-// Actions used by frontend + backend:
-//   - sendOtp                     (special: Apps Script + WhatsApp)
-//   - verifyOtp                   (proxied to Apps Script)
-//   - hub.loadState               (proxied)
-//   - workspace.create            (proxied)
-//   - workspace.listForUser       (proxied)
-//   - marketplace.listTemplates   (proxied)
-//   - marketplace.installTemplate (proxied)
-//   - marketplace.listWorkspaceApps (proxied)
+// Actions used by frontend + backend (proxied to Apps Script):
+//   - sendOtp                     (OTP created + sent by Apps Script)
+//   - verifyOtp                   (OTP verification + session creation)
+//   - auth.me                     (session check)
+//   - auth.logout                 (session logout)
+//   - workspace.create            (create workspace)
+//   - workspace.listForUser       (list workspaces for a user)
+//   - workspace.members           (list members in a workspace)
+//   - workspace.invite            (invite user by email)
+//   - marketplace.listTemplates   (list templates for Marketplace)
+//   - marketplace.installApp      (install app template)
+//   - marketplace.installModule   (install module template)
+//   - marketplace.install         (auto-detect app/module)
+//   - marketplace.listWorkspaceApps (apps installed in workspace)
+//   - health                      (backend healthcheck)
 
 const HUB_BACKEND_URL = process.env.HUB_BACKEND_URL;
 const HUB_APP_ID = process.env.HUB_APP_ID || "HUB";
-
-const GREEN_API_INSTANCE_ID = process.env.GREEN_API_INSTANCE_ID;
-const GREEN_API_TOKEN = process.env.GREEN_API_TOKEN;
-const GREEN_API_BASE_URL =
-  process.env.GREEN_API_BASE_URL || "https://api.green-api.com";
-
-const OTP_SENDER_COUNTRY_CODE =
-  process.env.OTP_SENDER_COUNTRY_CODE || "966"; // default: Saudi
 
 // ------------------------------------------------------------------
 // Helpers
@@ -35,34 +33,18 @@ function errorJson(message, statusCode = 500, extra = {}) {
   };
 }
 
-// Normalize mobile to WhatsApp chatId format.
-// Returns e.g. "9665xxxxxxx@c.us".
-function buildWhatsAppChatId(rawMobile) {
-  if (!rawMobile) return null;
-
-  let digits = String(rawMobile).replace(/\D/g, "");
-
-  // Drop leading 0
-  if (digits.startsWith("0")) {
-    digits = digits.slice(1);
-  }
-
-  // Prepend country code if missing
-  if (!digits.startsWith(OTP_SENDER_COUNTRY_CODE)) {
-    digits = OTP_SENDER_COUNTRY_CODE + digits;
-  }
-
-  return `${digits}@c.us`;
-}
-
-// Call Apps Script backend
+/**
+ * Call Apps Script backend (JSON POST).
+ * Automatically injects default appId if missing.
+ */
 async function callHubBackend(payload) {
   if (!HUB_BACKEND_URL) {
     throw new Error("HUB_BACKEND_URL is not configured in environment.");
   }
 
-  // 🔹 Inject default appId if missing
   const finalPayload = { ...(payload || {}) };
+
+  // Normalize appId / appid
   if (!finalPayload.appId && !finalPayload.appid && HUB_APP_ID) {
     finalPayload.appId = HUB_APP_ID;
   }
@@ -87,72 +69,16 @@ async function callHubBackend(payload) {
   }
 
   if (!res.ok) {
-    throw new Error(
-      `Apps Script error (HTTP ${res.status}): ${
-        data && data.error ? data.error : "Unknown error"
-      }`
-    );
+    const backendError =
+      (data && (data.error || data.message)) || "Unknown Apps Script error";
+    throw new Error(`Apps Script error (HTTP ${res.status}): ${backendError}`);
   }
 
   return data;
 }
 
-// Send WhatsApp message via Green API using generated OTP
-async function sendOtpViaGreenApi(mobile, otp) {
-  if (!GREEN_API_INSTANCE_ID || !GREEN_API_TOKEN) {
-    return {
-      ok: false,
-      reason: "Missing GreenAPI credentials (instance or token).",
-    };
-  }
-
-  const chatId = buildWhatsAppChatId(mobile);
-  if (!chatId) {
-    return { ok: false, reason: "Invalid mobile number for WhatsApp." };
-  }
-
-  const base = GREEN_API_BASE_URL.replace(/\/$/, "");
-  const url = `${base}/waInstance${GREEN_API_INSTANCE_ID}/SendMessage/${GREEN_API_TOKEN}`;
-
-  const messageAr = `رمز الدخول لنحل هب: ${otp}\n\nصالح لمدة ١٠ دقائق. لا تشارك هذا الكود مع أي شخص.`;
-  const messageEn = `Your NahlHub login code is: ${otp}\n\nValid for 10 minutes. Do not share this code with anyone.`;
-  const finalMessage = `${messageAr}\n\n${messageEn}`;
-
-  const payload = { chatId, message: finalMessage };
-
-  try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const text = await res.text();
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (_) {
-      data = null;
-    }
-
-    if (!res.ok) {
-      console.error("❌ GreenAPI error:", res.status, text);
-      return {
-        ok: false,
-        reason: `GreenAPI HTTP ${res.status}`,
-        raw: data || text,
-      };
-    }
-
-    return { ok: true, raw: data || text };
-  } catch (err) {
-    console.error("❌ GreenAPI fetch error:", err);
-    return { ok: false, reason: err.message || String(err) };
-  }
-}
-
 // ------------------------------------------------------------------
-// Main handler
+// Next.js API route handler
 // ------------------------------------------------------------------
 
 export default async function handler(req, res) {
@@ -169,14 +95,15 @@ export default async function handler(req, res) {
     return;
   }
 
-  if (req.method !== "POST" && req.method !== "GET") {
+  if (req.method !== "GET" && req.method !== "POST") {
     res
       .status(405)
-      .json(errorJson("Method not allowed. Use POST or GET.", 405));
+      .json(errorJson("Method not allowed. Use GET or POST.", 405));
     return;
   }
 
   try {
+    // Build payload from request
     const payload =
       req.method === "GET"
         ? { ...(req.query || {}) }
@@ -184,88 +111,28 @@ export default async function handler(req, res) {
         ? req.body
         : {};
 
-    const action = (payload.action || "").trim();
+    const actionRaw = payload.action;
+    const action = (actionRaw || "").trim();
 
     if (!action) {
       res.status(400).json(errorJson("Missing action parameter", 400));
       return;
     }
 
-    // --------------------------------------------------------------
-    // Special: sendOtp → call Apps Script + GreenAPI
-    // --------------------------------------------------------------
-    if (action === "sendOtp") {
+    // Optional: light validation for some actions before hitting Apps Script
+    if (
+      action === "sendOtp" ||
+      action === "auth.requestOtp"
+    ) {
       const mobile = (payload.mobile || "").trim();
-      const appId = (payload.appId || payload.appid || HUB_APP_ID || "").trim();
-
       if (!mobile) {
         res.status(400).json(errorJson("Mobile is required.", 400));
         return;
       }
-
-      if (!appId) {
-        res
-          .status(500)
-          .json(
-            errorJson(
-              "appId is missing and HUB_APP_ID is not configured.",
-              500
-            )
-          );
-        return;
-      }
-
-      // 1) Ask Apps Script to generate & store OTP
-      const hubRes = await callHubBackend({
-        action: "sendOtp",
-        appId,
-        mobile,
-      });
-
-      if (!hubRes || !hubRes.success) {
-        res.status(500).json(
-          errorJson("Failed to generate OTP in backend.", 500, {
-            hubRes,
-          })
-        );
-        return;
-      }
-
-      const otp = hubRes.debugOtp; // dev-only; remove in production later
-      if (!otp) {
-        res.status(500).json(
-          errorJson("Backend did not return OTP for sending.", 500, {
-            hubRes,
-          })
-        );
-        return;
-      }
-
-      // 2) Send via WhatsApp (GreenAPI)
-      const waResult = await sendOtpViaGreenApi(mobile, otp);
-
-      if (!waResult.ok) {
-        // OTP is stored, but WhatsApp failed – still success for login flow
-        res.status(200).json({
-          success: true,
-          otpStored: true,
-          whatsappSent: false,
-          whatsappError: waResult.reason || "Unknown GreenAPI error",
-        });
-        return;
-      }
-
-      res.status(200).json({
-        success: true,
-        otpStored: true,
-        whatsappSent: true,
-      });
-      return;
     }
 
-    // --------------------------------------------------------------
-    // All other actions → proxy to Apps Script (with default appId)
-    // --------------------------------------------------------------
+    // health check can either be handled locally or forwarded to Apps Script.
+    // Here we just forward like any other action.
     const backendResponse = await callHubBackend(payload);
     res.status(200).json(backendResponse);
   } catch (err) {
