@@ -2,19 +2,24 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
   <title>NahlHub – Hub</title>
 
+  <!-- Simple light theme, no heavy redesign -->
   <style>
     :root {
-      --bg: #f5f7f8;
-      --card: #ffffff;
-      --primary: #f4ce14;
-      --primary-dark: #d4b010;
-      --border: #e0e0e0;
-      --text: #45474b;
-      --muted: #7a7d81;
-      --danger: #b91c1c;
+      --nh-bg: #f5f5f5;
+      --nh-card-bg: #ffffff;
+      --nh-border: #dddddd;
+      --nh-primary: #01657a;
+      --nh-primary-soft: #e0f4f7;
+      --nh-text-main: #1f2933;
+      --nh-text-muted: #6b7280;
+      --nh-radius-lg: 14px;
+      --nh-radius-md: 10px;
     }
 
     * {
@@ -25,1182 +30,1571 @@
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
         sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background: var(--nh-bg);
+      color: var(--nh-text-main);
     }
 
-    header {
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 20px;
+    .nh-shell {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px 32px;
+    }
+
+    header.nh-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
-    header .brand {
+    .nh-header-main {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 12px;
+    }
+
+    .nh-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--nh-primary-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-weight: 700;
+      color: var(--nh-primary);
       font-size: 18px;
-      color: var(--text);
     }
 
-    header .brand span {
-      opacity: 0.8;
-      font-size: 12px;
-      font-weight: 400;
-      color: var(--muted);
+    .nh-title-block h1 {
+      margin: 0;
+      font-size: 20px;
     }
 
-    header .user-info {
+    .nh-title-block p {
+      margin: 2px 0 0;
       font-size: 13px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      color: var(--nh-text-muted);
     }
 
-    header .user-info button {
-      background: transparent;
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      color: var(--text);
-      padding: 4px 10px;
+    .nh-session-chip {
       font-size: 12px;
-      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      color: #4b5563;
+      max-width: 220px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+      direction: ltr;
     }
 
-    header .user-info button:hover {
-      background: #f2f2f2;
-    }
-
-    main {
-      max-width: 1120px;
-      margin: 24px auto;
-      padding: 0 16px 40px;
-    }
-
-    .layout {
+    .nh-main-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 2fr);
-      gap: 20px;
+      grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
+      gap: 16px;
+      align-items: flex-start;
     }
 
-    @media (max-width: 900px) {
-      .layout {
+    @media (max-width: 768px) {
+      .nh-main-grid {
         grid-template-columns: minmax(0, 1fr);
+      }
+
+      header.nh-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nh-session-chip {
+        width: 100%;
       }
     }
 
-    .card {
-      background: var(--card);
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      padding: 16px 18px 18px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    .nh-card {
+      background: var(--nh-card-bg);
+      border-radius: var(--nh-radius-lg);
+      border: 1px solid var(--nh-border);
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+      padding: 16px 16px 14px;
     }
 
-    .card h2 {
-      font-size: 17px;
-      margin: 0 0 4px;
+    .nh-card + .nh-card {
+      margin-top: 10px;
     }
 
-    .card p.sub {
-      margin: 0 0 12px;
-      font-size: 13px;
-      color: var(--muted);
+    .nh-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
     }
 
-    label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-
-    input[type="text"],
-    input[type="tel"],
-    input[type="number"],
-    input[type="email"] {
-      width: 100%;
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
+    .nh-card-title {
       font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nh-card-subtitle {
+      font-size: 12px;
+      color: var(--nh-text-muted);
+      margin-top: 2px;
+    }
+
+    .nh-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      font-size: 11px;
+      color: #4b5563;
+      background: #f9fafb;
+    }
+
+    .nh-badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .nh-badge-dot.off {
+      background: #9ca3af;
+    }
+
+    .nh-label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .nh-label span {
+      font-size: 11px;
+      color: var(--nh-text-muted);
+      font-weight: 400;
+    }
+
+    .nh-input,
+    .nh-select {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 9px;
+      border: 1px solid #d1d5db;
+      font-size: 13px;
       outline: none;
-      background: #fafafa;
-      color: var(--text);
-    }
-
-    input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 1px rgba(244, 206, 20, 0.3);
       background: #ffffff;
+      color: var(--nh-text-main);
     }
 
-    button.primary {
-      background: var(--primary);
-      color: #222222;
+    .nh-input:focus,
+    .nh-select:focus {
+      border-color: var(--nh-primary);
+      box-shadow: 0 0 0 1px rgba(1, 101, 122, 0.08);
+    }
+
+    .nh-input::placeholder {
+      color: #9ca3af;
+    }
+
+    .nh-btn {
+      border: none;
       border-radius: 999px;
       padding: 8px 16px;
-      border: none;
-      font-size: 14px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 600;
-    }
-
-    button.primary:hover {
-      background: var(--primary-dark);
-    }
-
-    button.secondary {
-      background: transparent;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      padding: 7px 14px;
       font-size: 13px;
+      font-weight: 500;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
-      color: var(--text);
+      transition: background 0.15s ease, transform 0.05s ease,
+        box-shadow 0.1s ease;
     }
 
-    button.secondary:hover {
-      background: #f2f2f2;
-    }
-
-    button:disabled {
+    .nh-btn:disabled {
       opacity: 0.6;
       cursor: default;
+      transform: none;
+      box-shadow: none;
     }
 
-    .row {
+    .nh-btn-primary {
+      background: var(--nh-primary);
+      color: #ffffff;
+      box-shadow: 0 1px 4px rgba(1, 101, 122, 0.24);
+    }
+
+    .nh-btn-primary:hover:not(:disabled) {
+      background: #015063;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(1, 101, 122, 0.3);
+    }
+
+    .nh-btn-secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #e5e7eb;
+    }
+
+    .nh-btn-secondary:hover:not(:disabled) {
+      background: #e5e7eb;
+    }
+
+    .nh-btn-xs {
+      padding: 4px 10px;
+      font-size: 11px;
+    }
+
+    .nh-actions-row {
       display: flex;
-      gap: 8px;
       align-items: center;
-    }
-
-    .row.space {
-      justify-content: space-between;
-    }
-
-    .mt-8 {
-      margin-top: 8px;
-    }
-
-    .mt-12 {
-      margin-top: 12px;
-    }
-
-    .mt-16 {
-      margin-top: 16px;
-    }
-
-    .small {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .status {
-      font-size: 13px;
-      margin-top: 8px;
-      min-height: 18px;
-    }
-
-    .status.error {
-      color: var(--danger);
-    }
-
-    .status.ok {
-      color: #15803d;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .stepper {
-      display: flex;
       gap: 8px;
-      align-items: center;
-      margin-bottom: 12px;
-      font-size: 12px;
-      color: var(--muted);
+      margin-top: 10px;
+      flex-wrap: wrap;
     }
 
-    .stepper span.badge {
-      padding: 2px 8px;
+    .nh-help-text {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--nh-text-muted);
+      line-height: 1.5;
+    }
+
+    .nh-status {
+      margin-top: 8px;
+      font-size: 12px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      color: #374151;
+      display: none;
+      white-space: pre-line;
+    }
+
+    .nh-status.ok {
+      border-color: #bbf7d0;
+      background: #f0fdf4;
+      color: #166534;
+    }
+
+    .nh-status.err {
+      border-color: #fecaca;
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .nh-pill-tabs {
+      display: inline-flex;
+      padding: 3px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: #fafafa;
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      font-size: 11px;
+      gap: 2px;
     }
 
-    .stepper span.badge.active {
-      border-color: var(--primary);
-      color: #222222;
-      background: rgba(244, 206, 20, 0.25);
-      font-weight: 600;
+    .nh-pill-tabs button {
+      border-radius: 999px;
+      border: none;
+      padding: 5px 9px;
+      background: transparent;
+      font-size: 11px;
+      cursor: pointer;
+      color: #4b5563;
     }
 
-    .pill {
+    .nh-pill-tabs button.active {
+      background: #ffffff;
+      color: #111827;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+    }
+
+    .nh-divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 10px 0;
+    }
+
+    .nh-user-summary {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+      color: var(--nh-text-muted);
+    }
+
+    .nh-user-summary strong {
+      color: var(--nh-text-main);
+    }
+
+    .nh-chip {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 10px;
+      padding: 3px 9px;
+      font-size: 11px;
       border-radius: 999px;
-      background: rgba(244, 206, 20, 0.2);
-      color: var(--text);
-      font-size: 12px;
-      border: 1px solid rgba(244, 206, 20, 0.6);
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
     }
 
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
+    /* Workspaces & apps list */
 
-    .workspace-list {
+    .nh-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 260px;
+      gap: 8px;
+      margin-top: 8px;
+      max-height: 240px;
       overflow-y: auto;
+    }
+
+    .nh-list-item {
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      font-size: 12px;
+    }
+
+    .nh-list-item:hover {
+      background: #f9fafb;
+    }
+
+    .nh-list-item.active {
+      border-color: var(--nh-primary);
+      background: #ecfeff;
+    }
+
+    .nh-list-item-title {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .nh-list-item-meta {
+      font-size: 11px;
+      color: var(--nh-text-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .nh-tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1px 7px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      font-size: 10px;
+      color: #4b5563;
+      background: #f9fafb;
+    }
+
+    /* Marketplace cards */
+
+    .nh-market-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .nh-market-item {
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 8px 9px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .nh-market-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .nh-market-title {
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    .nh-market-desc {
+      font-size: 11px;
+      color: var(--nh-text-muted);
+      line-height: 1.5;
+    }
+
+    .nh-market-footer {
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .nh-empty {
+      font-size: 11px;
+      color: var(--nh-text-muted);
       margin-top: 6px;
     }
 
-    .workspace-item {
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      cursor: pointer;
-      font-size: 13px;
+    .nh-section-title-line {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #fafafa;
-      transition: background 0.15s, border-color 0.15s;
-    }
-
-    .workspace-item span.slug {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .workspace-item.active {
-      border-color: var(--primary);
-      background: rgba(244, 206, 20, 0.18);
-    }
-
-    .workspace-item .tag {
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #e1e1e1;
-      color: #333;
-    }
-
-    .apps-list,
-    .templates-list {
-      display: flex;
-      flex-direction: column;
       gap: 8px;
-      max-height: 260px;
-      overflow-y: auto;
-    }
-
-    .app-card,
-    .tpl-card {
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      padding: 8px 10px;
-      font-size: 13px;
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      background: #fafafa;
-    }
-
-    .app-card h3,
-    .tpl-card h3 {
-      margin: 0 0 4px;
-      font-size: 13px;
-    }
-
-    .app-card p,
-    .tpl-card p {
-      margin: 0;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
       margin-top: 4px;
     }
 
-    .chip {
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      border: 1px solid #d7d7d7;
-      background: #ffffff;
+    .nh-section-title-line h3 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 600;
     }
 
-    .label-muted {
+    .nh-section-title-line span {
       font-size: 11px;
-      color: var(--muted);
+      color: var(--nh-text-muted);
+    }
+
+    .nh-inline-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .nh-inline-row > * {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .nh-inline-row.fixed-left {
+      align-items: center;
+    }
+
+    .nh-inline-row.fixed-left > :first-child {
+      flex: 0 0 auto;
+    }
+
+    .nh-badge-plan {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+    }
+
+    .nh-footer-note {
+      margin-top: 16px;
+      font-size: 10px;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    .nh-footer-note a {
+      color: inherit;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div class="brand">
-      🐝 NahlHub
-      <span>Hub – Workspaces & Apps</span>
+  <div class="nh-shell">
+    <!-- Header: Logo + title + session chip -->
+    <header class="nh-header">
+      <div class="nh-header-main">
+        <div class="nh-logo">Nh</div>
+        <div class="nh-title-block">
+          <h1>NahlHub – Hub</h1>
+          <p>لوحة تحكم بسيطة لتجربة المساحات والتطبيقات داخل منظومة نحل هب.</p>
+        </div>
+      </div>
+      <div id="sessionChip" class="nh-session-chip" style="display: none;">
+        session: –
+      </div>
+    </header>
+
+    <div class="nh-main-grid">
+      <!-- Left column: Login / auth -->
+      <div>
+        <!-- Login card -->
+        <div class="nh-card">
+          <div class="nh-card-header">
+            <div>
+              <div class="nh-card-title">تسجيل الدخول برقم الجوال</div>
+              <div class="nh-card-subtitle">
+                خطوة واحدة، رمز عبر واتساب أو SMS، بدون كلمة مرور.
+              </div>
+            </div>
+            <div class="nh-badge" id="authStateBadge">
+              <span class="nh-badge-dot off" id="authStateDot"></span>
+              <span id="authStateLabel">غير مسجل</span>
+            </div>
+          </div>
+
+          <label class="nh-label" for="mobileInput">
+            رقم الجوال (مع أو بدون +966)
+            <span>لن يتم مشاركته مع أي جهة.</span>
+          </label>
+          <input
+            id="mobileInput"
+            class="nh-input"
+            type="tel"
+            placeholder="مثلًا: 5xxxxxxxx أو +9665xxxxxxx"
+            autocomplete="tel"
+          />
+
+          <div class="nh-actions-row">
+            <button
+              id="btnSendOtp"
+              class="nh-btn nh-btn-primary"
+              type="button"
+            >
+              <span>إرسال رمز التحقق</span>
+            </button>
+            <button
+              id="btnClearAuth"
+              class="nh-btn nh-btn-secondary nh-btn-xs"
+              type="button"
+            >
+              مسح الحقول
+            </button>
+          </div>
+
+          <div class="nh-help-text">
+            ✳️ سيتم إنشاء حساب جديد تلقائيًا لو لم يكن لديك حساب مسبقًا.
+          </div>
+
+          <div id="otpStatus" class="nh-status"></div>
+        </div>
+
+        <!-- OTP card -->
+        <div class="nh-card" id="otpCard" style="display: none;">
+          <div class="nh-card-header">
+            <div>
+              <div class="nh-card-title">أدخل رمز التحقق</div>
+              <div class="nh-card-subtitle">
+                الرمز مكون من ٤ أرقام وصالح لمدة ١٠ دقائق.
+              </div>
+            </div>
+            <div class="nh-pill-tabs">
+              <button
+                type="button"
+                class="active"
+                id="tabOtpAr"
+                onclick="setLocale('ar')"
+              >
+                عربي
+              </button>
+              <button
+                type="button"
+                id="tabOtpEn"
+                onclick="setLocale('en')"
+              >
+                EN
+              </button>
+            </div>
+          </div>
+
+          <label class="nh-label" for="otpInput">
+            رمز التحقق
+          </label>
+          <input
+            id="otpInput"
+            class="nh-input"
+            type="text"
+            maxlength="6"
+            inputmode="numeric"
+            placeholder="••••"
+          />
+
+          <div class="nh-actions-row">
+            <button
+              id="btnVerifyOtp"
+              class="nh-btn nh-btn-primary"
+              type="button"
+            >
+              تأكيد الرمز والدخول
+            </button>
+            <button
+              id="btnResendOtp"
+              class="nh-btn nh-btn-secondary nh-btn-xs"
+              type="button"
+            >
+              إعادة إرسال الرمز
+            </button>
+          </div>
+
+          <div class="nh-help-text">
+            في حال لم يصلك الرمز، انتظر قليلًا ثم جرّب إعادة الإرسال.
+          </div>
+
+          <div id="verifyStatus" class="nh-status"></div>
+        </div>
+
+        <!-- Logged-in user summary -->
+        <div
+          class="nh-card"
+          id="userCard"
+          style="display: none; margin-top: 12px;"
+        >
+          <div class="nh-card-header">
+            <div>
+              <div class="nh-card-title">بيانات الحساب الحالي</div>
+              <div class="nh-card-subtitle">
+                هذا الحساب مرتبط برقم الجوال الذي استخدمته في الدخول.
+              </div>
+            </div>
+            <button
+              id="btnLogout"
+              class="nh-btn nh-btn-secondary nh-btn-xs"
+              type="button"
+            >
+              تسجيل خروج
+            </button>
+          </div>
+
+          <div class="nh-user-summary">
+            <div>
+              <strong>الاسم:</strong>
+              <span id="userNameLabel">—</span>
+            </div>
+            <div>
+              <strong>الجوال:</strong>
+              <span id="userMobileLabel">—</span>
+            </div>
+            <div>
+              <strong>المعرف:</strong>
+              <span id="userIdLabel">—</span>
+            </div>
+          </div>
+
+          <div class="nh-divider"></div>
+
+          <div class="nh-help-text">
+            بعد تسجيل الدخول يمكنك إدارة المساحات (Workspaces) وتركيب
+            التطبيقات من المتجر.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: Workspaces + Marketplace -->
+      <div id="appView" style="display: none;">
+        <!-- Workspaces -->
+        <div class="nh-card">
+          <div class="nh-card-header">
+            <div>
+              <div class="nh-card-title">المساحات (Workspaces)</div>
+              <div class="nh-card-subtitle">
+                مساحة العمل هي المكان الذي تُثبّت فيه التطبيقات والحلول.
+              </div>
+            </div>
+            <button
+              id="btnReloadWorkspaces"
+              class="nh-btn nh-btn-secondary nh-btn-xs"
+              type="button"
+            >
+              تحديث
+            </button>
+          </div>
+
+          <div class="nh-inline-row">
+            <div>
+              <label class="nh-label" for="workspaceNameInput">
+                إنشاء مساحة جديدة
+              </label>
+              <input
+                id="workspaceNameInput"
+                class="nh-input"
+                type="text"
+                placeholder="مثال: Simplicity Coffee أو NahlTime Demo"
+              />
+            </div>
+            <div class="nh-inline-row fixed-left">
+              <button
+                id="btnCreateWorkspace"
+                class="nh-btn nh-btn-primary"
+                type="button"
+              >
+                إنشاء مساحة
+              </button>
+            </div>
+          </div>
+
+          <div class="nh-help-text">
+            بإمكانك إنشاء أكثر من مساحة وتجربة حلول مختلفة داخل كل مساحة.
+          </div>
+
+          <div id="workspacesList" class="nh-list"></div>
+          <div id="workspacesEmpty" class="nh-empty" style="display: none;">
+            لا توجد مساحات بعد. ابدأ بإنشاء أول مساحة لك.
+          </div>
+
+          <div id="workspaceStatus" class="nh-status"></div>
+        </div>
+
+        <!-- Apps in selected workspace -->
+        <div class="nh-card" style="margin-top: 10px;">
+          <div class="nh-section-title-line">
+            <div>
+              <h3>التطبيقات المثبّتة في المساحة</h3>
+              <span id="appsSubtitle"
+                >اختر مساحة من القائمة أعلاه لعرض التطبيقات.</span
+              >
+            </div>
+            <span class="nh-tag" id="currentWorkspaceTag">لا يوجد</span>
+          </div>
+
+          <div id="workspaceAppsList" class="nh-list"></div>
+          <div
+            id="workspaceAppsEmpty"
+            class="nh-empty"
+            style="display: none;"
+          >
+            لم يتم تثبيت أي تطبيق في هذه المساحة حتى الآن.
+          </div>
+
+          <div id="appsStatus" class="nh-status"></div>
+        </div>
+
+        <!-- Marketplace -->
+        <div class="nh-card" style="margin-top: 10px;">
+          <div class="nh-section-title-line">
+            <div>
+              <h3>متجر نحل هب (Marketplace)</h3>
+              <span>ثبّت التطبيقات أو الحزم (Modules) داخل المساحة المحددة.</span>
+            </div>
+            <span class="nh-badge-plan">نسخة تجريبية</span>
+          </div>
+
+          <div class="nh-inline-row fixed-left" style="margin-top: 8px;">
+            <button
+              id="btnReloadMarketplace"
+              class="nh-btn nh-btn-secondary nh-btn-xs"
+              type="button"
+            >
+              تحديث قائمة المتجر
+            </button>
+            <span class="nh-help-text" style="margin-top: 0;">
+              تأكد من اختيار مساحة عمل أولاً.
+            </span>
+          </div>
+
+          <div id="marketplaceGrid" class="nh-market-grid"></div>
+          <div
+            id="marketplaceEmpty"
+            class="nh-empty"
+            style="display: none;"
+          >
+            لا توجد قوالب منشورة في المتجر حتى الآن.
+          </div>
+
+          <div id="marketplaceStatus" class="nh-status"></div>
+        </div>
+
+        <div class="nh-footer-note">
+          NahlHub Hub – نسخة أولية للتجارب الداخلية. لأي ملاحظات تواصل مع
+          فريق نحل.
+        </div>
+      </div>
     </div>
-    <div class="user-info" id="headerUserInfo" style="display:none;">
-      <span id="headerUserName"></span>
-      <span id="headerUserMobile" class="small"></span>
-      <button type="button" id="btnLogout">تسجيل خروج</button>
-    </div>
-  </header>
-
-  <main>
-    <!-- Auth Section -->
-    <section id="authSection" class="card">
-      <h2>تسجيل الدخول برقم الجوال</h2>
-      <p class="sub">
-        استخدم رقم جوالك لاستلام رمز الدخول عبر واتساب، بدون كلمة مرور.
-      </p>
-
-      <div class="stepper">
-        <span class="badge active" id="stepBadge1">1. رقم الجوال</span>
-        <span>›</span>
-        <span class="badge" id="stepBadge2">2. رمز التحقق</span>
-      </div>
-
-      <div id="step1">
-        <label for="mobileInput">رقم الجوال (مثال: 5xxxxxxxx)</label>
-        <input
-          type="tel"
-          id="mobileInput"
-          placeholder="أدخل رقم جوالك"
-          autocomplete="tel"
-        />
-        <div class="row space mt-8">
-          <button class="primary" id="btnSendOtp">
-            إرسال رمز الدخول عبر واتساب
-          </button>
-          <span class="small">سيتم الإرسال عبر Green API المتصل بالحساب.</span>
-        </div>
-        <div id="sendOtpStatus" class="status"></div>
-      </div>
-
-      <div id="step2" class="mt-16 hidden">
-        <label for="otpInput">رمز التحقق المكون من 4 أرقام</label>
-        <input
-          type="text"
-          id="otpInput"
-          maxlength="4"
-          placeholder="أدخل الرمز"
-        />
-        <div class="row space mt-8">
-          <div class="row" style="gap:6px;">
-            <button class="primary" id="btnVerifyOtp">تأكيد الرمز والدخول</button>
-            <button class="secondary" id="btnBackToMobile">تعديل رقم الجوال</button>
-          </div>
-          <span class="small">ينتهي الرمز بعد ١٠ دقائق.</span>
-        </div>
-        <div id="verifyOtpStatus" class="status"></div>
-      </div>
-    </section>
-
-    <!-- App Section -->
-    <section id="appSection" class="layout hidden">
-      <!-- Left: Workspaces -->
-      <div class="card">
-        <div class="row space">
-          <div>
-            <div class="section-title">مساحات العمل (Workspaces)</div>
-            <p class="sub">أنشئ مساحة عمل لكل مشروع أو فريق.</p>
-          </div>
-          <span class="pill" id="userPill">
-            مستخدم غير معروف
-          </span>
-        </div>
-
-        <div class="mt-8">
-          <label>إنشاء مساحة عمل جديدة</label>
-          <div class="row mt-4">
-            <input
-              type="text"
-              id="workspaceNameInput"
-              placeholder="مثال: Nahl Studio / Sponge & Soap / Client ABC"
-            />
-            <button class="primary" id="btnCreateWorkspace">إنشاء</button>
-          </div>
-          <div id="workspaceCreateStatus" class="status small"></div>
-        </div>
-
-        <div class="mt-16">
-          <div class="row space">
-            <span class="section-title">مساحاتي</span>
-            <span class="label-muted" id="workspaceCountLabel">0 مساحة</span>
-          </div>
-          <div class="workspace-list" id="workspaceList"></div>
-          <div id="workspaceListStatus" class="status small"></div>
-        </div>
-      </div>
-
-      <!-- Right: Apps + Marketplace -->
-      <div class="card">
-        <div class="row space">
-          <div>
-            <div class="section-title">التطبيقات & السوق</div>
-            <p class="sub" id="workspaceTitle">اختر مساحة عمل من القائمة اليمنى.</p>
-          </div>
-          <div class="chips">
-            <span class="chip">AppCatalog</span>
-            <span class="chip">Modules</span>
-          </div>
-        </div>
-
-        <div class="mt-12">
-          <div class="section-title">التطبيقات المثبتة في مساحة العمل</div>
-          <div class="apps-list" id="workspaceAppsList"></div>
-          <div id="workspaceAppsStatus" class="status small"></div>
-        </div>
-
-        <div class="mt-16">
-          <div class="section-title">السوق – التطبيقات & الـ Modules</div>
-          <p class="small">
-            اختر تطبيق أو Module ثم اضغط "تثبيت في مساحة العمل".
-          </p>
-          <div class="templates-list" id="templatesList"></div>
-          <div id="templatesStatus" class="status small"></div>
-        </div>
-      </div>
-    </section>
-  </main>
+  </div>
 
   <script>
-    const API_URL = "/api/hub/manage"; // Vercel API → Apps Script proxy
+    // ==========================
+    // Simple Frontend State
+    // ==========================
 
-    let sessionKey = null;
+    let currentSessionKey = null;
     let currentUser = null;
     let currentWorkspaceId = null;
+    let currentLocale = "ar";
 
-    // -------------------------------------------------------------
-    // Generic API helper
-    // -------------------------------------------------------------
-    async function hubApi(action, payload = {}) {
-      const body = { action, ...payload };
-      const res = await fetch(API_URL, {
+    function setLocale(locale) {
+      currentLocale = locale === "en" ? "en" : "ar";
+      const tabAr = document.getElementById("tabOtpAr");
+      const tabEn = document.getElementById("tabOtpEn");
+      if (tabAr && tabEn) {
+        if (currentLocale === "ar") {
+          tabAr.classList.add("active");
+          tabEn.classList.remove("active");
+        } else {
+          tabEn.classList.add("active");
+          tabAr.classList.remove("active");
+        }
+      }
+    }
+
+    function setLoading(buttonId, loading) {
+      const btn = document.getElementById(buttonId);
+      if (!btn) return;
+      if (loading) {
+        btn.disabled = true;
+        if (!btn.dataset.originalText) {
+          btn.dataset.originalText = btn.innerText;
+        }
+        btn.innerText = "جارٍ التنفيذ...";
+      } else {
+        btn.disabled = false;
+        if (btn.dataset.originalText) {
+          btn.innerText = btn.dataset.originalText;
+        }
+      }
+    }
+
+    function showStatus(elId, message, ok) {
+      const el = document.getElementById(elId);
+      if (!el) return;
+      if (!message) {
+        el.style.display = "none";
+        el.classList.remove("ok", "err");
+        el.innerText = "";
+        return;
+      }
+      el.style.display = "block";
+      el.classList.remove("ok", "err");
+      el.classList.add(ok ? "ok" : "err");
+      el.innerText = message;
+    }
+
+    function updateAuthBadge() {
+      const dot = document.getElementById("authStateDot");
+      const label = document.getElementById("authStateLabel");
+      const chip = document.getElementById("sessionChip");
+      if (!dot || !label || !chip) return;
+
+      if (currentSessionKey && currentUser) {
+        dot.classList.remove("off");
+        label.innerText = "مسجل الدخول";
+        chip.style.display = "block";
+        chip.innerText = "session: " + currentSessionKey;
+      } else {
+        dot.classList.add("off");
+        label.innerText = "غير مسجل";
+        chip.style.display = "none";
+        chip.innerText = "session: –";
+      }
+    }
+
+    function showLoggedInUI(show) {
+      const appView = document.getElementById("appView");
+      const userCard = document.getElementById("userCard");
+      if (!appView || !userCard) return;
+      appView.style.display = show ? "block" : "none";
+      userCard.style.display = show ? "block" : "none";
+    }
+
+    function updateUserCard() {
+      const nameEl = document.getElementById("userNameLabel");
+      const mobileEl = document.getElementById("userMobileLabel");
+      const idEl = document.getElementById("userIdLabel");
+      if (!currentUser) {
+        if (nameEl) nameEl.innerText = "—";
+        if (mobileEl) mobileEl.innerText = "—";
+        if (idEl) idEl.innerText = "—";
+        return;
+      }
+      if (nameEl) nameEl.innerText = currentUser.name || "—";
+      if (mobileEl)
+        mobileEl.innerText = currentUser.mobile || "—";
+      if (idEl) idEl.innerText = currentUser.userId || "—";
+    }
+
+    // ==========================
+    // API Helper
+    // ==========================
+
+    async function callHub(action, payload) {
+      const body = Object.assign({}, payload || {}, { action });
+      const res = await fetch("/api/hub/manage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-
-      let data;
       const text = await res.text();
+      let data;
       try {
         data = JSON.parse(text);
       } catch (err) {
-        console.error("Non-JSON response from API:", text);
-        throw new Error("Server returned invalid JSON");
+        console.error("Non-JSON response:", text);
+        throw new Error("Unexpected response from backend.");
       }
-
       if (!res.ok) {
-        const msg =
-          (data && (data.error || data.message)) ||
-          `HTTP ${res.status}`;
-        throw new Error(msg);
+        throw new Error(data.error || "Backend error");
       }
-
       return data;
     }
 
-    // -------------------------------------------------------------
-    // UI helpers
-    // -------------------------------------------------------------
-    function showAuthSection() {
-      document.getElementById("authSection").classList.remove("hidden");
-      document.getElementById("appSection").classList.add("hidden");
-      document.getElementById("headerUserInfo").style.display = "none";
-    }
+    // ==========================
+    // Auth Flow (Mobile + OTP)
+    // ==========================
 
-    function showAppSection() {
-      document.getElementById("authSection").classList.add("hidden");
-      document.getElementById("appSection").classList.remove("hidden");
-      document.getElementById("headerUserInfo").style.display = "flex";
-    }
-
-    function setStep(step) {
-      const b1 = document.getElementById("stepBadge1");
-      const b2 = document.getElementById("stepBadge2");
-      const s1 = document.getElementById("step1");
-      const s2 = document.getElementById("step2");
-
-      if (step === 1) {
-        b1.classList.add("active");
-        b2.classList.remove("active");
-        s1.classList.remove("hidden");
-        s2.classList.add("hidden");
-      } else {
-        b1.classList.remove("active");
-        b2.classList.add("active");
-        s1.classList.add("hidden");
-        s2.classList.remove("hidden");
-      }
-    }
-
-    function setStatus(id, msg, type = "info") {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.textContent = msg || "";
-      el.classList.remove("error", "ok");
-      if (type === "error") el.classList.add("error");
-      if (type === "ok") el.classList.add("ok");
-    }
-
-    function setLoading(button, isLoading, textWhenLoading, textNormal) {
-      if (!button) return;
-      button.disabled = isLoading;
-      if (isLoading) {
-        button.dataset.originalText = textNormal || button.textContent.trim();
-        button.textContent = textWhenLoading || "جاري التنفيذ...";
-      } else {
-        button.textContent =
-          textNormal || button.dataset.originalText || button.textContent;
-      }
-    }
-
-    // -------------------------------------------------------------
-    // Auth: send OTP
-    // -------------------------------------------------------------
-    async function onSendOtp() {
+    async function handleSendOtp() {
       const mobileInput = document.getElementById("mobileInput");
-      const mobile = (mobileInput.value || "").trim();
-      const btn = document.getElementById("btnSendOtp");
+      const otpCard = document.getElementById("otpCard");
+      if (!mobileInput) return;
 
-      setStatus("sendOtpStatus", "");
-      if (!mobile) {
-        setStatus("sendOtpStatus", "من فضلك أدخل رقم الجوال.", "error");
+      const rawMobile = (mobileInput.value || "").trim();
+      if (!rawMobile) {
+        showStatus("otpStatus", "الرجاء إدخال رقم الجوال أولاً.", false);
         return;
       }
 
+      showStatus("otpStatus", "", true);
+      showStatus("verifyStatus", "", true);
+      setLoading("btnSendOtp", true);
+
       try {
-        setLoading(btn, true, "جاري الإرسال...", "إرسال رمز الدخول عبر واتساب");
-        const resp = await hubApi("sendOtp", { mobile });
-        if (!resp.success) {
-          setStatus(
-            "sendOtpStatus",
-            resp.error || "تعذر إرسال رمز الدخول.",
-            "error"
+        const result = await callHub("sendOtp", { mobile: rawMobile });
+
+        if (!result || result.success === false) {
+          showStatus(
+            "otpStatus",
+            result && result.error
+              ? result.error
+              : "تعذر إرسال الرمز. حاول مرة أخرى.",
+            false
           );
           return;
         }
-        setStatus(
-          "sendOtpStatus",
-          "تم إنشاء الرمز. سيتم إرساله عبر واتساب خلال لحظات.",
-          "ok"
-        );
-        setStep(2);
+
+        let msg =
+          "✅ تم إنشاء رمز الدخول.\nتحقق من واتساب / الرسائل خلال لحظات.";
+        if (result.whatsappSent === false && result.whatsappError) {
+          msg +=
+            "\n\n⚠️ لم نستطع الإرسال عبر واتساب تلقائيًا، لكن تم إنشاء الرمز ويمكن استخدامه لوصلك بأي طريقة أخرى.";
+        }
+
+        showStatus("otpStatus", msg, true);
+        if (otpCard) otpCard.style.display = "block";
         document.getElementById("otpInput").focus();
       } catch (err) {
         console.error("sendOtp error:", err);
-        setStatus(
-          "sendOtpStatus",
-          err.message || "خطأ غير متوقع أثناء إرسال الرمز.",
-          "error"
+        showStatus(
+          "otpStatus",
+          "حدث خطأ غير متوقع أثناء إرسال الرمز. حاول مرة أخرى.",
+          false
         );
       } finally {
-        setLoading(btn, false, "جاري الإرسال...", "إرسال رمز الدخول عبر واتساب");
+        setLoading("btnSendOtp", false);
       }
     }
 
-    // -------------------------------------------------------------
-    // Auth: verify OTP
-    // -------------------------------------------------------------
-    async function onVerifyOtp() {
-      const mobile = (document.getElementById("mobileInput").value || "").trim();
-      const otp = (document.getElementById("otpInput").value || "").trim();
-      const btn = document.getElementById("btnVerifyOtp");
+    async function handleVerifyOtp() {
+      const mobileInput = document.getElementById("mobileInput");
+      const otpInput = document.getElementById("otpInput");
+      if (!mobileInput || !otpInput) return;
 
-      setStatus("verifyOtpStatus", "");
+      const mobile = (mobileInput.value || "").trim();
+      const otp = (otpInput.value || "").trim();
+
       if (!mobile || !otp) {
-        setStatus(
-          "verifyOtpStatus",
-          "من فضلك أدخل رقم الجوال والرمز.",
-          "error"
+        showStatus(
+          "verifyStatus",
+          "الرجاء إدخال رقم الجوال والرمز.",
+          false
         );
         return;
       }
 
+      showStatus("verifyStatus", "", true);
+      setLoading("btnVerifyOtp", true);
+
       try {
-        setLoading(btn, true, "جاري التحقق...", "تأكيد الرمز والدخول");
-        const resp = await hubApi("verifyOtp", { mobile, otp });
-        if (!resp.success) {
-          setStatus(
-            "verifyOtpStatus",
-            resp.error || "رمز غير صحيح أو منتهي.",
-            "error"
+        const result = await callHub("verifyOtp", { mobile, otp });
+
+        if (!result || result.success === false) {
+          showStatus(
+            "verifyStatus",
+            result && result.error
+              ? result.error
+              : "تعذر التحقق من الرمز. حاول مرة أخرى.",
+            false
           );
           return;
         }
 
-        // Save session & user
-        sessionKey = resp.sessionKey;
-        currentUser = resp.user || null;
-        if (sessionKey) {
-          localStorage.setItem("nh_sessionKey", sessionKey);
-        }
+        currentSessionKey = result.sessionKey || null;
+        currentUser = result.user || null;
+        updateAuthBadge();
+        updateUserCard();
+        showLoggedInUI(true);
 
-        setStatus(
-          "verifyOtpStatus",
-          "تم التحقق بنجاح. يتم تحميل مساحات العمل...",
-          "ok"
+        showStatus(
+          "verifyStatus",
+          "✅ تم التحقق من الرمز وتسجيل الدخول بنجاح.",
+          true
+        );
+        showStatus(
+          "otpStatus",
+          "يمكنك الآن إدارة المساحات والتطبيقات من العمود الأيمن.",
+          true
         );
 
-        // Load full session via auth.me (gets apps, etc.)
-        await loadSessionViaMe();
+        await refreshAuthMe();
+        await loadWorkspaces();
       } catch (err) {
         console.error("verifyOtp error:", err);
-        setStatus(
-          "verifyOtpStatus",
-          err.message || "خطأ غير متوقع أثناء التحقق.",
-          "error"
+        showStatus(
+          "verifyStatus",
+          "حدث خطأ غير متوقع أثناء التحقق من الرمز.",
+          false
         );
       } finally {
-        setLoading(btn, false, "جاري التحقق...", "تأكيد الرمز والدخول");
+        setLoading("btnVerifyOtp", false);
       }
     }
 
-    async function loadSessionViaMe() {
-      if (!sessionKey) return;
+    async function refreshAuthMe() {
+      if (!currentSessionKey) return;
       try {
-        const resp = await hubApi("auth.me", { sessionKey });
-        if (!resp.success) {
-          console.warn("auth.me failed:", resp.error);
-          // If session invalid, go back to login
-          localStorage.removeItem("nh_sessionKey");
-          sessionKey = null;
-          currentUser = null;
-          showAuthSection();
+        const result = await callHub("auth.me", {
+          sessionKey: currentSessionKey,
+        });
+        if (!result || result.success === false) {
+          console.warn("auth.me failed:", result);
           return;
         }
-
-        currentUser = resp.user || currentUser;
-        // Update header
-        updateHeaderUser();
-
-        // Show app section
-        showAppSection();
-        // Load workspaces for user
-        if (currentUser && currentUser.userId) {
-          await loadWorkspaces(currentUser.userId);
-        }
+        currentUser = result.user || currentUser;
+        updateUserCard();
       } catch (err) {
-        console.error("auth.me error:", err);
-        showAuthSection();
+        console.warn("auth.me error:", err);
       }
     }
 
-    function updateHeaderUser() {
-      const name = (currentUser && currentUser.name) || "مستخدم بدون اسم";
-      const mobile = currentUser && currentUser.mobile ? currentUser.mobile : "";
-      document.getElementById("headerUserName").textContent = name;
-      document.getElementById("headerUserMobile").textContent = mobile
-        ? "📱 " + mobile
-        : "";
-      document.getElementById("userPill").textContent = name;
-    }
-
-    // -------------------------------------------------------------
-    // Logout
-    // -------------------------------------------------------------
-    async function onLogout() {
-      try {
-        const key = sessionKey || localStorage.getItem("nh_sessionKey");
-        if (key) {
-          await hubApi("auth.logout", { sessionKey: key });
+    async function handleLogout() {
+      if (currentSessionKey) {
+        try {
+          await callHub("auth.logout", {
+            sessionKey: currentSessionKey,
+          });
+        } catch (err) {
+          console.warn("logout error:", err);
         }
-      } catch (err) {
-        console.warn("logout error:", err);
       }
-      sessionKey = null;
+      currentSessionKey = null;
       currentUser = null;
       currentWorkspaceId = null;
-      localStorage.removeItem("nh_sessionKey");
-      showAuthSection();
+      updateAuthBadge();
+      updateUserCard();
+      showLoggedInUI(false);
+      clearWorkspacesUI();
+      clearAppsUI();
+      clearMarketplaceUI();
+      showStatus("otpStatus", "", true);
+      showStatus("verifyStatus", "", true);
+      showStatus("workspaceStatus", "", true);
+      showStatus("appsStatus", "", true);
+      showStatus("marketplaceStatus", "", true);
     }
 
-    // -------------------------------------------------------------
+    function clearAuthFields() {
+      const mobileInput = document.getElementById("mobileInput");
+      const otpInput = document.getElementById("otpInput");
+      if (mobileInput) mobileInput.value = "";
+      if (otpInput) otpInput.value = "";
+      showStatus("otpStatus", "", true);
+      showStatus("verifyStatus", "", true);
+    }
+
+    // ==========================
     // Workspaces
-    // -------------------------------------------------------------
-    async function loadWorkspaces(userId) {
-      setStatus("workspaceListStatus", "جاري تحميل مساحات العمل...");
+    // ==========================
+
+    function clearWorkspacesUI() {
+      const list = document.getElementById("workspacesList");
+      const empty = document.getElementById("workspacesEmpty");
+      if (list) list.innerHTML = "";
+      if (empty) empty.style.display = "none";
+    }
+
+    async function loadWorkspaces() {
+      clearWorkspacesUI();
+      showStatus("workspaceStatus", "", true);
+
+      if (!currentUser || !currentUser.userId) {
+        showStatus(
+          "workspaceStatus",
+          "الرجاء تسجيل الدخول أولاً.",
+          false
+        );
+        return;
+      }
+
       try {
-        const resp = await hubApi("workspace.listForUser", { userId });
-        if (!resp.success) {
-          setStatus(
-            "workspaceListStatus",
-            resp.error || "تعذر تحميل مساحات العمل.",
-            "error"
-          );
+        const result = await callHub("workspace.listForUser", {
+          userId: currentUser.userId,
+        });
+
+        const items = (result && result.items) || [];
+        const list = document.getElementById("workspacesList");
+        const empty = document.getElementById("workspacesEmpty");
+        if (!list || !empty) return;
+
+        if (items.length === 0) {
+          empty.style.display = "block";
           return;
         }
 
-        const items = resp.items || [];
-        renderWorkspaceList(items);
-        setStatus(
-          "workspaceListStatus",
-          items.length
-            ? "اختر مساحة عمل من القائمة."
-            : "لا يوجد مساحات عمل حتى الآن. أنشئ أول مساحة عمل.",
-          "ok"
-        );
+        empty.style.display = "none";
+        list.innerHTML = "";
+
+        items.forEach((ws) => {
+          const el = document.createElement("div");
+          el.className = "nh-list-item";
+          el.dataset.wsId = ws.workspaceId;
+
+          const title = document.createElement("div");
+          title.className = "nh-list-item-title";
+          title.innerText = ws.name || "بدون اسم";
+
+          const meta = document.createElement("div");
+          meta.className = "nh-list-item-meta";
+
+          const slug = document.createElement("span");
+          slug.innerText = "slug: " + (ws.slug || "—");
+          meta.appendChild(slug);
+
+          const role = document.createElement("span");
+          role.className = "nh-tag";
+          role.innerText = ws.role === "admin" ? "مدير المساحة" : "عضو";
+          meta.appendChild(role);
+
+          const plan = document.createElement("span");
+          plan.className = "nh-tag";
+          plan.innerText = "الخطة: " + (ws.plan || "free");
+          meta.appendChild(plan);
+
+          el.appendChild(title);
+          el.appendChild(meta);
+
+          el.addEventListener("click", () => {
+            selectWorkspace(ws.workspaceId, ws.name, ws.plan);
+          });
+
+          list.appendChild(el);
+        });
+
+        // Keep selection state if exists
+        if (currentWorkspaceId) {
+          highlightSelectedWorkspace();
+        }
       } catch (err) {
         console.error("loadWorkspaces error:", err);
-        setStatus(
-          "workspaceListStatus",
-          err.message || "خطأ غير متوقع أثناء تحميل المساحات.",
-          "error"
+        showStatus(
+          "workspaceStatus",
+          "تعذر تحميل المساحات. حاول مرة أخرى.",
+          false
         );
       }
     }
 
-    function renderWorkspaceList(items) {
-      const container = document.getElementById("workspaceList");
-      container.innerHTML = "";
-      const countLabel = document.getElementById("workspaceCountLabel");
-      countLabel.textContent = items.length + " مساحة";
-
-      if (!items.length) {
-        return;
-      }
-
-      items.forEach((ws) => {
-        const div = document.createElement("div");
-        div.className = "workspace-item";
-        div.dataset.workspaceId = ws.workspaceId;
-
-        if (ws.workspaceId === currentWorkspaceId) {
-          div.classList.add("active");
+    function highlightSelectedWorkspace() {
+      const list = document.getElementById("workspacesList");
+      if (!list) return;
+      const children = Array.from(list.children);
+      children.forEach((el) => {
+        if (el.dataset.wsId === currentWorkspaceId) {
+          el.classList.add("active");
+        } else {
+          el.classList.remove("active");
         }
-
-        const left = document.createElement("div");
-        const nameEl = document.createElement("div");
-        nameEl.textContent = ws.name;
-        const slugEl = document.createElement("div");
-        slugEl.className = "slug";
-        slugEl.textContent =
-          (ws.slug ? ws.slug + " · " : "") + (ws.plan || "free");
-
-        left.appendChild(nameEl);
-        left.appendChild(slugEl);
-
-        const tag = document.createElement("span");
-        tag.className = "tag";
-        tag.textContent = ws.role === "admin" ? "Admin" : "Member";
-
-        div.appendChild(left);
-        div.appendChild(tag);
-
-        div.addEventListener("click", () => {
-          selectWorkspace(ws.workspaceId, ws.name);
-        });
-
-        container.appendChild(div);
       });
-
-      // If no workspace selected yet, pick first
-      if (!currentWorkspaceId && items[0]) {
-        selectWorkspace(items[0].workspaceId, items[0].name);
-      }
     }
 
-    async function onCreateWorkspace() {
-      if (!currentUser || !currentUser.userId) {
-        setStatus(
-          "workspaceCreateStatus",
-          "الرجاء تسجيل الدخول أولاً.",
-          "error"
-        );
-        return;
+    async function selectWorkspace(wsId, name, plan) {
+      currentWorkspaceId = wsId;
+      highlightSelectedWorkspace();
+
+      const wsTag = document.getElementById("currentWorkspaceTag");
+      if (wsTag) {
+        wsTag.innerText = name || "بدون اسم";
       }
 
-      const input = document.getElementById("workspaceNameInput");
-      const name = (input.value || "").trim();
-      const btn = document.getElementById("btnCreateWorkspace");
+      const appsSubtitle = document.getElementById("appsSubtitle");
+      if (appsSubtitle) {
+        appsSubtitle.innerText =
+          "التطبيقات المرتبطة بالمساحة: " + (name || wsId);
+      }
 
-      setStatus("workspaceCreateStatus", "");
+      showStatus("appsStatus", "", true);
+      showStatus("marketplaceStatus", "", true);
+      await loadWorkspaceApps();
+      await loadMarketplace();
+    }
+
+    async function handleCreateWorkspace() {
+      const nameInput = document.getElementById("workspaceNameInput");
+      if (!nameInput || !currentUser) return;
+
+      const name = (nameInput.value || "").trim();
       if (!name) {
-        setStatus(
-          "workspaceCreateStatus",
-          "من فضلك أدخل اسم مساحة العمل.",
-          "error"
+        showStatus(
+          "workspaceStatus",
+          "الرجاء إدخال اسم للمساحة قبل الإنشاء.",
+          false
         );
         return;
       }
+
+      setLoading("btnCreateWorkspace", true);
+      showStatus("workspaceStatus", "", true);
 
       try {
-        setLoading(btn, true, "جاري الإنشاء...", "إنشاء");
-        const resp = await hubApi("workspace.create", {
+        const result = await callHub("workspace.create", {
           userId: currentUser.userId,
           name,
+          plan: "free",
         });
 
-        if (!resp.success) {
-          setStatus(
-            "workspaceCreateStatus",
-            resp.error || "تعذر إنشاء مساحة العمل.",
-            "error"
+        if (!result || result.success === false) {
+          showStatus(
+            "workspaceStatus",
+            result && result.error
+              ? result.error
+              : "تعذر إنشاء المساحة. حاول مرة أخرى.",
+            false
           );
           return;
         }
 
-        setStatus(
-          "workspaceCreateStatus",
-          "تم إنشاء مساحة العمل بنجاح.",
-          "ok"
+        showStatus(
+          "workspaceStatus",
+          "✅ تم إنشاء المساحة بنجاح.",
+          true
         );
-        input.value = "";
-
-        // Reload workspaces
-        await loadWorkspaces(currentUser.userId);
+        nameInput.value = "";
+        await loadWorkspaces();
       } catch (err) {
-        console.error("workspace.create error:", err);
-        setStatus(
-          "workspaceCreateStatus",
-          err.message || "خطأ غير متوقع أثناء إنشاء المساحة.",
-          "error"
+        console.error("create workspace error:", err);
+        showStatus(
+          "workspaceStatus",
+          "حدث خطأ غير متوقع أثناء إنشاء المساحة.",
+          false
         );
       } finally {
-        setLoading(btn, false, "جاري الإنشاء...", "إنشاء");
+        setLoading("btnCreateWorkspace", false);
       }
     }
 
-    async function selectWorkspace(workspaceId, workspaceName) {
-      currentWorkspaceId = workspaceId;
+    // ==========================
+    // Workspace Apps
+    // ==========================
 
-      // update selected style
-      Array.from(
-        document.querySelectorAll(".workspace-item")
-      ).forEach((el) => {
-        el.classList.toggle(
-          "active",
-          el.dataset.workspaceId === workspaceId
-        );
-      });
-
-      document.getElementById("workspaceTitle").textContent =
-        "مساحة العمل الحالية: " + (workspaceName || workspaceId);
-
-      // load apps & templates
-      await loadWorkspaceApps(workspaceId);
-      await loadTemplates(workspaceId);
+    function clearAppsUI() {
+      const list = document.getElementById("workspaceAppsList");
+      const empty = document.getElementById("workspaceAppsEmpty");
+      if (list) list.innerHTML = "";
+      if (empty) empty.style.display = "none";
     }
 
-    // -------------------------------------------------------------
-    // Workspace Apps
-    // -------------------------------------------------------------
-    async function loadWorkspaceApps(workspaceId) {
-      if (!workspaceId) return;
-      setStatus("workspaceAppsStatus", "جاري تحميل التطبيقات...");
-      const container = document.getElementById("workspaceAppsList");
-      container.innerHTML = "";
+    async function loadWorkspaceApps() {
+      clearAppsUI();
+      if (!currentWorkspaceId) {
+        showStatus(
+          "appsStatus",
+          "اختر مساحة من الأعلى لعرض التطبيقات.",
+          false
+        );
+        return;
+      }
 
       try {
-        const resp = await hubApi("marketplace.listWorkspaceApps", {
-          workspaceId,
+        const result = await callHub("marketplace.listWorkspaceApps", {
+          workspaceId: currentWorkspaceId,
         });
-        if (!resp.success) {
-          setStatus(
-            "workspaceAppsStatus",
-            resp.error || "تعذر تحميل التطبيقات.",
-            "error"
-          );
+
+        const items = (result && result.items) || [];
+        const list = document.getElementById("workspaceAppsList");
+        const empty = document.getElementById("workspaceAppsEmpty");
+        if (!list || !empty) return;
+
+        if (items.length === 0) {
+          empty.style.display = "block";
           return;
         }
 
-        const items = resp.items || [];
-        if (!items.length) {
-          setStatus(
-            "workspaceAppsStatus",
-            "لا يوجد تطبيقات مثبتة في هذه المساحة.",
-            "info"
-          );
-          return;
-        }
+        empty.style.display = "none";
+        list.innerHTML = "";
 
         items.forEach((app) => {
-          const card = document.createElement("div");
-          card.className = "app-card";
+          const el = document.createElement("div");
+          el.className = "nh-list-item";
 
-          const left = document.createElement("div");
-          const title = document.createElement("h3");
-          title.textContent = app.nameAr || app.nameEn || app.templateId;
-          const desc = document.createElement("p");
-          desc.textContent =
-            "Template: " +
-            (app.templateId || "") +
-            " · Status: " +
-            (app.status || "");
+          const title = document.createElement("div");
+          title.className = "nh-list-item-title";
+          title.innerText = app.nameAr || app.nameEn || "App";
 
-          left.appendChild(title);
-          left.appendChild(desc);
+          const meta = document.createElement("div");
+          meta.className = "nh-list-item-meta";
 
-          const right = document.createElement("div");
-          right.className = "chips";
-          const chip = document.createElement("span");
-          chip.className = "chip";
-          chip.textContent = app.visibleInHub === "Yes" ? "Visible" : "Hidden";
-          right.appendChild(chip);
+          const idSpan = document.createElement("span");
+          idSpan.innerText = "AppId: " + (app.appId || "—");
+          meta.appendChild(idSpan);
 
-          card.appendChild(left);
-          card.appendChild(right);
+          const tplSpan = document.createElement("span");
+          tplSpan.className = "nh-tag";
+          tplSpan.innerText = "Template: " + (app.templateId || "—");
+          meta.appendChild(tplSpan);
 
-          container.appendChild(card);
+          const statusSpan = document.createElement("span");
+          statusSpan.className = "nh-tag";
+          statusSpan.innerText = "Status: " + (app.status || "installed");
+          meta.appendChild(statusSpan);
+
+          el.appendChild(title);
+          el.appendChild(meta);
+          list.appendChild(el);
         });
-
-        setStatus(
-          "workspaceAppsStatus",
-          items.length + " تطبيق مثبت في هذه المساحة.",
-          "ok"
-        );
       } catch (err) {
-        console.error("listWorkspaceApps error:", err);
-        setStatus(
-          "workspaceAppsStatus",
-          err.message || "خطأ غير متوقع أثناء تحميل التطبيقات.",
-          "error"
+        console.error("loadWorkspaceApps error:", err);
+        showStatus(
+          "appsStatus",
+          "تعذر تحميل التطبيقات المثبّتة.",
+          false
         );
       }
     }
 
-    // -------------------------------------------------------------
-    // Marketplace Templates
-    // -------------------------------------------------------------
-    async function loadTemplates(workspaceId) {
-      setStatus("templatesStatus", "جاري تحميل السوق...");
-      const container = document.getElementById("templatesList");
-      container.innerHTML = "";
+    // ==========================
+    // Marketplace
+    // ==========================
+
+    function clearMarketplaceUI() {
+      const grid = document.getElementById("marketplaceGrid");
+      const empty = document.getElementById("marketplaceEmpty");
+      if (grid) grid.innerHTML = "";
+      if (empty) empty.style.display = "none";
+    }
+
+    async function loadMarketplace() {
+      clearMarketplaceUI();
+
+      if (!currentWorkspaceId) {
+        showStatus(
+          "marketplaceStatus",
+          "اختر مساحة عمل لعرض المتجر.",
+          false
+        );
+        return;
+      }
 
       try {
-        const resp = await hubApi("marketplace.listTemplates", {
-          workspaceId: workspaceId || "",
+        const result = await callHub("marketplace.listTemplates", {
+          workspaceId: currentWorkspaceId,
         });
-        if (!resp.success) {
-          setStatus(
-            "templatesStatus",
-            resp.error || "تعذر تحميل السوق.",
-            "error"
-          );
+
+        const items = (result && result.items) || [];
+        const grid = document.getElementById("marketplaceGrid");
+        const empty = document.getElementById("marketplaceEmpty");
+        if (!grid || !empty) return;
+
+        if (items.length === 0) {
+          empty.style.display = "block";
           return;
         }
 
-        const items = resp.items || [];
-        if (!items.length) {
-          setStatus(
-            "templatesStatus",
-            "لا يوجد قوالب متاحة حالياً.",
-            "info"
-          );
-          return;
-        }
+        empty.style.display = "none";
+        grid.innerHTML = "";
 
         items.forEach((tpl) => {
           const card = document.createElement("div");
-          card.className = "tpl-card";
+          card.className = "nh-market-item";
+
+          const titleRow = document.createElement("div");
+          titleRow.className = "nh-market-title-row";
+
+          const title = document.createElement("div");
+          title.className = "nh-market-title";
+          const displayName =
+            currentLocale === "en"
+              ? tpl.nameEn || tpl.nameAr
+              : tpl.nameAr || tpl.nameEn;
+          title.innerText = displayName || tpl.code || "Template";
+
+          const typeTag = document.createElement("span");
+          typeTag.className = "nh-tag";
+          typeTag.innerText =
+            tpl.type === "module" ? "Module" : "App";
+
+          titleRow.appendChild(title);
+          titleRow.appendChild(typeTag);
+
+          const desc = document.createElement("div");
+          desc.className = "nh-market-desc";
+          const descText =
+            currentLocale === "en"
+              ? tpl.shortDescEn || tpl.descriptionEn || ""
+              : tpl.shortDescAr || tpl.descriptionAr || "";
+          desc.innerText =
+            descText || "بدون وصف مختصر لهذا القالب حاليًا.";
+
+          const footer = document.createElement("div");
+          footer.className = "nh-market-footer";
 
           const left = document.createElement("div");
-          const title = document.createElement("h3");
-          title.textContent =
-            tpl.nameAr || tpl.nameEn || "Template " + tpl.templateId;
-
-          const desc = document.createElement("p");
-          desc.textContent =
-            (tpl.shortDescAr ||
-              tpl.shortDescEn ||
-              tpl.descriptionAr ||
-              tpl.descriptionEn ||
-              "") + "";
-
-          const chipsRow = document.createElement("div");
-          chipsRow.className = "chips";
-
-          if (tpl.type) {
-            const chipType = document.createElement("span");
-            chipType.className = "chip";
-            chipType.textContent =
-              tpl.type === "module" ? "Module" : "App";
-            chipsRow.appendChild(chipType);
-          }
+          left.style.display = "flex";
+          left.style.flexDirection = "column";
+          left.style.gap = "2px";
 
           if (tpl.category) {
-            const chipCat = document.createElement("span");
-            chipCat.className = "chip";
-            chipCat.textContent = tpl.category;
-            chipsRow.appendChild(chipCat);
+            const cat = document.createElement("span");
+            cat.className = "nh-tag";
+            cat.innerText = tpl.category;
+            left.appendChild(cat);
           }
 
           if (tpl.planRequired) {
-            const chipPlan = document.createElement("span");
-            chipPlan.className = "chip";
-            chipPlan.textContent = "Plan: " + tpl.planRequired;
-            chipsRow.appendChild(chipPlan);
+            const plan = document.createElement("span");
+            plan.className = "nh-tag";
+            plan.innerText = "Plan: " + tpl.planRequired;
+            left.appendChild(plan);
           }
 
-          left.appendChild(title);
-          if (desc.textContent) left.appendChild(desc);
-          if (chipsRow.children.length) left.appendChild(chipsRow);
-
-          const right = document.createElement("div");
           const btn = document.createElement("button");
-          btn.className = "primary";
-          btn.textContent = tpl.installed
-            ? "مثبت في المساحة ✓"
-            : "تثبيت في مساحة العمل";
-
-          if (tpl.installed) {
-            btn.disabled = true;
-          }
+          btn.type = "button";
+          btn.className = "nh-btn nh-btn-primary nh-btn-xs";
+          btn.innerText = tpl.installed ? "مثبّت" : "تثبيت";
+          btn.disabled = !!tpl.installed;
 
           btn.addEventListener("click", () => {
-            onInstallTemplate(tpl);
+            handleInstallTemplate(tpl);
           });
 
-          right.appendChild(btn);
+          footer.appendChild(left);
+          footer.appendChild(btn);
 
-          card.appendChild(left);
-          card.appendChild(right);
+          card.appendChild(titleRow);
+          card.appendChild(desc);
+          card.appendChild(footer);
 
-          container.appendChild(card);
+          grid.appendChild(card);
         });
-
-        setStatus(
-          "templatesStatus",
-          items.length + " قالب متاح في السوق.",
-          "ok"
-        );
       } catch (err) {
-        console.error("listTemplates error:", err);
-        setStatus(
-          "templatesStatus",
-          err.message || "خطأ غير متوقع أثناء تحميل السوق.",
-          "error"
+        console.error("loadMarketplace error:", err);
+        showStatus(
+          "marketplaceStatus",
+          "تعذر تحميل المتجر. حاول مرة أخرى.",
+          false
         );
       }
     }
 
-    async function onInstallTemplate(tpl) {
-      if (!currentWorkspaceId) {
-        setStatus(
-          "templatesStatus",
-          "الرجاء اختيار مساحة عمل أولاً.",
-          "error"
-        );
-        return;
-      }
-      if (!currentUser || !currentUser.userId) {
-        setStatus(
-          "templatesStatus",
-          "انتهت الجلسة. الرجاء تسجيل الدخول مرة أخرى.",
-          "error"
+    async function handleInstallTemplate(tpl) {
+      if (!currentWorkspaceId || !currentUser) {
+        showStatus(
+          "marketplaceStatus",
+          "الرجاء اختيار مساحة وتسجيل الدخول.",
+          false
         );
         return;
       }
 
-      setStatus(
-        "templatesStatus",
-        "جاري تثبيت القالب في مساحة العمل...",
-        "info"
-      );
+      showStatus("marketplaceStatus", "", true);
+
       try {
-        const resp = await hubApi("marketplace.install", {
+        const result = await callHub("marketplace.install", {
           workspaceId: currentWorkspaceId,
           templateId: tpl.templateId,
           userId: currentUser.userId,
         });
 
-        if (!resp.success) {
-          setStatus(
-            "templatesStatus",
-            resp.error || "تعذر تثبيت القالب.",
-            "error"
+        if (!result || result.success === false) {
+          showStatus(
+            "marketplaceStatus",
+            result && result.error
+              ? result.error
+              : "تعذر تثبيت القالب.",
+            false
           );
           return;
         }
 
-        setStatus(
-          "templatesStatus",
-          "تم تثبيت القالب بنجاح.",
-          "ok"
+        showStatus(
+          "marketplaceStatus",
+          "✅ تم تثبيت القالب/الحزمة بنجاح.",
+          true
         );
-
-        // Reload apps + templates to reflect "installed" state
-        await loadWorkspaceApps(currentWorkspaceId);
-        await loadTemplates(currentWorkspaceId);
+        await loadWorkspaceApps();
+        await loadMarketplace();
       } catch (err) {
         console.error("install template error:", err);
-        setStatus(
-          "templatesStatus",
-          err.message || "خطأ غير متوقع أثناء التثبيت.",
-          "error"
+        showStatus(
+          "marketplaceStatus",
+          "حدث خطأ أثناء تثبيت القالب.",
+          false
         );
       }
     }
 
-    // -------------------------------------------------------------
-    // Initial load (restore session if exists)
-    // -------------------------------------------------------------
-    async function init() {
-      // Attach handlers
-      document
-        .getElementById("btnSendOtp")
-        .addEventListener("click", onSendOtp);
-      document
-        .getElementById("btnVerifyOtp")
-        .addEventListener("click", onVerifyOtp);
-      document
-        .getElementById("btnBackToMobile")
-        .addEventListener("click", () => setStep(1));
-      document
-        .getElementById("btnCreateWorkspace")
-        .addEventListener("click", onCreateWorkspace);
-      document
-        .getElementById("btnLogout")
-        .addEventListener("click", onLogout);
+    // ==========================
+    // DOM Events
+    // ==========================
 
-      // Allow pressing Enter in OTP field
-      document
-        .getElementById("otpInput")
-        .addEventListener("keyup", (e) => {
-          if (e.key === "Enter") onVerifyOtp();
+    document.addEventListener("DOMContentLoaded", () => {
+      updateAuthBadge();
+      showLoggedInUI(false);
+
+      const btnSendOtp = document.getElementById("btnSendOtp");
+      const btnVerifyOtp = document.getElementById("btnVerifyOtp");
+      const btnResendOtp = document.getElementById("btnResendOtp");
+      const btnLogout = document.getElementById("btnLogout");
+      const btnClearAuth = document.getElementById("btnClearAuth");
+      const btnCreateWorkspace = document.getElementById(
+        "btnCreateWorkspace"
+      );
+      const btnReloadWorkspaces = document.getElementById(
+        "btnReloadWorkspaces"
+      );
+      const btnReloadMarketplace = document.getElementById(
+        "btnReloadMarketplace"
+      );
+
+      if (btnSendOtp) btnSendOtp.addEventListener("click", handleSendOtp);
+      if (btnVerifyOtp)
+        btnVerifyOtp.addEventListener("click", handleVerifyOtp);
+      if (btnResendOtp)
+        btnResendOtp.addEventListener("click", handleSendOtp);
+      if (btnLogout) btnLogout.addEventListener("click", handleLogout);
+      if (btnClearAuth)
+        btnClearAuth.addEventListener("click", clearAuthFields);
+      if (btnCreateWorkspace)
+        btnCreateWorkspace.addEventListener(
+          "click",
+          handleCreateWorkspace
+        );
+      if (btnReloadWorkspaces)
+        btnReloadWorkspaces.addEventListener("click", loadWorkspaces);
+      if (btnReloadMarketplace)
+        btnReloadMarketplace.addEventListener("click", loadMarketplace);
+
+      // Enter key for OTP
+      const otpInput = document.getElementById("otpInput");
+      if (otpInput) {
+        otpInput.addEventListener("keyup", (e) => {
+          if (e.key === "Enter") handleVerifyOtp();
         });
-
-      // Try to restore existing session
-      const storedKey = localStorage.getItem("nh_sessionKey");
-      if (storedKey) {
-        sessionKey = storedKey;
-        await loadSessionViaMe();
-      } else {
-        showAuthSection();
       }
-    }
-
-    document.addEventListener("DOMContentLoaded", init);
+    });
   </script>
 </body>
 </html>
