@@ -6,1595 +6,2474 @@
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   />
-  <title>NahlHub – Hub</title>
+  <title>NahlHub</title>
 
-  <!-- Simple light theme, no heavy redesign -->
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
     :root {
-      --nh-bg: #f5f5f5;
-      --nh-card-bg: #ffffff;
-      --nh-border: #dddddd;
-      --nh-primary: #01657a;
-      --nh-primary-soft: #e0f4f7;
-      --nh-text-main: #1f2933;
-      --nh-text-muted: #6b7280;
-      --nh-radius-lg: 14px;
-      --nh-radius-md: 10px;
+      --bg-light: #f5f7f8;
+      --bg-dark: #020617;
+      --card-light: #ffffff;
+      --card-dark: #020617;
+      --border-light: rgba(15, 23, 42, 0.08);
+      --border-dark: rgba(148, 163, 184, 0.25);
+      --accent: #f4ce14;
+      --accent-soft: rgba(244, 206, 20, 0.12);
+      --text-light: #0f172a;
+      --text-dark: #e5e7eb;
+      --muted-light: #6b7280;
+      --muted-dark: #9ca3af;
+      --surface-radius: 18px;
+      --transition-fast: 0.18s ease-out;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html,
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: var(--nh-bg);
-      color: var(--nh-text-main);
+      padding: 0;
+      height: 100%;
+      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
     }
 
-    .nh-shell {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 24px 16px 32px;
+    body[data-theme="light"] {
+      background: radial-gradient(
+          circle at top left,
+          rgba(244, 206, 20, 0.18),
+          transparent 55%
+        ),
+        var(--bg-light);
+      color: var(--text-light);
     }
 
-    header.nh-header {
+    body[data-theme="dark"] {
+      background: radial-gradient(
+          circle at top left,
+          rgba(250, 204, 21, 0.14),
+          transparent 50%
+        ),
+        linear-gradient(145deg, #020617, #020617);
+      color: var(--text-dark);
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 6px;
+      gap: 8px;
+      position: relative;
+    }
+
+    /* Topbar */
+
+    .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid;
+      backdrop-filter: blur(14px);
       gap: 12px;
-      margin-bottom: 18px;
+      position: relative;
+      z-index: 10;
     }
 
-    .nh-header-main {
+    body[data-theme="light"] .topbar {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .topbar {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: var(--border-dark);
+    }
+
+    .topbar-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      min-width: 0;
     }
 
-    .nh-logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: var(--nh-primary-soft);
+    .brand-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: 11px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      color: var(--nh-primary);
       font-size: 18px;
+      background: radial-gradient(circle at 20% 0, #facc15, #f97316);
+      color: #111827;
     }
 
-    .nh-title-block h1 {
-      margin: 0;
-      font-size: 20px;
-    }
-
-    .nh-title-block p {
-      margin: 2px 0 0;
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
       font-size: 13px;
-      color: var(--nh-text-muted);
+      line-height: 1.2;
     }
 
-    .nh-session-chip {
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid #d1d5db;
-      background: #f9fafb;
-      color: #4b5563;
-      max-width: 220px;
+    .brand-title {
+      font-weight: 700;
+      letter-spacing: 0.02em;
       white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      text-align: left;
-      direction: ltr;
     }
 
-    .nh-main-grid {
-      display: grid;
-      grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
-      gap: 16px;
-      align-items: flex-start;
+    .brand-subtitle {
+      font-size: 11px;
+      opacity: 0.75;
     }
 
-    @media (max-width: 768px) {
-      .nh-main-grid {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      header.nh-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .nh-session-chip {
-        width: 100%;
-      }
-    }
-
-    .nh-card {
-      background: var(--nh-card-bg);
-      border-radius: var(--nh-radius-lg);
-      border: 1px solid var(--nh-border);
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-      padding: 16px 16px 14px;
-    }
-
-    .nh-card + .nh-card {
-      margin-top: 10px;
-    }
-
-    .nh-card-header {
+    .topbar-right {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
+      gap: 6px;
     }
 
-    .nh-card-title {
-      font-size: 14px;
-      font-weight: 600;
+    .chip-group {
+      display: inline-flex;
+      padding: 2px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      background: transparent;
+      gap: 2px;
     }
 
-    .nh-card-subtitle {
-      font-size: 12px;
-      color: var(--nh-text-muted);
-      margin-top: 2px;
+    body[data-theme="light"] .chip-group {
+      border-color: rgba(148, 163, 184, 0.42);
+      background: rgba(255, 255, 255, 0.9);
     }
 
-    .nh-badge {
+    body[data-theme="dark"] .chip-group {
+      border-color: rgba(148, 163, 184, 0.4);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .chip-btn {
+      border: none;
+      outline: none;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      background: transparent;
+      color: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background var(--transition-fast),
+        color var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .chip-btn span.icon {
+      font-size: 13px;
+      line-height: 1;
+    }
+
+    .chip-btn.active {
+      background: var(--accent);
+      color: #111827;
+      box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
+      transform: translateY(-0.5px);
+    }
+
+    .chip-btn:not(.active):hover {
+      background: rgba(148, 163, 184, 0.25);
+    }
+
+    body[data-theme="dark"] .chip-btn:not(.active):hover {
+      background: rgba(31, 41, 55, 0.8);
+    }
+
+    .chip-btn-mini {
+      border-radius: 999px;
+      padding: 5px 7px;
+      font-size: 11px;
+    }
+
+    /* Status pill */
+
+    .status-pill {
+      align-self: stretch;
+      margin: 0 4px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      font-size: 11px;
-      color: #4b5563;
-      background: #f9fafb;
+      border: 1px solid transparent;
+      max-width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
 
-    .nh-badge-dot {
+    body[data-theme="light"] .status-pill {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: var(--border-light);
+      color: var(--muted-light);
+    }
+
+    body[data-theme="dark"] .status-pill {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: var(--border-dark);
+      color: var(--muted-dark);
+    }
+
+    .status-pill.ok {
+      border-color: rgba(34, 197, 94, 0.7);
+      color: rgba(34, 197, 94, 0.95);
+    }
+
+    .status-pill.error {
+      border-color: rgba(239, 68, 68, 0.85);
+      color: rgba(248, 113, 113, 0.96);
+    }
+
+    .status-dot {
       width: 7px;
       height: 7px;
       border-radius: 999px;
-      background: #22c55e;
+      background: var(--accent);
     }
 
-    .nh-badge-dot.off {
-      background: #9ca3af;
+    /* Main content */
+
+    .main-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
     }
 
-    .nh-label {
-      display: block;
-      margin-bottom: 4px;
+    .welcome-card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    body[data-theme="light"] .welcome-card {
+      background: linear-gradient(
+        135deg,
+        rgba(244, 206, 20, 0.12),
+        rgba(255, 255, 255, 0.96)
+      );
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .welcome-card {
+      background: linear-gradient(
+        145deg,
+        rgba(250, 204, 21, 0.16),
+        rgba(15, 23, 42, 0.96)
+      );
+      border-color: rgba(148, 163, 184, 0.45);
+    }
+
+    .welcome-header-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .welcome-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .welcome-sub {
       font-size: 12px;
-      font-weight: 500;
+      opacity: 0.85;
     }
 
-    .nh-label span {
-      font-size: 11px;
-      color: var(--nh-text-muted);
-      font-weight: 400;
+    /* Generic card */
+
+    .card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .nh-input,
-    .nh-select {
-      width: 100%;
-      padding: 9px 10px;
-      border-radius: 9px;
-      border: 1px solid #d1d5db;
-      font-size: 13px;
-      outline: none;
+    body[data-theme="light"] .card {
       background: #ffffff;
-      color: var(--nh-text-main);
+      border-color: var(--border-light);
     }
 
-    .nh-input:focus,
-    .nh-select:focus {
-      border-color: var(--nh-primary);
-      box-shadow: 0 0 0 1px rgba(1, 101, 122, 0.08);
+    body[data-theme="dark"] .card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: var(--border-dark);
     }
 
-    .nh-input::placeholder {
-      color: #9ca3af;
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
     }
 
-    .nh-btn {
-      border: none;
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-caption {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    .btn {
       border-radius: 999px;
-      padding: 8px 16px;
+      border: none;
+      outline: none;
+      padding: 9px 18px;
       font-size: 13px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: background 0.15s ease, transform 0.05s ease,
-        box-shadow 0.1s ease;
+      transition: transform var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast),
+        color var(--transition-fast), opacity var(--transition-fast);
+      white-space: nowrap;
     }
 
-    .nh-btn:disabled {
+    .btn-primary {
+      background: var(--accent);
+      color: #111827;
+      box-shadow: 0 8px 20px rgba(250, 204, 21, 0.45);
+    }
+
+    .btn-primary:hover:enabled {
+      transform: translateY(-0.5px);
+      box-shadow: 0 10px 28px rgba(250, 204, 21, 0.6);
+    }
+
+    .btn:disabled {
       opacity: 0.6;
       cursor: default;
-      transform: none;
       box-shadow: none;
+      transform: none;
     }
 
-    .nh-btn-primary {
-      background: var(--nh-primary);
-      color: #ffffff;
-      box-shadow: 0 1px 4px rgba(1, 101, 122, 0.24);
-    }
-
-    .nh-btn-primary:hover:not(:disabled) {
-      background: #015063;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 6px rgba(1, 101, 122, 0.3);
-    }
-
-    .nh-btn-secondary {
-      background: #f3f4f6;
-      color: #374151;
-      border: 1px solid #e5e7eb;
-    }
-
-    .nh-btn-secondary:hover:not(:disabled) {
-      background: #e5e7eb;
-    }
-
-    .nh-btn-xs {
-      padding: 4px 10px;
-      font-size: 11px;
-    }
-
-    .nh-actions-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 10px;
-      flex-wrap: wrap;
-    }
-
-    .nh-help-text {
-      margin-top: 6px;
-      font-size: 11px;
-      color: var(--nh-text-muted);
-      line-height: 1.5;
-    }
-
-    .nh-status {
-      margin-top: 8px;
-      font-size: 12px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      color: #374151;
-      display: none;
-      white-space: pre-line;
-    }
-
-    .nh-status.ok {
-      border-color: #bbf7d0;
-      background: #f0fdf4;
-      color: #166534;
-    }
-
-    .nh-status.err {
-      border-color: #fecaca;
-      background: #fef2f2;
-      color: #b91c1c;
-    }
-
-    .nh-pill-tabs {
-      display: inline-flex;
-      padding: 3px;
-      border-radius: 999px;
-      background: #f3f4f6;
-      border: 1px solid #e5e7eb;
-      font-size: 11px;
-      gap: 2px;
-    }
-
-    .nh-pill-tabs button {
-      border-radius: 999px;
-      border: none;
-      padding: 5px 9px;
+    .btn-ghost {
       background: transparent;
-      font-size: 11px;
-      cursor: pointer;
-      color: #4b5563;
-    }
-
-    .nh-pill-tabs button.active {
-      background: #ffffff;
-      color: #111827;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
-    }
-
-    .nh-divider {
-      height: 1px;
-      background: #e5e7eb;
-      margin: 10px 0;
-    }
-
-    .nh-user-summary {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      font-size: 12px;
-      color: var(--nh-text-muted);
-    }
-
-    .nh-user-summary strong {
-      color: var(--nh-text-main);
-    }
-
-    .nh-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 9px;
-      font-size: 11px;
+      color: inherit;
       border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
-    }
-
-    /* Workspaces & apps list */
-
-    .nh-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 8px;
-      max-height: 240px;
-      overflow-y: auto;
-    }
-
-    .nh-list-item {
-      padding: 8px 10px;
-      border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      background: #ffffff;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      font-size: 12px;
-    }
-
-    .nh-list-item:hover {
-      background: #f9fafb;
-    }
-
-    .nh-list-item.active {
-      border-color: var(--nh-primary);
-      background: #ecfeff;
-    }
-
-    .nh-list-item-title {
-      font-weight: 600;
-      font-size: 13px;
-    }
-
-    .nh-list-item-meta {
+      padding: 6px 10px;
       font-size: 11px;
-      color: var(--nh-text-muted);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+      border: none;
+      cursor: pointer;
     }
 
-    .nh-tag {
-      display: inline-flex;
+    body[data-theme="light"] .btn-ghost:hover {
+      background: rgba(148, 163, 184, 0.18);
+    }
+
+    body[data-theme="dark"] .btn-ghost:hover {
+      background: rgba(31, 41, 55, 0.9);
+    }
+
+    /* OTP row: LTR */
+
+    .otp-row {
+      display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1px 7px;
-      border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      font-size: 10px;
-      color: #4b5563;
-      background: #f9fafb;
+      gap: 10px;
+      direction: ltr;
     }
 
-    /* Marketplace cards */
-
-    .nh-market-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 8px;
-      margin-top: 8px;
+    .otp-input {
+      width: 44px;
+      height: 44px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 600;
+      border-radius: 16px;
+      border: 1px solid;
+      outline: none;
+      transition: border-color var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast);
     }
 
-    .nh-market-item {
-      border-radius: 12px;
-      border: 1px solid #e5e7eb;
-      padding: 8px 9px;
-      background: #ffffff;
+    body[data-theme="light"] .otp-input {
+      background: rgba(248, 250, 252, 0.96);
+      border-color: rgba(148, 163, 184, 0.5);
+      color: var(--text-light);
+    }
+
+    body[data-theme="dark"] .otp-input {
+      background: rgba(15, 23, 42, 0.97);
+      border-color: rgba(148, 163, 184, 0.7);
+      color: var(--text-dark);
+    }
+
+    .otp-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
+      background: rgba(255, 251, 235, 0.96);
+    }
+
+    body[data-theme="dark"] .otp-input:focus {
+      background: rgba(15, 23, 42, 1);
+    }
+
+    /* Apps sections layout */
+
+    .apps-layout {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      font-size: 12px;
+      gap: 12px;
+      min-height: 0;
+      flex: 1;
     }
 
-    .nh-market-title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-    }
-
-    .nh-market-title {
-      font-weight: 600;
-      font-size: 12px;
-    }
-
-    .nh-market-desc {
-      font-size: 11px;
-      color: var(--nh-text-muted);
-      line-height: 1.5;
-    }
-
-    .nh-market-footer {
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 6px;
-    }
-
-    .nh-empty {
-      font-size: 11px;
-      color: var(--nh-text-muted);
-      margin-top: 6px;
-    }
-
-    .nh-section-title-line {
+    .apps-header-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      margin-top: 4px;
-    }
-
-    .nh-section-title-line h3 {
-      margin: 0;
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .nh-section-title-line span {
-      font-size: 11px;
-      color: var(--nh-text-muted);
-    }
-
-    .nh-inline-row {
-      display: flex;
-      gap: 6px;
-      margin-top: 6px;
       flex-wrap: wrap;
     }
 
-    .nh-inline-row > * {
-      flex: 1 1 0;
+    /* Workspace selector – redesigned */
+
+    .workspace-card {
+      flex: 1;
+      min-width: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      border: 1px solid;
+      cursor: pointer;
+      position: relative;
+      transition: box-shadow var(--transition-fast),
+        border-color var(--transition-fast), background var(--transition-fast),
+        transform var(--transition-fast);
+    }
+
+    body[data-theme="light"] .workspace-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    body[data-theme="dark"] .workspace-card {
+      background: rgba(15, 23, 42, 0.95);
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
+    .workspace-card:hover {
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+      border-color: rgba(250, 204, 21, 0.7);
+      transform: translateY(-0.5px);
+    }
+
+    .workspace-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
       min-width: 0;
     }
 
-    .nh-inline-row.fixed-left {
-      align-items: center;
+    .workspace-label {
+      font-size: 11px;
+      opacity: 0.7;
     }
 
-    .nh-inline-row.fixed-left > :first-child {
-      flex: 0 0 auto;
+    .workspace-name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
     }
 
-    .nh-badge-plan {
+    .workspace-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+    }
+
+    .workspace-role-pill {
       font-size: 10px;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 999px;
-      background: #fef3c7;
-      color: #92400e;
-      border: 1px solid #fde68a;
+      background: rgba(34, 197, 94, 0.1);
+      color: #15803d;
     }
 
-    .nh-footer-note {
-      margin-top: 16px;
+    body[data-theme="dark"] .workspace-role-pill {
+      background: rgba(34, 197, 94, 0.2);
+      color: #bbf7d0;
+    }
+
+    .workspace-dropdown-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      border: 1px solid transparent;
+    }
+
+    body[data-theme="light"] .workspace-dropdown-icon {
+      background: rgba(248, 250, 252, 0.9);
+      border-color: rgba(148, 163, 184, 0.45);
+    }
+
+    body[data-theme="dark"] .workspace-dropdown-icon {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: rgba(148, 163, 184, 0.7);
+    }
+
+    .workspace-menu {
+      position: absolute;
+      inset-inline-start: 0;
+      inset-block-start: 110%;
+      min-width: 100%;
+      max-width: 340px;
+      border-radius: 18px;
+      border: 1px solid;
+      padding: 6px;
+      z-index: 15;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
+    }
+
+    body[data-theme="light"] .workspace-menu {
+      background: #ffffff;
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    body[data-theme="dark"] .workspace-menu {
+      background: rgba(15, 23, 42, 0.98);
+      border-color: rgba(148, 163, 184, 0.65);
+    }
+
+    .workspace-menu-item {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      padding: 6px 8px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      background: transparent;
+      color: inherit;
+      cursor: pointer;
+      text-align: start;
+      transition: background var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .workspace-menu-item-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .workspace-menu-item-name {
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .workspace-menu-item-meta {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .workspace-menu-item-role {
       font-size: 10px;
-      color: #9ca3af;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(34, 197, 94, 0.08);
+      color: #15803d;
+    }
+
+    body[data-theme="dark"] .workspace-menu-item-role {
+      background: rgba(34, 197, 94, 0.16);
+      color: #bbf7d0;
+    }
+
+    body[data-theme="light"] .workspace-menu-item:hover {
+      background: rgba(248, 250, 252, 0.9);
+      border-color: rgba(148, 163, 184, 0.4);
+    }
+
+    body[data-theme="dark"] .workspace-menu-item:hover {
+      background: rgba(30, 64, 175, 0.2);
+      border-color: rgba(129, 140, 248, 0.6);
+    }
+
+    .workspace-menu-item.active {
+      border-color: rgba(250, 204, 21, 0.9);
+      background: rgba(250, 204, 21, 0.12);
+    }
+
+    /* View toggle buttons (Apps / Marketplace) */
+
+    .view-toggle-group {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 3px;
+      border: 1px solid transparent;
+      background: transparent;
+      gap: 2px;
+    }
+
+    body[data-theme="light"] .view-toggle-group {
+      border-color: rgba(148, 163, 184, 0.35);
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    body[data-theme="dark"] .view-toggle-group {
+      border-color: rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.95);
+    }
+
+    .view-toggle-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 5px 10px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: transparent;
+      color: inherit;
+      transition: background var(--transition-fast),
+        color var(--transition-fast), box-shadow var(--transition-fast),
+        transform var(--transition-fast);
+    }
+
+    .view-toggle-btn span.icon {
+      font-size: 13px;
+    }
+
+    .view-toggle-btn.active {
+      background: var(--accent);
+      color: #111827;
+      box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
+      transform: translateY(-0.5px);
+    }
+
+    .view-toggle-btn:not(.active):hover {
+      background: rgba(148, 163, 184, 0.18);
+    }
+
+    body[data-theme="dark"] .view-toggle-btn:not(.active):hover {
+      background: rgba(31, 41, 55, 0.9);
+    }
+
+    /* Apps list / marketplace cards */
+
+    .apps-section-card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    body[data-theme="light"] .apps-section-card {
+      background: #ffffff;
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .apps-section-card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: var(--border-dark);
+    }
+
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+
+    .app-card {
+      border-radius: 16px;
+      border: 1px solid;
+      padding: 10px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      transition: background var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+      cursor: pointer;
+    }
+
+    body[data-theme="light"] .app-card {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    body[data-theme="dark"] .app-card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(148, 163, 184, 0.55);
+    }
+
+    .app-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
+      border-color: rgba(250, 204, 21, 0.9);
+    }
+
+    .app-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .app-card-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .app-card-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      background: rgba(244, 206, 20, 0.15);
+      color: #92400e;
+      flex-shrink: 0;
+    }
+
+    body[data-theme="dark"] .app-card-icon {
+      background: rgba(250, 204, 21, 0.16);
+      color: #fbbf24;
+    }
+
+    .app-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .app-card-tagline {
+      font-size: 11px;
+      opacity: 0.75;
+    }
+
+    .app-card-body {
+      font-size: 11px;
+      opacity: 0.78;
+      height: 2.4em;
+      overflow: hidden;
+    }
+
+    .app-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      opacity: 0.82;
+      margin-top: 4px;
+    }
+
+    .badge-soft {
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 10px;
+      background: rgba(148, 163, 184, 0.14);
+    }
+
+    .badge-installed {
+      border-radius: 999px;
+      padding: 2px 7px;
+      font-size: 10px;
+      background: rgba(250, 204, 21, 0.15);
+      color: #92400e;
+    }
+
+    body[data-theme="dark"] .badge-installed {
+      background: rgba(250, 204, 21, 0.22);
+      color: #facc15;
+    }
+
+    .app-card-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-pill-sm {
+      border-radius: 999px;
+      border: none;
+      padding: 4px 9px;
+      font-size: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(148, 163, 184, 0.18);
+      color: inherit;
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .btn-pill-sm.primary {
+      background: var(--accent);
+      color: #111827;
+    }
+
+    .btn-pill-sm:hover {
+      transform: translateY(-0.5px);
+    }
+
+    /* App View */
+
+    .app-view-card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 240px;
+    }
+
+    body[data-theme="light"] .app-view-card {
+      background: #ffffff;
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .app-view-card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: var(--border-dark);
+    }
+
+    .app-view-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px solid;
+      padding-bottom: 6px;
+    }
+
+    body[data-theme="light"] .app-view-header {
+      border-color: rgba(148, 163, 184, 0.25);
+    }
+
+    body[data-theme="dark"] .app-view-header {
+      border-color: rgba(51, 65, 85, 0.9);
+    }
+
+    .app-view-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .app-view-sub {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .app-frame-wrap {
+      width: 100%;
+      height: calc(100vh - 230px);
+      max-height: calc(100vh - 220px);
+      margin-top: 4px;
+    }
+
+    .app-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: transparent;
+    }
+
+    .app-frame-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      opacity: 0.6;
+      padding: 10px;
       text-align: center;
     }
 
-    .nh-footer-note a {
-      color: inherit;
-      text-decoration: underline;
+    .hidden {
+      display: none !important;
+    }
+
+    /* Auth popup overlay */
+
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+    }
+
+    body[data-theme="light"] .auth-overlay {
+      background: radial-gradient(
+          circle at top,
+          rgba(148, 163, 184, 0.16),
+          transparent 60%
+        ),
+        rgba(15, 23, 42, 0.18);
+    }
+
+    body[data-theme="dark"] .auth-overlay {
+      background: radial-gradient(
+          circle at top,
+          rgba(15, 23, 42, 0.95),
+          rgba(15, 23, 42, 0.98)
+        );
+    }
+
+    .auth-modal {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 22px;
+      border: 1px solid;
+      padding: 14px 12px 12px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.55);
+    }
+
+    body[data-theme="light"] .auth-modal {
+      background: linear-gradient(
+        140deg,
+        rgba(244, 206, 20, 0.12),
+        #ffffff
+      );
+      border-color: rgba(148, 163, 184, 0.5);
+    }
+
+    body[data-theme="dark"] .auth-modal {
+      background: radial-gradient(
+          circle at top left,
+          rgba(250, 204, 21, 0.18),
+          transparent 50%
+        ),
+        rgba(15, 23, 42, 0.98);
+      border-color: rgba(148, 163, 184, 0.6);
+    }
+
+    .auth-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 4px 10px;
+    }
+
+    .auth-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .auth-sub {
+      font-size: 12px;
+      opacity: 0.78;
+    }
+
+    .auth-badge {
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      opacity: 0.9;
+    }
+
+    .auth-modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .input {
+      flex: 1;
+      border-radius: 999px;
+      border: 1px solid;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+
+    body[data-theme="light"] .input {
+      background: rgba(248, 250, 252, 0.95);
+      border-color: rgba(148, 163, 184, 0.5);
+      color: var(--text-light);
+    }
+
+    body[data-theme="dark"] .input {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(148, 163, 184, 0.6);
+      color: var(--text-dark);
+    }
+
+    .input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
+      background: rgba(255, 251, 235, 0.9);
+    }
+
+    body[data-theme="dark"] .input:focus {
+      background: rgba(15, 23, 42, 0.98);
+    }
+
+    @media (min-width: 768px) {
+      .app-shell {
+        padding: 6px 10px;
+      }
+      .app-frame-wrap {
+        height: calc(100vh - 210px);
+        max-height: calc(100vh - 190px);
+      }
     }
   </style>
 </head>
-<body>
-  <div class="nh-shell">
-    <!-- Header: Logo + title + session chip -->
-    <header class="nh-header">
-      <div class="nh-header-main">
-        <div class="nh-logo">Nh</div>
-        <div class="nh-title-block">
-          <h1>NahlHub – Hub</h1>
-          <p>لوحة تحكم بسيطة لتجربة المساحات والتطبيقات داخل منظومة نحل هب.</p>
+<body data-theme="light">
+  <div class="app-shell">
+    <!-- Top bar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand-logo">N</div>
+        <div class="brand-text">
+          <div class="brand-title" data-i18n="hubTitle">NahlHub</div>
+          <div class="brand-subtitle" data-i18n="hubSub">
+            تطبيقاتك في نحل هب
+          </div>
         </div>
       </div>
-      <div id="sessionChip" class="nh-session-chip" style="display: none;">
-        session: –
+      <div class="topbar-right">
+        <div class="chip-group">
+          <button
+            class="chip-btn"
+            id="btnLangAr"
+            type="button"
+            data-lang="ar"
+          >
+            <span>عربي</span>
+          </button>
+          <button
+            class="chip-btn"
+            id="btnLangEn"
+            type="button"
+            data-lang="en"
+          >
+            <span>EN</span>
+          </button>
+        </div>
+        <button
+          class="chip-btn chip-btn-mini"
+          id="btnTheme"
+          type="button"
+        >
+          <span class="icon" id="themeIcon">🌞</span>
+        </button>
       </div>
     </header>
 
-    <div class="nh-main-grid">
-      <!-- Left column: Login / auth -->
-      <div>
-        <!-- Login card -->
-        <div class="nh-card">
-          <div class="nh-card-header">
-            <div>
-              <div class="nh-card-title">تسجيل الدخول برقم الجوال</div>
-              <div class="nh-card-subtitle">
-                خطوة واحدة، رمز عبر واتساب أو SMS، بدون كلمة مرور.
-              </div>
+    <!-- Status -->
+    <div id="statusPill" class="status-pill">
+      <span class="status-dot"></span>
+      <span id="statusText"></span>
+    </div>
+
+    <!-- AUTH POPUP -->
+    <div id="authOverlay" class="auth-overlay">
+      <div class="auth-modal">
+        <div class="auth-modal-header">
+          <div>
+            <div class="auth-title" data-i18n="welcomeTitle">مرحباً 👋</div>
+            <div class="auth-sub" data-i18n="welcomeSub">
+              ادخل برقم الجوال ثم أدخل رمز الدخول.
             </div>
-            <div class="nh-badge" id="authStateBadge">
-              <span class="nh-badge-dot off" id="authStateDot"></span>
-              <span id="authStateLabel">غير مسجل</span>
-            </div>
           </div>
-
-          <label class="nh-label" for="mobileInput">
-            رقم الجوال (مع أو بدون +966)
-            <span>لن يتم مشاركته مع أي جهة.</span>
-          </label>
-          <input
-            id="mobileInput"
-            class="nh-input"
-            type="tel"
-            placeholder="مثلًا: 5xxxxxxxx أو +9665xxxxxxx"
-            autocomplete="tel"
-          />
-
-          <div class="nh-actions-row">
-            <button
-              id="btnSendOtp"
-              class="nh-btn nh-btn-primary"
-              type="button"
-            >
-              <span>إرسال رمز التحقق</span>
-            </button>
-            <button
-              id="btnClearAuth"
-              class="nh-btn nh-btn-secondary nh-btn-xs"
-              type="button"
-            >
-              مسح الحقول
-            </button>
+          <div class="auth-badge">
+            <span data-i18n="step1Title">رقم الجوال</span> ·
+            <span data-i18n="step2Title">رمز</span>
           </div>
-
-          <div class="nh-help-text">
-            ✳️ سيتم إنشاء حساب جديد تلقائيًا لو لم يكن لديك حساب مسبقًا.
-          </div>
-
-          <div id="otpStatus" class="nh-status"></div>
         </div>
-
-        <!-- OTP card -->
-        <div class="nh-card" id="otpCard" style="display: none;">
-          <div class="nh-card-header">
-            <div>
-              <div class="nh-card-title">أدخل رمز التحقق</div>
-              <div class="nh-card-subtitle">
-                الرمز مكون من ٤ أرقام وصالح لمدة ١٠ دقائق.
+        <div class="auth-modal-body">
+          <!-- Step 1: Mobile -->
+          <section id="stepMobile" class="card" style="margin: 0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="step1Title">
+                  رقم الجوال
+                </div>
+                <div class="card-caption" data-i18n="step1Sub">
+                  ادخل رقم الجوال.
+                </div>
               </div>
             </div>
-            <div class="nh-pill-tabs">
+            <div class="card-body">
+              <div class="field-group">
+                <label
+                  class="field-label"
+                  for="mobileInput"
+                  data-i18n="step1Label"
+                >
+                  رقم الجوال
+                </label>
+                <input
+                  id="mobileInput"
+                  class="input"
+                  type="tel"
+                  inputmode="tel"
+                  autocomplete="tel"
+                  placeholder="5XXXXXXXX"
+                />
+              </div>
+              <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+                <button
+                  id="btnSendOtp"
+                  class="btn btn-primary"
+                  type="button"
+                >
+                  <span data-i18n="btnSendOtp">إرسال الرمز</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- Step 2: OTP -->
+          <section id="stepOtp" class="card hidden" style="margin: 0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="step2Title">
+                  رمز الدخول
+                </div>
+                <div class="card-caption" data-i18n="step2Sub">
+                  أدخل الرمز ٤ أرقام.
+                </div>
+              </div>
               <button
                 type="button"
-                class="active"
-                id="tabOtpAr"
-                onclick="setLocale('ar')"
+                class="btn-ghost"
+                id="btnChangeMobile"
               >
-                عربي
-              </button>
-              <button
-                type="button"
-                id="tabOtpEn"
-                onclick="setLocale('en')"
-              >
-                EN
+                <span data-i18n="changeMobile">تعديل الرقم</span>
               </button>
             </div>
-          </div>
-
-          <label class="nh-label" for="otpInput">
-            رمز التحقق
-          </label>
-          <input
-            id="otpInput"
-            class="nh-input"
-            type="text"
-            maxlength="6"
-            inputmode="numeric"
-            placeholder="••••"
-          />
-
-          <div class="nh-actions-row">
-            <button
-              id="btnVerifyOtp"
-              class="nh-btn nh-btn-primary"
-              type="button"
-            >
-              تأكيد الرمز والدخول
-            </button>
-            <button
-              id="btnResendOtp"
-              class="nh-btn nh-btn-secondary nh-btn-xs"
-              type="button"
-            >
-              إعادة إرسال الرمز
-            </button>
-          </div>
-
-          <div class="nh-help-text">
-            في حال لم يصلك الرمز، انتظر قليلًا ثم جرّب إعادة الإرسال.
-          </div>
-
-          <div id="verifyStatus" class="nh-status"></div>
-        </div>
-
-        <!-- Logged-in user summary -->
-        <div
-          class="nh-card"
-          id="userCard"
-          style="display: none; margin-top: 12px;"
-        >
-          <div class="nh-card-header">
-            <div>
-              <div class="nh-card-title">بيانات الحساب الحالي</div>
-              <div class="nh-card-subtitle">
-                هذا الحساب مرتبط برقم الجوال الذي استخدمته في الدخول.
-              </div>
-            </div>
-            <button
-              id="btnLogout"
-              class="nh-btn nh-btn-secondary nh-btn-xs"
-              type="button"
-            >
-              تسجيل خروج
-            </button>
-          </div>
-
-          <div class="nh-user-summary">
-            <div>
-              <strong>الاسم:</strong>
-              <span id="userNameLabel">—</span>
-            </div>
-            <div>
-              <strong>الجوال:</strong>
-              <span id="userMobileLabel">—</span>
-            </div>
-            <div>
-              <strong>المعرف:</strong>
-              <span id="userIdLabel">—</span>
-            </div>
-          </div>
-
-          <div class="nh-divider"></div>
-
-          <div class="nh-help-text">
-            بعد تسجيل الدخول يمكنك إدارة المساحات (Workspaces) وتركيب
-            التطبيقات من المتجر.
-          </div>
-        </div>
-      </div>
-
-      <!-- Right column: Workspaces + Marketplace -->
-      <div id="appView" style="display: none;">
-        <!-- Workspaces -->
-        <div class="nh-card">
-          <div class="nh-card-header">
-            <div>
-              <div class="nh-card-title">المساحات (Workspaces)</div>
-              <div class="nh-card-subtitle">
-                مساحة العمل هي المكان الذي تُثبّت فيه التطبيقات والحلول.
-              </div>
-            </div>
-            <button
-              id="btnReloadWorkspaces"
-              class="nh-btn nh-btn-secondary nh-btn-xs"
-              type="button"
-            >
-              تحديث
-            </button>
-          </div>
-
-          <div class="nh-inline-row">
-            <div>
-              <label class="nh-label" for="workspaceNameInput">
-                إنشاء مساحة جديدة
-              </label>
+            <div class="card-body">
+              <div class="otp-row">
+                <input
+                  class="otp-input"
+                  id="otp1"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="1"
+                />
               <input
-                id="workspaceNameInput"
-                class="nh-input"
-                type="text"
-                placeholder="مثال: Simplicity Coffee أو NahlTime Demo"
-              />
-            </div>
-            <div class="nh-inline-row fixed-left">
-              <button
-                id="btnCreateWorkspace"
-                class="nh-btn nh-btn-primary"
-                type="button"
+                  class="otp-input"
+                  id="otp2"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="1"
+                />
+              <input
+                  class="otp-input"
+                  id="otp3"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="1"
+                />
+              <input
+                  class="otp-input"
+                  id="otp4"
+                  type="tel"
+                  inputmode="numeric"
+                  maxlength="1"
+                />
+              </div>
+              <div
+                style="display:flex; justify-content:flex-end; margin-top:10px;"
               >
-                إنشاء مساحة
-              </button>
+                <button
+                  id="btnVerifyOtp"
+                  class="btn btn-primary"
+                  type="button"
+                >
+                  <span data-i18n="btnVerify">تأكيد</span>
+                </button>
+              </div>
             </div>
-          </div>
-
-          <div class="nh-help-text">
-            بإمكانك إنشاء أكثر من مساحة وتجربة حلول مختلفة داخل كل مساحة.
-          </div>
-
-          <div id="workspacesList" class="nh-list"></div>
-          <div id="workspacesEmpty" class="nh-empty" style="display: none;">
-            لا توجد مساحات بعد. ابدأ بإنشاء أول مساحة لك.
-          </div>
-
-          <div id="workspaceStatus" class="nh-status"></div>
-        </div>
-
-        <!-- Apps in selected workspace -->
-        <div class="nh-card" style="margin-top: 10px;">
-          <div class="nh-section-title-line">
-            <div>
-              <h3>التطبيقات المثبّتة في المساحة</h3>
-              <span id="appsSubtitle"
-                >اختر مساحة من القائمة أعلاه لعرض التطبيقات.</span
-              >
-            </div>
-            <span class="nh-tag" id="currentWorkspaceTag">لا يوجد</span>
-          </div>
-
-          <div id="workspaceAppsList" class="nh-list"></div>
-          <div
-            id="workspaceAppsEmpty"
-            class="nh-empty"
-            style="display: none;"
-          >
-            لم يتم تثبيت أي تطبيق في هذه المساحة حتى الآن.
-          </div>
-
-          <div id="appsStatus" class="nh-status"></div>
-        </div>
-
-        <!-- Marketplace -->
-        <div class="nh-card" style="margin-top: 10px;">
-          <div class="nh-section-title-line">
-            <div>
-              <h3>متجر نحل هب (Marketplace)</h3>
-              <span>ثبّت التطبيقات أو الحزم (Modules) داخل المساحة المحددة.</span>
-            </div>
-            <span class="nh-badge-plan">نسخة تجريبية</span>
-          </div>
-
-          <div class="nh-inline-row fixed-left" style="margin-top: 8px;">
-            <button
-              id="btnReloadMarketplace"
-              class="nh-btn nh-btn-secondary nh-btn-xs"
-              type="button"
-            >
-              تحديث قائمة المتجر
-            </button>
-            <span class="nh-help-text" style="margin-top: 0;">
-              تأكد من اختيار مساحة عمل أولاً.
-            </span>
-          </div>
-
-          <div id="marketplaceGrid" class="nh-market-grid"></div>
-          <div
-            id="marketplaceEmpty"
-            class="nh-empty"
-            style="display: none;"
-          >
-            لا توجد قوالب منشورة في المتجر حتى الآن.
-          </div>
-
-          <div id="marketplaceStatus" class="nh-status"></div>
-        </div>
-
-        <div class="nh-footer-note">
-          NahlHub Hub – نسخة أولية للتجارب الداخلية. لأي ملاحظات تواصل مع
-          فريق نحل.
+          </section>
         </div>
       </div>
     </div>
+
+    <!-- Main -->
+    <main class="main-panel">
+      <!-- Welcome -->
+      <section class="welcome-card" id="welcomeCard">
+        <div class="welcome-header-line">
+          <div>
+            <div class="welcome-title" data-i18n="welcomeTitle">مرحباً 👋</div>
+            <div class="welcome-sub" data-i18n="welcomeSub">
+              ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Apps + Marketplace layout (after login) -->
+      <section id="stepApps" class="apps-layout hidden">
+        <!-- Workspace row -->
+        <div class="apps-header-row">
+          <!-- Workspace selector card -->
+          <div
+            class="workspace-card"
+            id="workspaceCard"
+          >
+            <div class="workspace-meta">
+              <div class="workspace-label" data-i18n="workspaceLabel">
+                مساحة العمل
+              </div>
+              <div class="workspace-name-row">
+                <div
+                  class="workspace-name"
+                  id="workspaceName"
+                >
+                  —
+                </div>
+                <span
+                  class="workspace-role-pill"
+                  id="workspaceRole"
+                >
+                  —
+                </span>
+              </div>
+            </div>
+            <div class="workspace-dropdown-icon">
+              <span id="workspaceChevron">▾</span>
+            </div>
+            <div
+              id="workspaceMenu"
+              class="workspace-menu hidden"
+            ></div>
+          </div>
+
+          <!-- View toggle (Apps / Marketplace) -->
+          <div class="view-toggle-group">
+            <button
+              id="btnViewApps"
+              type="button"
+              class="view-toggle-btn active"
+            >
+              <span class="icon">⚙️</span>
+              <span data-i18n="viewApps">Apps</span>
+            </button>
+            <button
+              id="btnViewMarketplace"
+              type="button"
+              class="view-toggle-btn"
+            >
+              <span class="icon">🛒</span>
+              <span data-i18n="viewMarketplace">Marketplace</span>
+            </button>
+          </div>
+
+          <button
+            class="btn-ghost"
+            type="button"
+            id="btnLogout"
+          >
+            <span data-i18n="logout">تسجيل خروج</span>
+          </button>
+        </div>
+
+        <!-- Your apps section -->
+        <section id="sectionApps" class="apps-section-card">
+          <div class="card-header" style="padding:0;">
+            <div>
+              <div class="card-title" data-i18n="yourAppsTitle">
+                تطبيقاتك
+              </div>
+              <div
+                class="card-caption"
+                id="userNameLabel"
+              ></div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="appsGrid" class="apps-grid"></div>
+          </div>
+        </section>
+
+        <!-- Marketplace section -->
+        <section
+          id="sectionMarketplace"
+          class="apps-section-card hidden"
+        >
+          <div class="card-header" style="padding:0;">
+            <div>
+              <div class="card-title" data-i18n="marketplaceTitle">
+                App Marketplace
+              </div>
+              <div
+                class="card-caption"
+                data-i18n="marketplaceSub"
+              >
+                اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="marketplaceGrid" class="apps-grid"></div>
+          </div>
+        </section>
+
+        <!-- App view -->
+        <section
+          id="sectionAppView"
+          class="app-view-card hidden"
+        >
+          <div class="app-view-header">
+            <div>
+              <div
+                id="appViewTitle"
+                class="app-view-title"
+              >
+                NahlHub App
+              </div>
+              <div
+                id="appViewSub"
+                class="app-view-sub"
+                data-i18n="appViewSub"
+              >
+                التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.
+              </div>
+            </div>
+            <button
+              id="btnBackFromApp"
+              type="button"
+              class="btn-ghost"
+            >
+              ← <span data-i18n="backToApps">التطبيقات</span>
+            </button>
+          </div>
+          <div class="app-frame-wrap">
+            <iframe
+              id="appFrame"
+              class="app-frame hidden"
+              src=""
+              title="NahlHub App"
+            ></iframe>
+            <div
+              id="appFramePlaceholder"
+              class="app-frame-placeholder"
+            >
+              <span data-i18n="appPlaceholder">
+                اختر تطبيقاً من قائمة التطبيقات أو من المتجر.
+              </span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
   </div>
 
   <script>
-    // ==========================
-    // Simple Frontend State
-    // ==========================
+    (function () {
+      "use strict";
 
-    let currentSessionKey = null;
-    let currentUser = null;
-    let currentWorkspaceId = null;
-    let currentLocale = "ar";
+      // 🔹 IMPORTANT: This must match HUB_APP_ID in Vercel env
+      var HUB_APP_ID = "HUB";
 
-    function setLocale(locale) {
-      currentLocale = locale === "en" ? "en" : "ar";
-      const tabAr = document.getElementById("tabOtpAr");
-      const tabEn = document.getElementById("tabOtpEn");
-      if (tabAr && tabEn) {
-        if (currentLocale === "ar") {
-          tabAr.classList.add("active");
-          tabEn.classList.remove("active");
+      var API_URL = "/api/hub/manage";
+
+      var STORAGE_SESSION_KEY = "nahlhub_session_key";
+      var STORAGE_LANG = "nahlhub_lang";
+      var STORAGE_THEME = "nahlhub_theme";
+
+      var currentLang =
+        localStorage.getItem(STORAGE_LANG) || "ar";
+      var currentTheme =
+        localStorage.getItem(STORAGE_THEME) || "light";
+      var currentSessionKey =
+        localStorage.getItem(STORAGE_SESSION_KEY) || null;
+
+      var currentUser = null;
+      var currentMobileRaw = "";
+      var currentWorkspaces = [];
+      var currentWorkspaceId = null;
+      var currentWorkspaceRole = "";
+      var currentWorkspaceApps = [];
+      var currentTemplates = [];
+
+      // 'apps' | 'marketplace' | 'app'
+      var currentMainView = "apps";
+
+      var bodyEl = document.body;
+      var statusPill = document.getElementById("statusPill");
+      var statusText = document.getElementById("statusText");
+
+      var welcomeCard =
+        document.getElementById("welcomeCard");
+
+      var authOverlay =
+        document.getElementById("authOverlay");
+      var stepMobile =
+        document.getElementById("stepMobile");
+      var stepOtp = document.getElementById("stepOtp");
+      var stepApps = document.getElementById("stepApps");
+
+      var mobileInput =
+        document.getElementById("mobileInput");
+      var btnSendOtp =
+        document.getElementById("btnSendOtp");
+
+      var otpInputs = [
+        document.getElementById("otp1"),
+        document.getElementById("otp2"),
+        document.getElementById("otp3"),
+        document.getElementById("otp4")
+      ];
+      var btnVerifyOtp =
+        document.getElementById("btnVerifyOtp");
+      var btnChangeMobile =
+        document.getElementById("btnChangeMobile");
+
+      var workspaceCard =
+        document.getElementById("workspaceCard");
+      var workspaceMenu =
+        document.getElementById("workspaceMenu");
+      var workspaceNameEl =
+        document.getElementById("workspaceName");
+      var workspaceRoleEl =
+        document.getElementById("workspaceRole");
+
+      var btnViewApps =
+        document.getElementById("btnViewApps");
+      var btnViewMarketplace =
+        document.getElementById("btnViewMarketplace");
+
+      var sectionApps =
+        document.getElementById("sectionApps");
+      var sectionMarketplace =
+        document.getElementById("sectionMarketplace");
+      var sectionAppView =
+        document.getElementById("sectionAppView");
+
+      var appsGrid = document.getElementById("appsGrid");
+      var marketplaceGrid =
+        document.getElementById("marketplaceGrid");
+
+      var appFrame =
+        document.getElementById("appFrame");
+      var appFramePlaceholder =
+        document.getElementById("appFramePlaceholder");
+      var appViewTitle =
+        document.getElementById("appViewTitle");
+
+      var btnBackFromApp =
+        document.getElementById("btnBackFromApp");
+      var btnLogout = document.getElementById("btnLogout");
+
+      var btnTheme = document.getElementById("btnTheme");
+      var themeIcon =
+        document.getElementById("themeIcon");
+      var btnLangAr =
+        document.getElementById("btnLangAr");
+      var btnLangEn =
+        document.getElementById("btnLangEn");
+
+      var userNameLabel =
+        document.getElementById("userNameLabel");
+
+      var tDict = {
+        hubTitle: { ar: "NahlHub", en: "NahlHub" },
+        hubSub: {
+          ar: "تطبيقاتك في نحل هب",
+          en: "Your apps in NahlHub"
+        },
+        welcomeTitle: { ar: "مرحباً 👋", en: "Welcome 👋" },
+        welcomeSub: {
+          ar: "ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.",
+          en: "Enter your mobile, then choose workspace and app."
+        },
+        step1Title: { ar: "رقم الجوال", en: "Mobile number" },
+        step1Sub: { ar: "ادخل رقم الجوال.", en: "Enter your mobile." },
+        step1Label: { ar: "رقم الجوال", en: "Mobile" },
+        btnSendOtp: { ar: "إرسال الرمز", en: "Send code" },
+        step2Title: { ar: "رمز الدخول", en: "Login code" },
+        step2Sub: {
+          ar: "أدخل الرمز ٤ أرقام.",
+          en: "Enter the 4-digit code."
+        },
+        changeMobile: { ar: "تعديل الرقم", en: "Change number" },
+        btnVerify: { ar: "تأكيد", en: "Confirm" },
+        logout: { ar: "تسجيل خروج", en: "Logout" },
+        statusIdle: { ar: "جاهز.", en: "Ready." },
+        statusSendingOtp: {
+          ar: "يتم إرسال الرمز...",
+          en: "Sending code..."
+        },
+        statusOtpSent: {
+          ar: "تم إرسال الرمز.",
+          en: "Code sent."
+        },
+        statusVerifying: { ar: "يتم التحقق...", en: "Verifying..." },
+        statusError: {
+          ar: "حدث خطأ. حاول مرة أخرى.",
+          en: "Something went wrong. Try again."
+        },
+        statusNoWorkspaces: {
+          ar: "لا توجد مساحات عمل متاحة.",
+          en: "No workspaces available."
+        },
+        statusLoadingWorkspace: {
+          ar: "جاري تحميل مساحات العمل...",
+          en: "Loading workspaces..."
+        },
+        statusLoadingApps: {
+          ar: "جاري تحميل التطبيقات...",
+          en: "Loading apps..."
+        },
+        statusLoadingMarketplace: {
+          ar: "جاري تحميل متجر التطبيقات...",
+          en: "Loading marketplace..."
+        },
+        workspaceLabel: { ar: "مساحة العمل", en: "Workspace" },
+        yourAppsTitle: { ar: "تطبيقاتك", en: "Your apps" },
+        marketplaceTitle: {
+          ar: "App Marketplace",
+          en: "App Marketplace"
+        },
+        marketplaceSub: {
+          ar: "اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.",
+          en: "Choose a workspace and install the right apps for your team."
+        },
+        viewApps: { ar: "التطبيقات", en: "Apps" },
+        viewMarketplace: { ar: "المتجر", en: "Marketplace" },
+        appPlaceholder: {
+          ar: "اختر تطبيقاً من قائمة التطبيقات أو من المتجر.",
+          en: "Choose an app from your apps or from the marketplace."
+        },
+        appViewSub: {
+          ar: "التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.",
+          en: "The app is shown inside NahlHub. Use Back to return to apps."
+        },
+        backToApps: {
+          ar: "التطبيقات",
+          en: "Apps"
+        },
+        userNotFound: {
+          ar: "هذا الرقم غير مسجل. تواصل مع مسؤول النظام لإنشاء حساب.",
+          en: "This mobile is not registered. Contact your admin to create an account."
+        }
+      };
+
+      function t(key) {
+        var entry = tDict[key];
+        if (!entry) return key;
+        return entry[currentLang] || entry.ar || key;
+      }
+
+      function applyLanguage() {
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir =
+          currentLang === "ar" ? "rtl" : "ltr";
+
+        var nodes = document.querySelectorAll("[data-i18n]");
+        nodes.forEach(function (node) {
+          var key = node.getAttribute("data-i18n");
+          node.textContent = t(key);
+        });
+
+        if (currentLang === "ar") {
+          btnLangAr.classList.add("active");
+          btnLangEn.classList.remove("active");
+          mobileInput.placeholder = "5XXXXXXXX";
         } else {
-          tabEn.classList.add("active");
-          tabAr.classList.remove("active");
+          btnLangAr.classList.remove("active");
+          btnLangEn.classList.add("active");
+          mobileInput.placeholder = "5XXXXXXXX";
         }
-      }
-    }
 
-    function setLoading(buttonId, loading) {
-      const btn = document.getElementById(buttonId);
-      if (!btn) return;
-      if (loading) {
-        btn.disabled = true;
-        if (!btn.dataset.originalText) {
-          btn.dataset.originalText = btn.innerText;
-        }
-        btn.innerText = "جارٍ التنفيذ...";
-      } else {
-        btn.disabled = false;
-        if (btn.dataset.originalText) {
-          btn.innerText = btn.dataset.originalText;
-        }
-      }
-    }
-
-    function showStatus(elId, message, ok) {
-      const el = document.getElementById(elId);
-      if (!el) return;
-      if (!message) {
-        el.style.display = "none";
-        el.classList.remove("ok", "err");
-        el.innerText = "";
-        return;
-      }
-      el.style.display = "block";
-      el.classList.remove("ok", "err");
-      el.classList.add(ok ? "ok" : "err");
-      el.innerText = message;
-    }
-
-    function updateAuthBadge() {
-      const dot = document.getElementById("authStateDot");
-      const label = document.getElementById("authStateLabel");
-      const chip = document.getElementById("sessionChip");
-      if (!dot || !label || !chip) return;
-
-      if (currentSessionKey && currentUser) {
-        dot.classList.remove("off");
-        label.innerText = "مسجل الدخول";
-        chip.style.display = "block";
-        chip.innerText = "session: " + currentSessionKey;
-      } else {
-        dot.classList.add("off");
-        label.innerText = "غير مسجل";
-        chip.style.display = "none";
-        chip.innerText = "session: –";
-      }
-    }
-
-    function showLoggedInUI(show) {
-      const appView = document.getElementById("appView");
-      const userCard = document.getElementById("userCard");
-      if (!appView || !userCard) return;
-      appView.style.display = show ? "block" : "none";
-      userCard.style.display = show ? "block" : "none";
-    }
-
-    function updateUserCard() {
-      const nameEl = document.getElementById("userNameLabel");
-      const mobileEl = document.getElementById("userMobileLabel");
-      const idEl = document.getElementById("userIdLabel");
-      if (!currentUser) {
-        if (nameEl) nameEl.innerText = "—";
-        if (mobileEl) mobileEl.innerText = "—";
-        if (idEl) idEl.innerText = "—";
-        return;
-      }
-      if (nameEl) nameEl.innerText = currentUser.name || "—";
-      if (mobileEl)
-        mobileEl.innerText = currentUser.mobile || "—";
-      if (idEl) idEl.innerText = currentUser.userId || "—";
-    }
-
-    // ==========================
-    // API Helper
-    // ==========================
-
-    async function callHub(action, payload) {
-      const body = Object.assign({}, payload || {}, { action });
-      const res = await fetch("/api/hub/manage", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      const text = await res.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (err) {
-        console.error("Non-JSON response:", text);
-        throw new Error("Unexpected response from backend.");
-      }
-      if (!res.ok) {
-        throw new Error(data.error || "Backend error");
-      }
-      return data;
-    }
-
-    // ==========================
-    // Auth Flow (Mobile + OTP)
-    // ==========================
-
-    async function handleSendOtp() {
-      const mobileInput = document.getElementById("mobileInput");
-      const otpCard = document.getElementById("otpCard");
-      if (!mobileInput) return;
-
-      const rawMobile = (mobileInput.value || "").trim();
-      if (!rawMobile) {
-        showStatus("otpStatus", "الرجاء إدخال رقم الجوال أولاً.", false);
-        return;
+        updateUserUi();
       }
 
-      showStatus("otpStatus", "", true);
-      showStatus("verifyStatus", "", true);
-      setLoading("btnSendOtp", true);
+      function applyTheme() {
+        bodyEl.setAttribute("data-theme", currentTheme);
+        themeIcon.textContent =
+          currentTheme === "light" ? "🌞" : "🌙";
+      }
 
-      try {
-        const result = await callHub("sendOtp", { mobile: rawMobile });
-
-        if (!result || result.success === false) {
-          showStatus(
-            "otpStatus",
-            result && result.error
-              ? result.error
-              : "تعذر إرسال الرمز. حاول مرة أخرى.",
-            false
-          );
+      function setStatus(msgKeyOrText, type) {
+        if (!msgKeyOrText) {
+          statusText.textContent = "";
+          statusPill.classList.remove("ok", "error");
           return;
         }
+        var text =
+          tDict[msgKeyOrText] &&
+          tDict[msgKeyOrText][currentLang]
+            ? t(msgKeyOrText)
+            : msgKeyOrText;
+        statusPill.classList.remove("ok", "error");
+        if (type === "ok") statusPill.classList.add("ok");
+        else if (type === "error")
+          statusPill.classList.add("error");
+        statusText.textContent = text;
+      }
 
-        let msg =
-          "✅ تم إنشاء رمز الدخول.\nتحقق من واتساب / الرسائل خلال لحظات.";
-        if (result.whatsappSent === false && result.whatsappError) {
-          msg +=
-            "\n\n⚠️ لم نستطع الإرسال عبر واتساب تلقائيًا، لكن تم إنشاء الرمز ويمكن استخدامه لوصلك بأي طريقة أخرى.";
+      function postJson(payload) {
+        var body = Object.assign({}, payload || {});
+        // 🔹 Inject default appId if missing
+        if (!body.appId && !body.appid && HUB_APP_ID) {
+          body.appId = HUB_APP_ID;
         }
 
-        showStatus("otpStatus", msg, true);
-        if (otpCard) otpCard.style.display = "block";
-        document.getElementById("otpInput").focus();
-      } catch (err) {
-        console.error("sendOtp error:", err);
-        showStatus(
-          "otpStatus",
-          "حدث خطأ غير متوقع أثناء إرسال الرمز. حاول مرة أخرى.",
-          false
-        );
-      } finally {
-        setLoading("btnSendOtp", false);
-      }
-    }
-
-    async function handleVerifyOtp() {
-      const mobileInput = document.getElementById("mobileInput");
-      const otpInput = document.getElementById("otpInput");
-      if (!mobileInput || !otpInput) return;
-
-      const mobile = (mobileInput.value || "").trim();
-      const otp = (otpInput.value || "").trim();
-
-      if (!mobile || !otp) {
-        showStatus(
-          "verifyStatus",
-          "الرجاء إدخال رقم الجوال والرمز.",
-          false
-        );
-        return;
-      }
-
-      showStatus("verifyStatus", "", true);
-      setLoading("btnVerifyOtp", true);
-
-      try {
-        const result = await callHub("verifyOtp", { mobile, otp });
-
-        if (!result || result.success === false) {
-          showStatus(
-            "verifyStatus",
-            result && result.error
-              ? result.error
-              : "تعذر التحقق من الرمز. حاول مرة أخرى.",
-            false
-          );
-          return;
-        }
-
-        currentSessionKey = result.sessionKey || null;
-        currentUser = result.user || null;
-        updateAuthBadge();
-        updateUserCard();
-        showLoggedInUI(true);
-
-        showStatus(
-          "verifyStatus",
-          "✅ تم التحقق من الرمز وتسجيل الدخول بنجاح.",
-          true
-        );
-        showStatus(
-          "otpStatus",
-          "يمكنك الآن إدارة المساحات والتطبيقات من العمود الأيمن.",
-          true
-        );
-
-        await refreshAuthMe();
-        await loadWorkspaces();
-      } catch (err) {
-        console.error("verifyOtp error:", err);
-        showStatus(
-          "verifyStatus",
-          "حدث خطأ غير متوقع أثناء التحقق من الرمز.",
-          false
-        );
-      } finally {
-        setLoading("btnVerifyOtp", false);
-      }
-    }
-
-    async function refreshAuthMe() {
-      if (!currentSessionKey) return;
-      try {
-        const result = await callHub("auth.me", {
-          sessionKey: currentSessionKey,
-        });
-        if (!result || result.success === false) {
-          console.warn("auth.me failed:", result);
-          return;
-        }
-        currentUser = result.user || currentUser;
-        updateUserCard();
-      } catch (err) {
-        console.warn("auth.me error:", err);
-      }
-    }
-
-    async function handleLogout() {
-      if (currentSessionKey) {
-        try {
-          await callHub("auth.logout", {
-            sessionKey: currentSessionKey,
+        return fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        }).then(function (res) {
+          return res.json().catch(function () {
+            throw new Error("Invalid JSON from backend.");
           });
-        } catch (err) {
-          console.warn("logout error:", err);
+        });
+      }
+
+      function showStep(name) {
+        stepMobile.classList.add("hidden");
+        stepOtp.classList.add("hidden");
+        stepApps.classList.add("hidden");
+
+        if (name === "mobile") {
+          authOverlay.classList.remove("hidden");
+          stepMobile.classList.remove("hidden");
+          mobileInput.focus();
+        } else if (name === "otp") {
+          authOverlay.classList.remove("hidden");
+          stepOtp.classList.remove("hidden");
+          otpInputs[0].focus();
+        } else if (name === "apps") {
+          authOverlay.classList.add("hidden");
+          stepApps.classList.remove("hidden");
         }
       }
-      currentSessionKey = null;
-      currentUser = null;
-      currentWorkspaceId = null;
-      updateAuthBadge();
-      updateUserCard();
-      showLoggedInUI(false);
-      clearWorkspacesUI();
-      clearAppsUI();
-      clearMarketplaceUI();
-      showStatus("otpStatus", "", true);
-      showStatus("verifyStatus", "", true);
-      showStatus("workspaceStatus", "", true);
-      showStatus("appsStatus", "", true);
-      showStatus("marketplaceStatus", "", true);
-    }
 
-    function clearAuthFields() {
-      const mobileInput = document.getElementById("mobileInput");
-      const otpInput = document.getElementById("otpInput");
-      if (mobileInput) mobileInput.value = "";
-      if (otpInput) otpInput.value = "";
-      showStatus("otpStatus", "", true);
-      showStatus("verifyStatus", "", true);
-    }
-
-    // ==========================
-    // Workspaces
-    // ==========================
-
-    function clearWorkspacesUI() {
-      const list = document.getElementById("workspacesList");
-      const empty = document.getElementById("workspacesEmpty");
-      if (list) list.innerHTML = "";
-      if (empty) empty.style.display = "none";
-    }
-
-    async function loadWorkspaces() {
-      clearWorkspacesUI();
-      showStatus("workspaceStatus", "", true);
-
-      if (!currentUser || !currentUser.userId) {
-        showStatus(
-          "workspaceStatus",
-          "الرجاء تسجيل الدخول أولاً.",
-          false
-        );
-        return;
-      }
-
-      try {
-        const result = await callHub("workspace.listForUser", {
-          userId: currentUser.userId,
+      // OTP behavior
+      otpInputs.forEach(function (input, idx) {
+        input.addEventListener("input", function (e) {
+          var value = e.target.value.replace(/\D/g, "");
+          e.target.value = value.slice(0, 1);
+          if (value && idx < otpInputs.length - 1) {
+            otpInputs[idx + 1].focus();
+          }
         });
 
-        const items = (result && result.items) || [];
-        const list = document.getElementById("workspacesList");
-        const empty = document.getElementById("workspacesEmpty");
-        if (!list || !empty) return;
-
-        if (items.length === 0) {
-          empty.style.display = "block";
-          return;
-        }
-
-        empty.style.display = "none";
-        list.innerHTML = "";
-
-        items.forEach((ws) => {
-          const el = document.createElement("div");
-          el.className = "nh-list-item";
-          el.dataset.wsId = ws.workspaceId;
-
-          const title = document.createElement("div");
-          title.className = "nh-list-item-title";
-          title.innerText = ws.name || "بدون اسم";
-
-          const meta = document.createElement("div");
-          meta.className = "nh-list-item-meta";
-
-          const slug = document.createElement("span");
-          slug.innerText = "slug: " + (ws.slug || "—");
-          meta.appendChild(slug);
-
-          const role = document.createElement("span");
-          role.className = "nh-tag";
-          role.innerText = ws.role === "admin" ? "مدير المساحة" : "عضو";
-          meta.appendChild(role);
-
-          const plan = document.createElement("span");
-          plan.className = "nh-tag";
-          plan.innerText = "الخطة: " + (ws.plan || "free");
-          meta.appendChild(plan);
-
-          el.appendChild(title);
-          el.appendChild(meta);
-
-          el.addEventListener("click", () => {
-            selectWorkspace(ws.workspaceId, ws.name, ws.plan);
-          });
-
-          list.appendChild(el);
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Backspace" && !e.target.value && idx > 0) {
+            otpInputs[idx - 1].focus();
+          }
+          if (e.key === "ArrowLeft" && idx > 0) {
+            otpInputs[idx - 1].focus();
+          }
+          if (
+            e.key === "ArrowRight" &&
+            idx < otpInputs.length - 1
+          ) {
+            otpInputs[idx + 1].focus();
+          }
+          if (e.key === "Enter") {
+            e.preventDefault();
+            verifyOtp();
+          }
         });
-
-        // Keep selection state if exists
-        if (currentWorkspaceId) {
-          highlightSelectedWorkspace();
-        }
-      } catch (err) {
-        console.error("loadWorkspaces error:", err);
-        showStatus(
-          "workspaceStatus",
-          "تعذر تحميل المساحات. حاول مرة أخرى.",
-          false
-        );
-      }
-    }
-
-    function highlightSelectedWorkspace() {
-      const list = document.getElementById("workspacesList");
-      if (!list) return;
-      const children = Array.from(list.children);
-      children.forEach((el) => {
-        if (el.dataset.wsId === currentWorkspaceId) {
-          el.classList.add("active");
-        } else {
-          el.classList.remove("active");
-        }
       });
-    }
 
-    async function selectWorkspace(wsId, name, plan) {
-      currentWorkspaceId = wsId;
-      highlightSelectedWorkspace();
-
-      const wsTag = document.getElementById("currentWorkspaceTag");
-      if (wsTag) {
-        wsTag.innerText = name || "بدون اسم";
+      function readOtp() {
+        return otpInputs
+          .map(function (el) {
+            return el.value || "";
+          })
+          .join("");
       }
 
-      const appsSubtitle = document.getElementById("appsSubtitle");
-      if (appsSubtitle) {
-        appsSubtitle.innerText =
-          "التطبيقات المرتبطة بالمساحة: " + (name || wsId);
-      }
-
-      showStatus("appsStatus", "", true);
-      showStatus("marketplaceStatus", "", true);
-      await loadWorkspaceApps();
-      await loadMarketplace();
-    }
-
-    async function handleCreateWorkspace() {
-      const nameInput = document.getElementById("workspaceNameInput");
-      if (!nameInput || !currentUser) return;
-
-      const name = (nameInput.value || "").trim();
-      if (!name) {
-        showStatus(
-          "workspaceStatus",
-          "الرجاء إدخال اسم للمساحة قبل الإنشاء.",
-          false
-        );
-        return;
-      }
-
-      setLoading("btnCreateWorkspace", true);
-      showStatus("workspaceStatus", "", true);
-
-      try {
-        const result = await callHub("workspace.create", {
-          userId: currentUser.userId,
-          name,
-          plan: "free",
+      function clearOtpInputs() {
+        otpInputs.forEach(function (el) {
+          el.value = "";
         });
+      }
 
-        if (!result || result.success === false) {
-          showStatus(
-            "workspaceStatus",
-            result && result.error
-              ? result.error
-              : "تعذر إنشاء المساحة. حاول مرة أخرى.",
-            false
+      function sendOtp() {
+        var mobile = (mobileInput.value || "").trim();
+        if (!mobile) {
+          setStatus(
+            currentLang === "ar"
+              ? "أدخل رقم الجوال."
+              : "Enter your mobile.",
+            "error"
           );
+          mobileInput.focus();
           return;
         }
 
-        showStatus(
-          "workspaceStatus",
-          "✅ تم إنشاء المساحة بنجاح.",
-          true
-        );
-        nameInput.value = "";
-        await loadWorkspaces();
-      } catch (err) {
-        console.error("create workspace error:", err);
-        showStatus(
-          "workspaceStatus",
-          "حدث خطأ غير متوقع أثناء إنشاء المساحة.",
-          false
-        );
-      } finally {
-        setLoading("btnCreateWorkspace", false);
-      }
-    }
+        currentMobileRaw = mobile;
+        btnSendOtp.disabled = true;
+        setStatus("statusSendingOtp");
 
-    // ==========================
-    // Workspace Apps
-    // ==========================
-
-    function clearAppsUI() {
-      const list = document.getElementById("workspaceAppsList");
-      const empty = document.getElementById("workspaceAppsEmpty");
-      if (list) list.innerHTML = "";
-      if (empty) empty.style.display = "none";
-    }
-
-    async function loadWorkspaceApps() {
-      clearAppsUI();
-      if (!currentWorkspaceId) {
-        showStatus(
-          "appsStatus",
-          "اختر مساحة من الأعلى لعرض التطبيقات.",
-          false
-        );
-        return;
+        postJson({ action: "sendOtp", mobile: mobile })
+          .then(function (res) {
+            if (!res || !res.success) {
+              var msg =
+                (res && res.error) ||
+                (currentLang === "ar"
+                  ? "تعذر إرسال الرمز."
+                  : "Failed to send code.");
+              setStatus(msg, "error");
+              return;
+            }
+            setStatus("statusOtpSent", "ok");
+            clearOtpInputs();
+            showStep("otp");
+          })
+          .catch(function () {
+            setStatus("statusError", "error");
+          })
+          .finally(function () {
+            btnSendOtp.disabled = false;
+          });
       }
 
-      try {
-        const result = await callHub("marketplace.listWorkspaceApps", {
-          workspaceId: currentWorkspaceId,
-        });
-
-        const items = (result && result.items) || [];
-        const list = document.getElementById("workspaceAppsList");
-        const empty = document.getElementById("workspaceAppsEmpty");
-        if (!list || !empty) return;
-
-        if (items.length === 0) {
-          empty.style.display = "block";
+      function verifyOtp() {
+        var otp = readOtp();
+        if (!otp || otp.length !== 4) {
+          setStatus(
+            currentLang === "ar"
+              ? "أدخل الرمز ٤ أرقام."
+              : "Enter the 4-digit code.",
+            "error"
+          );
+          otpInputs[0].focus();
           return;
         }
 
-        empty.style.display = "none";
-        list.innerHTML = "";
+        btnVerifyOtp.disabled = true;
+        setStatus("statusVerifying");
 
-        items.forEach((app) => {
-          const el = document.createElement("div");
-          el.className = "nh-list-item";
+        postJson({
+          action: "verifyOtp",
+          mobile: currentMobileRaw,
+          otp: otp
+        })
+          .then(function (res) {
+            if (!res || !res.success) {
+              var msg =
+                (res && res.error) ||
+                (currentLang === "ar"
+                  ? "رمز غير صحيح أو منتهي."
+                  : "Invalid or expired code.");
+              setStatus(msg, "error");
+              clearOtpInputs();
+              otpInputs[0].focus();
+              return;
+            }
 
-          const title = document.createElement("div");
-          title.className = "nh-list-item-title";
-          title.innerText = app.nameAr || app.nameEn || "App";
+            // 🔹 If backend says user doesn't exist → show message and stop
+            if (res.userExists === false) {
+              setStatus("userNotFound", "error");
+              clearOtpInputs();
+              otpInputs[0].focus();
+              return;
+            }
 
-          const meta = document.createElement("div");
-          meta.className = "nh-list-item-meta";
+            currentSessionKey = res.sessionKey || null;
+            currentUser = res.user || null;
+            if (currentSessionKey) {
+              localStorage.setItem(
+                STORAGE_SESSION_KEY,
+                currentSessionKey
+              );
+            }
 
-          const idSpan = document.createElement("span");
-          idSpan.innerText = "AppId: " + (app.appId || "—");
-          meta.appendChild(idSpan);
+            if (welcomeCard)
+              welcomeCard.classList.add("hidden");
+            updateUserUi();
 
-          const tplSpan = document.createElement("span");
-          tplSpan.className = "nh-tag";
-          tplSpan.innerText = "Template: " + (app.templateId || "—");
-          meta.appendChild(tplSpan);
-
-          const statusSpan = document.createElement("span");
-          statusSpan.className = "nh-tag";
-          statusSpan.innerText = "Status: " + (app.status || "installed");
-          meta.appendChild(statusSpan);
-
-          el.appendChild(title);
-          el.appendChild(meta);
-          list.appendChild(el);
-        });
-      } catch (err) {
-        console.error("loadWorkspaceApps error:", err);
-        showStatus(
-          "appsStatus",
-          "تعذر تحميل التطبيقات المثبّتة.",
-          false
-        );
-      }
-    }
-
-    // ==========================
-    // Marketplace
-    // ==========================
-
-    function clearMarketplaceUI() {
-      const grid = document.getElementById("marketplaceGrid");
-      const empty = document.getElementById("marketplaceEmpty");
-      if (grid) grid.innerHTML = "";
-      if (empty) empty.style.display = "none";
-    }
-
-    async function loadMarketplace() {
-      clearMarketplaceUI();
-
-      if (!currentWorkspaceId) {
-        showStatus(
-          "marketplaceStatus",
-          "اختر مساحة عمل لعرض المتجر.",
-          false
-        );
-        return;
+            // load workspaces + apps
+            loadWorkspaces().then(function () {
+              showStep("apps");
+              setStatus("statusIdle");
+            });
+          })
+          .catch(function () {
+            setStatus("statusError", "error");
+          })
+          .finally(function () {
+            btnVerifyOtp.disabled = false;
+          });
       }
 
-      try {
-        const result = await callHub("marketplace.listTemplates", {
-          workspaceId: currentWorkspaceId,
-        });
+      function updateUserUi() {
+        if (!currentUser) {
+          userNameLabel.textContent = "";
+          return;
+        }
+        var suffix = " · " + (currentUser.mobile || "");
+        var greetName =
+          currentLang === "ar"
+            ? "مرحباً " + (currentUser.name || "")
+            : "Hi " + (currentUser.name || "");
+        userNameLabel.textContent = greetName + suffix;
+      }
 
-        const items = (result && result.items) || [];
-        const grid = document.getElementById("marketplaceGrid");
-        const empty = document.getElementById("marketplaceEmpty");
-        if (!grid || !empty) return;
+      function logout() {
+        currentSessionKey = null;
+        localStorage.removeItem(STORAGE_SESSION_KEY);
+        currentUser = null;
+        currentWorkspaces = [];
+        currentWorkspaceId = null;
+        currentWorkspaceApps = [];
+        currentTemplates = [];
+        appsGrid.innerHTML = "";
+        marketplaceGrid.innerHTML = "";
+        workspaceNameEl.textContent = "—";
+        workspaceRoleEl.textContent = "—";
+        setMainView("apps");
 
-        if (items.length === 0) {
-          empty.style.display = "block";
+        if (welcomeCard)
+          welcomeCard.classList.remove("hidden");
+        setStatus("statusIdle");
+        showStep("mobile");
+      }
+
+      /* -------- Workspace & views ---------- */
+
+      function setMainView(view) {
+        currentMainView = view;
+        sectionApps.classList.toggle(
+          "hidden",
+          view !== "apps"
+        );
+        sectionMarketplace.classList.toggle(
+          "hidden",
+          view !== "marketplace"
+        );
+        sectionAppView.classList.toggle(
+          "hidden",
+          view !== "app"
+        );
+
+        btnViewApps.classList.toggle(
+          "active",
+          view === "apps"
+        );
+        btnViewMarketplace.classList.toggle(
+          "active",
+          view === "marketplace"
+        );
+      }
+
+      function buildWorkspaceMenu() {
+        workspaceMenu.innerHTML = "";
+        if (!currentWorkspaces.length) {
+          var empty = document.createElement("div");
+          empty.className = "card-caption";
+          empty.style.padding = "6px 4px";
+          empty.textContent = t("statusNoWorkspaces");
+          workspaceMenu.appendChild(empty);
           return;
         }
 
-        empty.style.display = "none";
-        grid.innerHTML = "";
-
-        items.forEach((tpl) => {
-          const card = document.createElement("div");
-          card.className = "nh-market-item";
-
-          const titleRow = document.createElement("div");
-          titleRow.className = "nh-market-title-row";
-
-          const title = document.createElement("div");
-          title.className = "nh-market-title";
-          const displayName =
-            currentLocale === "en"
-              ? tpl.nameEn || tpl.nameAr
-              : tpl.nameAr || tpl.nameEn;
-          title.innerText = displayName || tpl.code || "Template";
-
-          const typeTag = document.createElement("span");
-          typeTag.className = "nh-tag";
-          typeTag.innerText =
-            tpl.type === "module" ? "Module" : "App";
-
-          titleRow.appendChild(title);
-          titleRow.appendChild(typeTag);
-
-          const desc = document.createElement("div");
-          desc.className = "nh-market-desc";
-          const descText =
-            currentLocale === "en"
-              ? tpl.shortDescEn || tpl.descriptionEn || ""
-              : tpl.shortDescAr || tpl.descriptionAr || "";
-          desc.innerText =
-            descText || "بدون وصف مختصر لهذا القالب حاليًا.";
-
-          const footer = document.createElement("div");
-          footer.className = "nh-market-footer";
-
-          const left = document.createElement("div");
-          left.style.display = "flex";
-          left.style.flexDirection = "column";
-          left.style.gap = "2px";
-
-          if (tpl.category) {
-            const cat = document.createElement("span");
-            cat.className = "nh-tag";
-            cat.innerText = tpl.category;
-            left.appendChild(cat);
-          }
-
-          if (tpl.planRequired) {
-            const plan = document.createElement("span");
-            plan.className = "nh-tag";
-            plan.innerText = "Plan: " + tpl.planRequired;
-            left.appendChild(plan);
-          }
-
-          const btn = document.createElement("button");
+        currentWorkspaces.forEach(function (ws) {
+          var btn = document.createElement("button");
           btn.type = "button";
-          btn.className = "nh-btn nh-btn-primary nh-btn-xs";
-          btn.innerText = tpl.installed ? "مثبّت" : "تثبيت";
-          btn.disabled = !!tpl.installed;
+          btn.className = "workspace-menu-item";
+          if (ws.workspaceId === currentWorkspaceId) {
+            btn.classList.add("active");
+          }
 
-          btn.addEventListener("click", () => {
-            handleInstallTemplate(tpl);
+          var main = document.createElement("div");
+          main.className = "workspace-menu-item-main";
+
+          var name = document.createElement("div");
+          name.className = "workspace-menu-item-name";
+          name.textContent = ws.name || ws.workspaceId;
+
+          var meta = document.createElement("div");
+          meta.className = "workspace-menu-item-meta";
+          meta.textContent =
+            (ws.slug || "") +
+            (ws.plan ? " · " + ws.plan : "");
+
+          main.appendChild(name);
+          main.appendChild(meta);
+
+          var rolePill =
+            document.createElement("span");
+          rolePill.className = "workspace-menu-item-role";
+          rolePill.textContent = ws.role || "member";
+
+          btn.appendChild(main);
+          btn.appendChild(rolePill);
+
+          btn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            selectWorkspace(ws.workspaceId);
+            workspaceMenu.classList.add("hidden");
           });
 
-          footer.appendChild(left);
-          footer.appendChild(btn);
+          workspaceMenu.appendChild(btn);
+        });
+      }
 
-          card.appendChild(titleRow);
-          card.appendChild(desc);
+      function selectWorkspace(workspaceId) {
+        var ws = currentWorkspaces.find(function (w) {
+          return w.workspaceId === workspaceId;
+        });
+        if (!ws) return;
+
+        currentWorkspaceId = workspaceId;
+        currentWorkspaceRole = ws.role || "member";
+
+        workspaceNameEl.textContent =
+          ws.name || ws.workspaceId;
+        workspaceRoleEl.textContent =
+          ws.role === "admin" ? "admin" : "member";
+
+        buildWorkspaceMenu();
+        setStatus("statusLoadingApps");
+        loadWorkspaceData();
+      }
+
+      function loadWorkspaces() {
+        if (!currentUser || !currentUser.userId) {
+          return Promise.resolve();
+        }
+        setStatus("statusLoadingWorkspace");
+        return postJson({
+          action: "workspace.listForUser",
+          userId: currentUser.userId
+        })
+          .then(function (res) {
+            currentWorkspaces =
+              (res && res.items) || [];
+            if (
+              !currentWorkspaces ||
+              !currentWorkspaces.length
+            ) {
+              setStatus("statusNoWorkspaces", "error");
+              return;
+            }
+            selectWorkspace(
+              currentWorkspaces[0].workspaceId
+            );
+          })
+          .catch(function () {
+            setStatus("statusError", "error");
+          });
+      }
+
+      function loadWorkspaceData() {
+        if (!currentWorkspaceId) return;
+
+        Promise.all([
+          postJson({
+            action: "marketplace.listWorkspaceApps",
+            workspaceId: currentWorkspaceId
+          }),
+          postJson({
+            action: "marketplace.listTemplates",
+            workspaceId: currentWorkspaceId
+          })
+        ])
+          .then(function (results) {
+            var appsRes = results[0] || {};
+            var tplRes = results[1] || {};
+            currentTemplates = tplRes.items || [];
+
+            var tplById = {};
+            currentTemplates.forEach(function (tpl) {
+              tplById[tpl.templateId] = tpl;
+            });
+
+            currentWorkspaceApps = (appsRes.items || []).map(
+              function (app) {
+                var tpl =
+                  tplById[app.templateId] || {};
+                return {
+                  workspaceAppId:
+                    app.workspaceAppId,
+                  appId: app.appId,
+                  templateId: app.templateId,
+                  name:
+                    app.name ||
+                    tpl.name ||
+                    app.templateId,
+                  category: tpl.category || "",
+                  shortDesc:
+                    tpl.shortDesc || "",
+                  status: app.status || "",
+                  visibleInHub:
+                    app.visibleInHub || "",
+                  defaultRoute:
+                    tpl.defaultRoute || "",
+                  iconUrl: tpl.iconUrl || "",
+                  featureTags:
+                    tpl.featureTags || ""
+                };
+              }
+            );
+
+            renderApps();
+            renderMarketplace();
+            setStatus("statusIdle");
+          })
+          .catch(function () {
+            setStatus("statusError", "error");
+          });
+      }
+
+      function renderApps() {
+        appsGrid.innerHTML = "";
+        if (
+          !currentWorkspaceApps ||
+          !currentWorkspaceApps.length
+        ) {
+          var empty = document.createElement("div");
+          empty.className = "card-caption";
+          empty.textContent =
+            currentLang === "ar"
+              ? "لا توجد تطبيقات مثبتة في هذه المساحة."
+              : "No apps installed in this workspace.";
+          appsGrid.appendChild(empty);
+          return;
+        }
+
+        currentWorkspaceApps.forEach(function (app) {
+          var card = document.createElement("article");
+          card.className = "app-card";
+
+          var header =
+            document.createElement("div");
+          header.className = "app-card-header";
+
+          var main =
+            document.createElement("div");
+          main.className = "app-card-main";
+
+          var icon =
+            document.createElement("div");
+          icon.className = "app-card-icon";
+          icon.textContent = "⋯";
+
+          var titleWrap =
+            document.createElement("div");
+          var title =
+            document.createElement("div");
+          title.className = "app-card-title";
+          title.textContent =
+            app.name || app.templateId;
+
+          var tagLine =
+            document.createElement("div");
+          tagLine.className = "app-card-tagline";
+          tagLine.textContent = app.category || "";
+
+          titleWrap.appendChild(title);
+          titleWrap.appendChild(tagLine);
+
+          main.appendChild(icon);
+          main.appendChild(titleWrap);
+
+          var statusBadge =
+            document.createElement("span");
+          statusBadge.className =
+            "badge-installed";
+          statusBadge.textContent =
+            currentLang === "ar"
+              ? "مثبّت"
+              : "Installed";
+
+          header.appendChild(main);
+          header.appendChild(statusBadge);
+
+          var body =
+            document.createElement("div");
+          body.className = "app-card-body";
+          body.textContent = app.shortDesc || "";
+
+          var footer =
+            document.createElement("div");
+          footer.className = "app-card-footer";
+
+          var cat =
+            document.createElement("span");
+          cat.textContent =
+            app.category || "—";
+
+          var actions =
+            document.createElement("div");
+          actions.className = "app-card-actions";
+
+          var openBtn =
+            document.createElement("button");
+          openBtn.type = "button";
+          openBtn.className =
+            "btn-pill-sm primary";
+          openBtn.textContent =
+            currentLang === "ar"
+              ? "فتح التطبيق"
+              : "Open app";
+
+          openBtn.addEventListener(
+            "click",
+            function (e) {
+              e.stopPropagation();
+              openWorkspaceApp(app);
+            }
+          );
+
+          actions.appendChild(openBtn);
+          footer.appendChild(cat);
+          footer.appendChild(actions);
+
+          card.appendChild(header);
+          card.appendChild(body);
           card.appendChild(footer);
 
-          grid.appendChild(card);
-        });
-      } catch (err) {
-        console.error("loadMarketplace error:", err);
-        showStatus(
-          "marketplaceStatus",
-          "تعذر تحميل المتجر. حاول مرة أخرى.",
-          false
-        );
-      }
-    }
-
-    async function handleInstallTemplate(tpl) {
-      if (!currentWorkspaceId || !currentUser) {
-        showStatus(
-          "marketplaceStatus",
-          "الرجاء اختيار مساحة وتسجيل الدخول.",
-          false
-        );
-        return;
-      }
-
-      showStatus("marketplaceStatus", "", true);
-
-      try {
-        const result = await callHub("marketplace.install", {
-          workspaceId: currentWorkspaceId,
-          templateId: tpl.templateId,
-          userId: currentUser.userId,
-        });
-
-        if (!result || result.success === false) {
-          showStatus(
-            "marketplaceStatus",
-            result && result.error
-              ? result.error
-              : "تعذر تثبيت القالب.",
-            false
+          card.addEventListener(
+            "click",
+            function () {
+              openWorkspaceApp(app);
+            }
           );
+
+          appsGrid.appendChild(card);
+        });
+      }
+
+      function renderMarketplace() {
+        marketplaceGrid.innerHTML = "";
+        if (!currentTemplates.length) {
+          var empty = document.createElement("div");
+          empty.className = "card-caption";
+          empty.textContent =
+            currentLang === "ar"
+              ? "لا توجد تطبيقات في المتجر."
+              : "No apps available in marketplace.";
+          marketplaceGrid.appendChild(empty);
           return;
         }
 
-        showStatus(
-          "marketplaceStatus",
-          "✅ تم تثبيت القالب/الحزمة بنجاح.",
-          true
-        );
-        await loadWorkspaceApps();
-        await loadMarketplace();
-      } catch (err) {
-        console.error("install template error:", err);
-        showStatus(
-          "marketplaceStatus",
-          "حدث خطأ أثناء تثبيت القالب.",
-          false
-        );
-      }
-    }
+        currentTemplates.forEach(function (tpl) {
+          var card = document.createElement("article");
+          card.className = "app-card";
 
-    // ==========================
-    // DOM Events
-    // ==========================
+          var header =
+            document.createElement("div");
+          header.className = "app-card-header";
 
-    document.addEventListener("DOMContentLoaded", () => {
-      updateAuthBadge();
-      showLoggedInUI(false);
+          var main =
+            document.createElement("div");
+          main.className = "app-card-main";
 
-      const btnSendOtp = document.getElementById("btnSendOtp");
-      const btnVerifyOtp = document.getElementById("btnVerifyOtp");
-      const btnResendOtp = document.getElementById("btnResendOtp");
-      const btnLogout = document.getElementById("btnLogout");
-      const btnClearAuth = document.getElementById("btnClearAuth");
-      const btnCreateWorkspace = document.getElementById(
-        "btnCreateWorkspace"
-      );
-      const btnReloadWorkspaces = document.getElementById(
-        "btnReloadWorkspaces"
-      );
-      const btnReloadMarketplace = document.getElementById(
-        "btnReloadMarketplace"
-      );
+          var icon =
+            document.createElement("div");
+          icon.className = "app-card-icon";
+          icon.textContent = "✴";
 
-      if (btnSendOtp) btnSendOtp.addEventListener("click", handleSendOtp);
-      if (btnVerifyOtp)
-        btnVerifyOtp.addEventListener("click", handleVerifyOtp);
-      if (btnResendOtp)
-        btnResendOtp.addEventListener("click", handleSendOtp);
-      if (btnLogout) btnLogout.addEventListener("click", handleLogout);
-      if (btnClearAuth)
-        btnClearAuth.addEventListener("click", clearAuthFields);
-      if (btnCreateWorkspace)
-        btnCreateWorkspace.addEventListener(
-          "click",
-          handleCreateWorkspace
-        );
-      if (btnReloadWorkspaces)
-        btnReloadWorkspaces.addEventListener("click", loadWorkspaces);
-      if (btnReloadMarketplace)
-        btnReloadMarketplace.addEventListener("click", loadMarketplace);
+          var titleWrap =
+            document.createElement("div");
+          var title =
+            document.createElement("div");
+          title.className = "app-card-title";
+          title.textContent =
+            tpl.name || tpl.templateId;
 
-      // Enter key for OTP
-      const otpInput = document.getElementById("otpInput");
-      if (otpInput) {
-        otpInput.addEventListener("keyup", (e) => {
-          if (e.key === "Enter") handleVerifyOtp();
+          var tagLine =
+            document.createElement("div");
+          tagLine.className = "app-card-tagline";
+          tagLine.textContent = tpl.category || "";
+
+          titleWrap.appendChild(title);
+          titleWrap.appendChild(tagLine);
+
+          main.appendChild(icon);
+          main.appendChild(titleWrap);
+
+          var statusSpan =
+            document.createElement("span");
+          statusSpan.className = "badge-soft";
+          statusSpan.textContent =
+            tpl.planRequired || "free";
+
+          header.appendChild(main);
+          header.appendChild(statusSpan);
+
+          var body =
+            document.createElement("div");
+          body.className = "app-card-body";
+          body.textContent = tpl.shortDesc || "";
+
+          var footer =
+            document.createElement("div");
+          footer.className = "app-card-footer";
+
+          var tags =
+            document.createElement("span");
+          tags.textContent = tpl.featureTags || "";
+
+          var actions =
+            document.createElement("div");
+          actions.className = "app-card-actions";
+
+          var installBtn =
+            document.createElement("button");
+          installBtn.type = "button";
+          installBtn.className =
+            "btn-pill-sm primary";
+
+          var isInstalled = !!tpl.installed;
+
+          installBtn.textContent = isInstalled
+            ? currentLang === "ar"
+              ? "مثبّت"
+              : "Installed"
+            : currentLang === "ar"
+            ? "تثبيت"
+            : "Install";
+
+          if (isInstalled) {
+            installBtn.disabled = true;
+          }
+
+          installBtn.addEventListener(
+            "click",
+            function (e) {
+              e.stopPropagation();
+              if (isInstalled) return;
+              installTemplate(tpl);
+            }
+          );
+
+          actions.appendChild(installBtn);
+          footer.appendChild(tags);
+          footer.appendChild(actions);
+
+          card.appendChild(header);
+          card.appendChild(body);
+          card.appendChild(footer);
+
+          marketplaceGrid.appendChild(card);
         });
       }
-    });
+
+      function installTemplate(tpl) {
+        if (!currentWorkspaceId || !currentUser) return;
+        setStatus("statusLoadingMarketplace");
+
+        postJson({
+          action: "marketplace.installApp",
+          workspaceId: currentWorkspaceId,
+          templateId: tpl.templateId,
+          userId: currentUser.userId
+        })
+          .then(function (res) {
+            if (!res || !res.success) {
+              setStatus(
+                (res && res.error) || "Install failed",
+                "error"
+              );
+              return;
+            }
+            loadWorkspaceData();
+          })
+          .catch(function () {
+            setStatus("statusError", "error");
+          });
+      }
+
+      function openWorkspaceApp(app) {
+        if (!app || !app.defaultRoute) {
+          setStatus(
+            currentLang === "ar"
+              ? "رابط التطبيق غير مهيأ."
+              : "App URL is not configured yet.",
+            "error"
+          );
+          setMainView("apps");
+          return;
+        }
+        appViewTitle.textContent =
+          app.name || app.templateId;
+        appFramePlaceholder.classList.add("hidden");
+        appFrame.classList.remove("hidden");
+        appFrame.src = app.defaultRoute; // no ?appid
+        setMainView("app");
+      }
+
+      /* -------- Event wiring ---------- */
+
+      btnSendOtp.addEventListener("click", sendOtp);
+      mobileInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          sendOtp();
+        }
+      });
+      btnVerifyOtp.addEventListener("click", verifyOtp);
+      btnChangeMobile.addEventListener(
+        "click",
+        function () {
+          showStep("mobile");
+          setStatus("statusIdle");
+        }
+      );
+
+      btnLogout.addEventListener("click", logout);
+
+      btnTheme.addEventListener("click", function () {
+        currentTheme =
+          currentTheme === "light" ? "dark" : "light";
+        localStorage.setItem(
+          STORAGE_THEME,
+          currentTheme
+        );
+        applyTheme();
+      });
+
+      btnLangAr.addEventListener("click", function () {
+        currentLang = "ar";
+        localStorage.setItem(STORAGE_LANG, currentLang);
+        applyLanguage();
+        if (currentWorkspaceId) {
+          renderApps();
+          renderMarketplace();
+        }
+      });
+
+      btnLangEn.addEventListener("click", function () {
+        currentLang = "en";
+        localStorage.setItem(STORAGE_LANG, currentLang);
+        applyLanguage();
+        if (currentWorkspaceId) {
+          renderApps();
+          renderMarketplace();
+        }
+      });
+
+      btnViewApps.addEventListener("click", function () {
+        setMainView("apps");
+      });
+
+      btnViewMarketplace.addEventListener(
+        "click",
+        function () {
+          setMainView("marketplace");
+        }
+      );
+
+      btnBackFromApp.addEventListener(
+        "click",
+        function () {
+          setMainView("apps");
+        }
+      );
+
+      workspaceCard.addEventListener(
+        "click",
+        function (e) {
+          e.stopPropagation();
+          workspaceMenu.classList.toggle("hidden");
+        }
+      );
+
+      document.addEventListener("click", function () {
+        workspaceMenu.classList.add("hidden");
+      });
+      workspaceMenu.addEventListener(
+        "click",
+        function (e) {
+          e.stopPropagation();
+        }
+      );
+
+      // Init
+      applyTheme();
+      applyLanguage();
+      setStatus("statusIdle");
+      showStep("mobile");
+    })();
   </script>
 </body>
 </html>
