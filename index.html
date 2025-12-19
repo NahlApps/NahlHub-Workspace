@@ -2363,24 +2363,39 @@
           });
       }
 
-      function openWorkspaceApp(app) {
-        if (!app || !app.defaultRoute) {
-          setStatus(
-            currentLang === "ar"
-              ? "رابط التطبيق غير مهيأ."
-              : "App URL is not configured yet.",
-            "error"
-          );
-          setMainView("apps");
-          return;
-        }
-        appViewTitle.textContent =
-          app.name || app.templateId;
-        appFramePlaceholder.classList.add("hidden");
-        appFrame.classList.remove("hidden");
-        appFrame.src = app.defaultRoute; // no ?appid
-        setMainView("app");
-      }
+function openWorkspaceApp(app) {
+  if (!app || !app.defaultRoute) {
+    setStatus(
+      currentLang === "ar"
+        ? "رابط التطبيق غير مهيأ."
+        : "App URL is not configured yet.",
+      "error"
+    );
+    setMainView("apps");
+    return;
+  }
+
+  if (!currentWorkspaceId) {
+    setStatus(
+      currentLang === "ar"
+        ? "اختر مساحة عمل أولاً."
+        : "Please select a workspace first.",
+      "error"
+    );
+    return;
+  }
+
+  appViewTitle.textContent = app.name || app.templateId;
+  appFramePlaceholder.classList.add("hidden");
+  appFrame.classList.remove("hidden");
+
+  var route = app.defaultRoute;
+  var join = route.indexOf("?") >= 0 ? "&" : "?";
+  appFrame.src = route + join + "workspaceId=" + encodeURIComponent(currentWorkspaceId);
+
+  setMainView("app");
+}
+
 
       /* -------- Event wiring ---------- */
 
