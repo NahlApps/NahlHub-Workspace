@@ -2,10 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>NahlHub</title>
 
   <!-- Font -->
@@ -34,35 +31,22 @@
       --transition-fast: 0.18s ease-out;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
-    html,
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     body[data-theme="light"] {
-      background: radial-gradient(
-          circle at top left,
-          rgba(244, 206, 20, 0.18),
-          transparent 55%
-        ),
-        var(--bg-light);
+      background: radial-gradient(circle at top left, rgba(244, 206, 20, 0.18), transparent 55%), var(--bg-light);
       color: var(--text-light);
     }
 
     body[data-theme="dark"] {
-      background: radial-gradient(
-          circle at top left,
-          rgba(250, 204, 21, 0.14),
-          transparent 50%
-        ),
+      background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.14), transparent 50%),
         linear-gradient(145deg, #020617, #020617);
       color: var(--text-dark);
     }
@@ -77,7 +61,6 @@
     }
 
     /* Topbar */
-
     .topbar {
       display: flex;
       align-items: center;
@@ -90,12 +73,10 @@
       position: relative;
       z-index: 10;
     }
-
     body[data-theme="light"] .topbar {
       background: rgba(255, 255, 255, 0.9);
       border-color: var(--border-light);
     }
-
     body[data-theme="dark"] .topbar {
       background: rgba(15, 23, 42, 0.9);
       border-color: var(--border-dark);
@@ -107,7 +88,6 @@
       gap: 10px;
       min-width: 0;
     }
-
     .brand-logo {
       width: 30px;
       height: 30px;
@@ -120,7 +100,6 @@
       background: radial-gradient(circle at 20% 0, #facc15, #f97316);
       color: #111827;
     }
-
     .brand-text {
       display: flex;
       flex-direction: column;
@@ -128,13 +107,11 @@
       font-size: 13px;
       line-height: 1.2;
     }
-
     .brand-title {
       font-weight: 700;
       letter-spacing: 0.02em;
       white-space: nowrap;
     }
-
     .brand-subtitle {
       font-size: 11px;
       opacity: 0.75;
@@ -154,12 +131,10 @@
       background: transparent;
       gap: 2px;
     }
-
     body[data-theme="light"] .chip-group {
       border-color: rgba(148, 163, 184, 0.42);
       background: rgba(255, 255, 255, 0.9);
     }
-
     body[data-theme="dark"] .chip-group {
       border-color: rgba(148, 163, 184, 0.4);
       background: rgba(15, 23, 42, 0.95);
@@ -178,40 +153,26 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: background var(--transition-fast),
-        color var(--transition-fast), transform var(--transition-fast),
-        box-shadow var(--transition-fast);
+      transition: background var(--transition-fast), color var(--transition-fast),
+        transform var(--transition-fast), box-shadow var(--transition-fast);
       white-space: nowrap;
     }
-
     .chip-btn span.icon {
       font-size: 13px;
       line-height: 1;
     }
-
     .chip-btn.active {
       background: var(--accent);
       color: #111827;
       box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
       transform: translateY(-0.5px);
     }
+    .chip-btn:not(.active):hover { background: rgba(148, 163, 184, 0.25); }
+    body[data-theme="dark"] .chip-btn:not(.active):hover { background: rgba(31, 41, 55, 0.8); }
 
-    .chip-btn:not(.active):hover {
-      background: rgba(148, 163, 184, 0.25);
-    }
-
-    body[data-theme="dark"] .chip-btn:not(.active):hover {
-      background: rgba(31, 41, 55, 0.8);
-    }
-
-    .chip-btn-mini {
-      border-radius: 999px;
-      padding: 5px 7px;
-      font-size: 11px;
-    }
+    .chip-btn-mini { border-radius: 999px; padding: 5px 7px; font-size: 11px; }
 
     /* Status pill */
-
     .status-pill {
       align-self: stretch;
       margin: 0 4px;
@@ -227,45 +188,22 @@
       text-overflow: ellipsis;
       overflow: hidden;
     }
-
     body[data-theme="light"] .status-pill {
       background: rgba(255, 255, 255, 0.9);
       border-color: var(--border-light);
       color: var(--muted-light);
     }
-
     body[data-theme="dark"] .status-pill {
       background: rgba(15, 23, 42, 0.9);
       border-color: var(--border-dark);
       color: var(--muted-dark);
     }
-
-    .status-pill.ok {
-      border-color: rgba(34, 197, 94, 0.7);
-      color: rgba(34, 197, 94, 0.95);
-    }
-
-    .status-pill.error {
-      border-color: rgba(239, 68, 68, 0.85);
-      color: rgba(248, 113, 113, 0.96);
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--accent);
-    }
+    .status-pill.ok { border-color: rgba(34, 197, 94, 0.7); color: rgba(34, 197, 94, 0.95); }
+    .status-pill.error { border-color: rgba(239, 68, 68, 0.85); color: rgba(248, 113, 113, 0.96); }
+    .status-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--accent); }
 
     /* Main content */
-
-    .main-panel {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 0;
-    }
+    .main-panel { flex: 1; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
 
     .welcome-card {
       border-radius: var(--surface-radius);
@@ -275,44 +213,19 @@
       flex-direction: column;
       gap: 6px;
     }
-
     body[data-theme="light"] .welcome-card {
-      background: linear-gradient(
-        135deg,
-        rgba(244, 206, 20, 0.12),
-        rgba(255, 255, 255, 0.96)
-      );
+      background: linear-gradient(135deg, rgba(244, 206, 20, 0.12), rgba(255, 255, 255, 0.96));
       border-color: var(--border-light);
     }
-
     body[data-theme="dark"] .welcome-card {
-      background: linear-gradient(
-        145deg,
-        rgba(250, 204, 21, 0.16),
-        rgba(15, 23, 42, 0.96)
-      );
+      background: linear-gradient(145deg, rgba(250, 204, 21, 0.16), rgba(15, 23, 42, 0.96));
       border-color: rgba(148, 163, 184, 0.45);
     }
-
-    .welcome-header-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .welcome-title {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .welcome-sub {
-      font-size: 12px;
-      opacity: 0.85;
-    }
+    .welcome-header-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .welcome-title { font-size: 16px; font-weight: 700; }
+    .welcome-sub { font-size: 12px; opacity: 0.85; }
 
     /* Generic card */
-
     .card {
       border-radius: var(--surface-radius);
       padding: 12px 14px 14px;
@@ -321,50 +234,16 @@
       flex-direction: column;
       gap: 12px;
     }
+    body[data-theme="light"] .card { background: #ffffff; border-color: var(--border-light); }
+    body[data-theme="dark"] .card { background: rgba(15, 23, 42, 0.96); border-color: var(--border-dark); }
 
-    body[data-theme="light"] .card {
-      background: #ffffff;
-      border-color: var(--border-light);
-    }
+    .card-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .card-title { font-size: 15px; font-weight: 600; }
+    .card-caption { font-size: 12px; opacity: 0.7; }
+    .card-body { display: flex; flex-direction: column; gap: 10px; }
 
-    body[data-theme="dark"] .card {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: var(--border-dark);
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .card-caption {
-      font-size: 12px;
-      opacity: 0.7;
-    }
-
-    .card-body {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .field-label {
-      font-size: 12px;
-      opacity: 0.85;
-    }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-label { font-size: 12px; opacity: 0.85; }
 
     .btn {
       border-radius: 999px;
@@ -378,29 +257,17 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: transform var(--transition-fast),
-        box-shadow var(--transition-fast), background var(--transition-fast),
-        color var(--transition-fast), opacity var(--transition-fast);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       white-space: nowrap;
     }
-
     .btn-primary {
       background: var(--accent);
       color: #111827;
       box-shadow: 0 8px 20px rgba(250, 204, 21, 0.45);
     }
-
-    .btn-primary:hover:enabled {
-      transform: translateY(-0.5px);
-      box-shadow: 0 10px 28px rgba(250, 204, 21, 0.6);
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: default;
-      box-shadow: none;
-      transform: none;
-    }
+    .btn-primary:hover:enabled { transform: translateY(-0.5px); box-shadow: 0 10px 28px rgba(250, 204, 21, 0.6); }
+    .btn:disabled { opacity: 0.6; cursor: default; box-shadow: none; transform: none; }
 
     .btn-ghost {
       background: transparent;
@@ -411,24 +278,11 @@
       border: none;
       cursor: pointer;
     }
-
-    body[data-theme="light"] .btn-ghost:hover {
-      background: rgba(148, 163, 184, 0.18);
-    }
-
-    body[data-theme="dark"] .btn-ghost:hover {
-      background: rgba(31, 41, 55, 0.9);
-    }
+    body[data-theme="light"] .btn-ghost:hover { background: rgba(148, 163, 184, 0.18); }
+    body[data-theme="dark"] .btn-ghost:hover { background: rgba(31, 41, 55, 0.9); }
 
     /* OTP row: LTR */
-
-    .otp-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      direction: ltr;
-    }
+    .otp-row { display: flex; align-items: center; justify-content: center; gap: 10px; direction: ltr; }
 
     .otp-input {
       width: 44px;
@@ -439,52 +293,30 @@
       border-radius: 16px;
       border: 1px solid;
       outline: none;
-      transition: border-color var(--transition-fast),
-        box-shadow var(--transition-fast), background var(--transition-fast);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
     }
-
     body[data-theme="light"] .otp-input {
       background: rgba(248, 250, 252, 0.96);
       border-color: rgba(148, 163, 184, 0.5);
       color: var(--text-light);
     }
-
     body[data-theme="dark"] .otp-input {
       background: rgba(15, 23, 42, 0.97);
       border-color: rgba(148, 163, 184, 0.7);
       color: var(--text-dark);
     }
-
     .otp-input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
       background: rgba(255, 251, 235, 0.96);
     }
+    body[data-theme="dark"] .otp-input:focus { background: rgba(15, 23, 42, 1); }
 
-    body[data-theme="dark"] .otp-input:focus {
-      background: rgba(15, 23, 42, 1);
-    }
+    /* Apps layout */
+    .apps-layout { display: flex; flex-direction: column; gap: 12px; min-height: 0; flex: 1; }
+    .apps-header-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 
-    /* Apps sections layout */
-
-    .apps-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      min-height: 0;
-      flex: 1;
-    }
-
-    .apps-header-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    /* Workspace selector – redesigned */
-
+    /* Workspace selector */
     .workspace-card {
       flex: 1;
       min-width: 260px;
@@ -497,45 +329,26 @@
       border: 1px solid;
       cursor: pointer;
       position: relative;
-      transition: box-shadow var(--transition-fast),
-        border-color var(--transition-fast), background var(--transition-fast),
-        transform var(--transition-fast);
+      transition: box-shadow var(--transition-fast), border-color var(--transition-fast),
+        background var(--transition-fast), transform var(--transition-fast);
     }
-
     body[data-theme="light"] .workspace-card {
       background: rgba(255, 255, 255, 0.9);
       border-color: rgba(148, 163, 184, 0.35);
     }
-
     body[data-theme="dark"] .workspace-card {
       background: rgba(15, 23, 42, 0.95);
       border-color: rgba(148, 163, 184, 0.6);
     }
-
     .workspace-card:hover {
       box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
       border-color: rgba(250, 204, 21, 0.7);
       transform: translateY(-0.5px);
     }
 
-    .workspace-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-
-    .workspace-label {
-      font-size: 11px;
-      opacity: 0.7;
-    }
-
-    .workspace-name-row {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-      min-width: 0;
-    }
+    .workspace-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .workspace-label { font-size: 11px; opacity: 0.7; }
+    .workspace-name-row { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
 
     .workspace-name {
       font-size: 13px;
@@ -545,7 +358,6 @@
       text-overflow: ellipsis;
       max-width: 220px;
     }
-
     .workspace-role-pill {
       font-size: 10px;
       padding: 2px 7px;
@@ -553,7 +365,6 @@
       background: rgba(34, 197, 94, 0.1);
       color: #15803d;
     }
-
     body[data-theme="dark"] .workspace-role-pill {
       background: rgba(34, 197, 94, 0.2);
       color: #bbf7d0;
@@ -569,12 +380,10 @@
       font-size: 13px;
       border: 1px solid transparent;
     }
-
     body[data-theme="light"] .workspace-dropdown-icon {
       background: rgba(248, 250, 252, 0.9);
       border-color: rgba(148, 163, 184, 0.45);
     }
-
     body[data-theme="dark"] .workspace-dropdown-icon {
       background: rgba(15, 23, 42, 0.9);
       border-color: rgba(148, 163, 184, 0.7);
@@ -592,12 +401,10 @@
       z-index: 15;
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
     }
-
     body[data-theme="light"] .workspace-menu {
       background: #ffffff;
       border-color: rgba(148, 163, 184, 0.4);
     }
-
     body[data-theme="dark"] .workspace-menu {
       background: rgba(15, 23, 42, 0.98);
       border-color: rgba(148, 163, 184, 0.65);
@@ -617,29 +424,11 @@
       color: inherit;
       cursor: pointer;
       text-align: start;
-      transition: background var(--transition-fast),
-        border-color var(--transition-fast), transform var(--transition-fast);
+      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
     }
-
-    .workspace-menu-item-main {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .workspace-menu-item-name {
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .workspace-menu-item-meta {
-      font-size: 11px;
-      opacity: 0.7;
-    }
+    .workspace-menu-item-main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .workspace-menu-item-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .workspace-menu-item-meta { font-size: 11px; opacity: 0.7; }
 
     .workspace-menu-item-role {
       font-size: 10px;
@@ -648,7 +437,6 @@
       background: rgba(34, 197, 94, 0.08);
       color: #15803d;
     }
-
     body[data-theme="dark"] .workspace-menu-item-role {
       background: rgba(34, 197, 94, 0.16);
       color: #bbf7d0;
@@ -658,19 +446,16 @@
       background: rgba(248, 250, 252, 0.9);
       border-color: rgba(148, 163, 184, 0.4);
     }
-
     body[data-theme="dark"] .workspace-menu-item:hover {
       background: rgba(30, 64, 175, 0.2);
       border-color: rgba(129, 140, 248, 0.6);
     }
-
     .workspace-menu-item.active {
       border-color: rgba(250, 204, 21, 0.9);
       background: rgba(250, 204, 21, 0.12);
     }
 
-    /* View toggle buttons (Apps / Marketplace) */
-
+    /* View toggle */
     .view-toggle-group {
       display: inline-flex;
       border-radius: 999px;
@@ -679,12 +464,10 @@
       background: transparent;
       gap: 2px;
     }
-
     body[data-theme="light"] .view-toggle-group {
       border-color: rgba(148, 163, 184, 0.35);
       background: rgba(255, 255, 255, 0.9);
     }
-
     body[data-theme="dark"] .view-toggle-group {
       border-color: rgba(148, 163, 184, 0.5);
       background: rgba(15, 23, 42, 0.95);
@@ -701,32 +484,20 @@
       gap: 5px;
       background: transparent;
       color: inherit;
-      transition: background var(--transition-fast),
-        color var(--transition-fast), box-shadow var(--transition-fast),
-        transform var(--transition-fast);
+      transition: background var(--transition-fast), color var(--transition-fast),
+        box-shadow var(--transition-fast), transform var(--transition-fast);
     }
-
-    .view-toggle-btn span.icon {
-      font-size: 13px;
-    }
-
+    .view-toggle-btn span.icon { font-size: 13px; }
     .view-toggle-btn.active {
       background: var(--accent);
       color: #111827;
       box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
       transform: translateY(-0.5px);
     }
+    .view-toggle-btn:not(.active):hover { background: rgba(148, 163, 184, 0.18); }
+    body[data-theme="dark"] .view-toggle-btn:not(.active):hover { background: rgba(31, 41, 55, 0.9); }
 
-    .view-toggle-btn:not(.active):hover {
-      background: rgba(148, 163, 184, 0.18);
-    }
-
-    body[data-theme="dark"] .view-toggle-btn:not(.active):hover {
-      background: rgba(31, 41, 55, 0.9);
-    }
-
-    /* Apps list / marketplace cards */
-
+    /* Apps / marketplace cards */
     .apps-section-card {
       border-radius: var(--surface-radius);
       padding: 12px 14px 14px;
@@ -735,16 +506,8 @@
       flex-direction: column;
       gap: 10px;
     }
-
-    body[data-theme="light"] .apps-section-card {
-      background: #ffffff;
-      border-color: var(--border-light);
-    }
-
-    body[data-theme="dark"] .apps-section-card {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: var(--border-dark);
-    }
+    body[data-theme="light"] .apps-section-card { background: #ffffff; border-color: var(--border-light); }
+    body[data-theme="dark"] .apps-section-card { background: rgba(15, 23, 42, 0.96); border-color: var(--border-dark); }
 
     .apps-grid {
       display: grid;
@@ -760,21 +523,12 @@
       flex-direction: column;
       gap: 6px;
       position: relative;
-      transition: background var(--transition-fast),
-        border-color var(--transition-fast), transform var(--transition-fast),
-        box-shadow var(--transition-fast);
+      transition: background var(--transition-fast), border-color var(--transition-fast),
+        transform var(--transition-fast), box-shadow var(--transition-fast);
       cursor: pointer;
     }
-
-    body[data-theme="light"] .app-card {
-      background: rgba(255, 255, 255, 0.96);
-      border-color: rgba(148, 163, 184, 0.35);
-    }
-
-    body[data-theme="dark"] .app-card {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: rgba(148, 163, 184, 0.55);
-    }
+    body[data-theme="light"] .app-card { background: rgba(255, 255, 255, 0.96); border-color: rgba(148, 163, 184, 0.35); }
+    body[data-theme="dark"] .app-card { background: rgba(15, 23, 42, 0.96); border-color: rgba(148, 163, 184, 0.55); }
 
     .app-card:hover {
       transform: translateY(-1px);
@@ -782,19 +536,8 @@
       border-color: rgba(250, 204, 21, 0.9);
     }
 
-    .app-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .app-card-main {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
+    .app-card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .app-card-main { display: flex; align-items: center; gap: 8px; min-width: 0; }
 
     .app-card-icon {
       width: 30px;
@@ -807,48 +550,18 @@
       background: rgba(244, 206, 20, 0.15);
       color: #92400e;
       flex-shrink: 0;
-    }
-
-    body[data-theme="dark"] .app-card-icon {
-      background: rgba(250, 204, 21, 0.16);
-      color: #fbbf24;
-    }
-
-    .app-card-title {
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .app-card-tagline {
-      font-size: 11px;
-      opacity: 0.75;
-    }
-
-    .app-card-body {
-      font-size: 11px;
-      opacity: 0.78;
-      height: 2.4em;
       overflow: hidden;
     }
+    .app-card-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    .app-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      opacity: 0.82;
-      margin-top: 4px;
-    }
+    body[data-theme="dark"] .app-card-icon { background: rgba(250, 204, 21, 0.16); color: #fbbf24; }
 
-    .badge-soft {
-      border-radius: 999px;
-      padding: 2px 6px;
-      font-size: 10px;
-      background: rgba(148, 163, 184, 0.14);
-    }
+    .app-card-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .app-card-tagline { font-size: 11px; opacity: 0.75; }
+    .app-card-body { font-size: 11px; opacity: 0.78; height: 2.4em; overflow: hidden; }
+
+    .app-card-footer { display: flex; align-items: center; justify-content: space-between; font-size: 11px; opacity: 0.82; margin-top: 4px; }
+    .badge-soft { border-radius: 999px; padding: 2px 6px; font-size: 10px; background: rgba(148, 163, 184, 0.14); }
 
     .badge-installed {
       border-radius: 999px;
@@ -857,16 +570,9 @@
       background: rgba(250, 204, 21, 0.15);
       color: #92400e;
     }
+    body[data-theme="dark"] .badge-installed { background: rgba(250, 204, 21, 0.22); color: #facc15; }
 
-    body[data-theme="dark"] .badge-installed {
-      background: rgba(250, 204, 21, 0.22);
-      color: #facc15;
-    }
-
-    .app-card-actions {
-      display: flex;
-      gap: 6px;
-    }
+    .app-card-actions { display: flex; gap: 6px; }
 
     .btn-pill-sm {
       border-radius: 999px;
@@ -881,18 +587,10 @@
       color: inherit;
       transition: background var(--transition-fast), transform var(--transition-fast);
     }
+    .btn-pill-sm.primary { background: var(--accent); color: #111827; }
+    .btn-pill-sm:hover { transform: translateY(-0.5px); }
 
-    .btn-pill-sm.primary {
-      background: var(--accent);
-      color: #111827;
-    }
-
-    .btn-pill-sm:hover {
-      transform: translateY(-0.5px);
-    }
-
-    /* App View */
-
+    /* App view */
     .app-view-card {
       border-radius: var(--surface-radius);
       padding: 12px 14px;
@@ -902,16 +600,8 @@
       gap: 8px;
       min-height: 240px;
     }
-
-    body[data-theme="light"] .app-view-card {
-      background: #ffffff;
-      border-color: var(--border-light);
-    }
-
-    body[data-theme="dark"] .app-view-card {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: var(--border-dark);
-    }
+    body[data-theme="light"] .app-view-card { background: #ffffff; border-color: var(--border-light); }
+    body[data-theme="dark"] .app-view-card { background: rgba(15, 23, 42, 0.96); border-color: var(--border-dark); }
 
     .app-view-header {
       display: flex;
@@ -921,24 +611,11 @@
       border-bottom: 1px solid;
       padding-bottom: 6px;
     }
+    body[data-theme="light"] .app-view-header { border-color: rgba(148, 163, 184, 0.25); }
+    body[data-theme="dark"] .app-view-header { border-color: rgba(51, 65, 85, 0.9); }
 
-    body[data-theme="light"] .app-view-header {
-      border-color: rgba(148, 163, 184, 0.25);
-    }
-
-    body[data-theme="dark"] .app-view-header {
-      border-color: rgba(51, 65, 85, 0.9);
-    }
-
-    .app-view-title {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .app-view-sub {
-      font-size: 11px;
-      opacity: 0.7;
-    }
+    .app-view-title { font-size: 13px; font-weight: 600; }
+    .app-view-sub { font-size: 11px; opacity: 0.7; }
 
     .app-frame-wrap {
       width: 100%;
@@ -946,15 +623,7 @@
       max-height: calc(100vh - 220px);
       margin-top: 4px;
     }
-
-    .app-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-      background: transparent;
-    }
-
+    .app-frame { width: 100%; height: 100%; border: none; display: block; background: transparent; }
     .app-frame-placeholder {
       width: 100%;
       height: 100%;
@@ -967,12 +636,9 @@
       text-align: center;
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
     /* Auth popup overlay */
-
     .auth-overlay {
       position: fixed;
       inset: 0;
@@ -983,22 +649,11 @@
       z-index: 30;
       backdrop-filter: blur(10px);
     }
-
     body[data-theme="light"] .auth-overlay {
-      background: radial-gradient(
-          circle at top,
-          rgba(148, 163, 184, 0.16),
-          transparent 60%
-        ),
-        rgba(15, 23, 42, 0.18);
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.16), transparent 60%), rgba(15, 23, 42, 0.18);
     }
-
     body[data-theme="dark"] .auth-overlay {
-      background: radial-gradient(
-          circle at top,
-          rgba(15, 23, 42, 0.95),
-          rgba(15, 23, 42, 0.98)
-        );
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
     }
 
     .auth-modal {
@@ -1009,23 +664,12 @@
       padding: 14px 12px 12px;
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.55);
     }
-
     body[data-theme="light"] .auth-modal {
-      background: linear-gradient(
-        140deg,
-        rgba(244, 206, 20, 0.12),
-        #ffffff
-      );
+      background: linear-gradient(140deg, rgba(244, 206, 20, 0.12), #ffffff);
       border-color: rgba(148, 163, 184, 0.5);
     }
-
     body[data-theme="dark"] .auth-modal {
-      background: radial-gradient(
-          circle at top left,
-          rgba(250, 204, 21, 0.18),
-          transparent 50%
-        ),
-        rgba(15, 23, 42, 0.98);
+      background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.18), transparent 50%), rgba(15, 23, 42, 0.98);
       border-color: rgba(148, 163, 184, 0.6);
     }
 
@@ -1035,16 +679,8 @@
       justify-content: space-between;
       padding: 2px 4px 10px;
     }
-
-    .auth-title {
-      font-size: 15px;
-      font-weight: 700;
-    }
-
-    .auth-sub {
-      font-size: 12px;
-      opacity: 0.78;
-    }
+    .auth-title { font-size: 15px; font-weight: 700; }
+    .auth-sub { font-size: 12px; opacity: 0.78; }
 
     .auth-badge {
       font-size: 11px;
@@ -1054,11 +690,7 @@
       opacity: 0.9;
     }
 
-    .auth-modal-body {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .auth-modal-body { display: flex; flex-direction: column; gap: 10px; }
 
     .input {
       flex: 1;
@@ -1067,43 +699,32 @@
       padding: 8px 12px;
       font-size: 13px;
       outline: none;
-      transition: border-color var(--transition-fast),
-        box-shadow var(--transition-fast), background var(--transition-fast);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
     }
-
     body[data-theme="light"] .input {
       background: rgba(248, 250, 252, 0.95);
       border-color: rgba(148, 163, 184, 0.5);
       color: var(--text-light);
     }
-
     body[data-theme="dark"] .input {
       background: rgba(15, 23, 42, 0.96);
       border-color: rgba(148, 163, 184, 0.6);
       color: var(--text-dark);
     }
-
     .input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
       background: rgba(255, 251, 235, 0.9);
     }
-
-    body[data-theme="dark"] .input:focus {
-      background: rgba(15, 23, 42, 0.98);
-    }
+    body[data-theme="dark"] .input:focus { background: rgba(15, 23, 42, 0.98); }
 
     @media (min-width: 768px) {
-      .app-shell {
-        padding: 6px 10px;
-      }
-      .app-frame-wrap {
-        height: calc(100vh - 210px);
-        max-height: calc(100vh - 190px);
-      }
+      .app-shell { padding: 6px 10px; }
+      .app-frame-wrap { height: calc(100vh - 210px); max-height: calc(100vh - 190px); }
     }
   </style>
 </head>
+
 <body data-theme="light">
   <div class="app-shell">
     <!-- Top bar -->
@@ -1112,35 +733,15 @@
         <div class="brand-logo">N</div>
         <div class="brand-text">
           <div class="brand-title" data-i18n="hubTitle">NahlHub</div>
-          <div class="brand-subtitle" data-i18n="hubSub">
-            تطبيقاتك في نحل هب
-          </div>
+          <div class="brand-subtitle" data-i18n="hubSub">تطبيقاتك في نحل هب</div>
         </div>
       </div>
       <div class="topbar-right">
         <div class="chip-group">
-          <button
-            class="chip-btn"
-            id="btnLangAr"
-            type="button"
-            data-lang="ar"
-          >
-            <span>عربي</span>
-          </button>
-          <button
-            class="chip-btn"
-            id="btnLangEn"
-            type="button"
-            data-lang="en"
-          >
-            <span>EN</span>
-          </button>
+          <button class="chip-btn" id="btnLangAr" type="button" data-lang="ar"><span>عربي</span></button>
+          <button class="chip-btn" id="btnLangEn" type="button" data-lang="en"><span>EN</span></button>
         </div>
-        <button
-          class="chip-btn chip-btn-mini"
-          id="btnTheme"
-          type="button"
-        >
+        <button class="chip-btn chip-btn-mini" id="btnTheme" type="button">
           <span class="icon" id="themeIcon">🌞</span>
         </button>
       </div>
@@ -1158,37 +759,27 @@
         <div class="auth-modal-header">
           <div>
             <div class="auth-title" data-i18n="welcomeTitle">مرحباً 👋</div>
-            <div class="auth-sub" data-i18n="welcomeSub">
-              ادخل برقم الجوال ثم أدخل رمز الدخول.
-            </div>
+            <div class="auth-sub" data-i18n="welcomeSub">ادخل برقم الجوال ثم أدخل رمز الدخول.</div>
           </div>
           <div class="auth-badge">
             <span data-i18n="step1Title">رقم الجوال</span> ·
             <span data-i18n="step2Title">رمز</span>
           </div>
         </div>
+
         <div class="auth-modal-body">
           <!-- Step 1: Mobile -->
-          <section id="stepMobile" class="card" style="margin: 0">
+          <section id="stepMobile" class="card" style="margin:0;">
             <div class="card-header">
               <div>
-                <div class="card-title" data-i18n="step1Title">
-                  رقم الجوال
-                </div>
-                <div class="card-caption" data-i18n="step1Sub">
-                  ادخل رقم الجوال.
-                </div>
+                <div class="card-title" data-i18n="step1Title">رقم الجوال</div>
+                <div class="card-caption" data-i18n="step1Sub">ادخل رقم الجوال.</div>
               </div>
             </div>
+
             <div class="card-body">
               <div class="field-group">
-                <label
-                  class="field-label"
-                  for="mobileInput"
-                  data-i18n="step1Label"
-                >
-                  رقم الجوال
-                </label>
+                <label class="field-label" for="mobileInput" data-i18n="step1Label">رقم الجوال</label>
                 <input
                   id="mobileInput"
                   class="input"
@@ -1198,12 +789,9 @@
                   placeholder="5XXXXXXXX"
                 />
               </div>
+
               <div style="display:flex; justify-content:flex-end; margin-top:6px;">
-                <button
-                  id="btnSendOtp"
-                  class="btn btn-primary"
-                  type="button"
-                >
+                <button id="btnSendOtp" class="btn btn-primary" type="button">
                   <span data-i18n="btnSendOtp">إرسال الرمز</span>
                 </button>
               </div>
@@ -1211,63 +799,27 @@
           </section>
 
           <!-- Step 2: OTP -->
-          <section id="stepOtp" class="card hidden" style="margin: 0">
+          <section id="stepOtp" class="card hidden" style="margin:0;">
             <div class="card-header">
               <div>
-                <div class="card-title" data-i18n="step2Title">
-                  رمز الدخول
-                </div>
-                <div class="card-caption" data-i18n="step2Sub">
-                  أدخل الرمز ٤ أرقام.
-                </div>
+                <div class="card-title" data-i18n="step2Title">رمز الدخول</div>
+                <div class="card-caption" data-i18n="step2Sub">أدخل الرمز ٤ أرقام.</div>
               </div>
-              <button
-                type="button"
-                class="btn-ghost"
-                id="btnChangeMobile"
-              >
+              <button type="button" class="btn-ghost" id="btnChangeMobile">
                 <span data-i18n="changeMobile">تعديل الرقم</span>
               </button>
             </div>
+
             <div class="card-body">
               <div class="otp-row">
-                <input
-                  class="otp-input"
-                  id="otp1"
-                  type="tel"
-                  inputmode="numeric"
-                  maxlength="1"
-                />
-              <input
-                  class="otp-input"
-                  id="otp2"
-                  type="tel"
-                  inputmode="numeric"
-                  maxlength="1"
-                />
-              <input
-                  class="otp-input"
-                  id="otp3"
-                  type="tel"
-                  inputmode="numeric"
-                  maxlength="1"
-                />
-              <input
-                  class="otp-input"
-                  id="otp4"
-                  type="tel"
-                  inputmode="numeric"
-                  maxlength="1"
-                />
+                <input class="otp-input" id="otp1" type="tel" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" id="otp2" type="tel" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" id="otp3" type="tel" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" id="otp4" type="tel" inputmode="numeric" maxlength="1" />
               </div>
-              <div
-                style="display:flex; justify-content:flex-end; margin-top:10px;"
-              >
-                <button
-                  id="btnVerifyOtp"
-                  class="btn btn-primary"
-                  type="button"
-                >
+
+              <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                <button id="btnVerifyOtp" class="btn btn-primary" type="button">
                   <span data-i18n="btnVerify">تأكيد</span>
                 </button>
               </div>
@@ -1296,78 +848,41 @@
         <!-- Workspace row -->
         <div class="apps-header-row">
           <!-- Workspace selector card -->
-          <div
-            class="workspace-card"
-            id="workspaceCard"
-          >
+          <div class="workspace-card" id="workspaceCard">
             <div class="workspace-meta">
-              <div class="workspace-label" data-i18n="workspaceLabel">
-                مساحة العمل
-              </div>
+              <div class="workspace-label" data-i18n="workspaceLabel">مساحة العمل</div>
               <div class="workspace-name-row">
-                <div
-                  class="workspace-name"
-                  id="workspaceName"
-                >
-                  —
-                </div>
-                <span
-                  class="workspace-role-pill"
-                  id="workspaceRole"
-                >
-                  —
-                </span>
+                <div class="workspace-name" id="workspaceName">—</div>
+                <span class="workspace-role-pill" id="workspaceRole">—</span>
               </div>
             </div>
-            <div class="workspace-dropdown-icon">
-              <span id="workspaceChevron">▾</span>
-            </div>
-            <div
-              id="workspaceMenu"
-              class="workspace-menu hidden"
-            ></div>
+            <div class="workspace-dropdown-icon"><span id="workspaceChevron">▾</span></div>
+            <div id="workspaceMenu" class="workspace-menu hidden"></div>
           </div>
 
-          <!-- View toggle (Apps / Marketplace) -->
+          <!-- View toggle -->
           <div class="view-toggle-group">
-            <button
-              id="btnViewApps"
-              type="button"
-              class="view-toggle-btn active"
-            >
+            <button id="btnViewApps" type="button" class="view-toggle-btn active">
               <span class="icon">⚙️</span>
               <span data-i18n="viewApps">Apps</span>
             </button>
-            <button
-              id="btnViewMarketplace"
-              type="button"
-              class="view-toggle-btn"
-            >
+            <button id="btnViewMarketplace" type="button" class="view-toggle-btn">
               <span class="icon">🛒</span>
               <span data-i18n="viewMarketplace">Marketplace</span>
             </button>
           </div>
 
-          <button
-            class="btn-ghost"
-            type="button"
-            id="btnLogout"
-          >
+          <button class="btn-ghost" type="button" id="btnLogout">
             <span data-i18n="logout">تسجيل خروج</span>
           </button>
         </div>
 
-        <!-- Your apps section -->
+        <!-- Your apps -->
         <section id="sectionApps" class="apps-section-card">
           <div class="card-header" style="padding:0;">
             <div>
-              <div class="card-title" data-i18n="yourAppsTitle">
-                تطبيقاتك
-              </div>
-              <div
-                class="card-caption"
-                id="userNameLabel"
-              ></div>
+              <div class="card-title" data-i18n="yourAppsTitle">تطبيقاتك</div>
+              <div class="card-caption" id="userNameLabel"></div>
             </div>
           </div>
           <div class="card-body">
@@ -1375,22 +890,12 @@
           </div>
         </section>
 
-        <!-- Marketplace section -->
-        <section
-          id="sectionMarketplace"
-          class="apps-section-card hidden"
-        >
+        <!-- Marketplace -->
+        <section id="sectionMarketplace" class="apps-section-card hidden">
           <div class="card-header" style="padding:0;">
             <div>
-              <div class="card-title" data-i18n="marketplaceTitle">
-                App Marketplace
-              </div>
-              <div
-                class="card-caption"
-                data-i18n="marketplaceSub"
-              >
-                اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.
-              </div>
+              <div class="card-title" data-i18n="marketplaceTitle">App Marketplace</div>
+              <div class="card-caption" data-i18n="marketplaceSub">اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.</div>
             </div>
           </div>
           <div class="card-body">
@@ -1399,48 +904,22 @@
         </section>
 
         <!-- App view -->
-        <section
-          id="sectionAppView"
-          class="app-view-card hidden"
-        >
+        <section id="sectionAppView" class="app-view-card hidden">
           <div class="app-view-header">
             <div>
-              <div
-                id="appViewTitle"
-                class="app-view-title"
-              >
-                NahlHub App
-              </div>
-              <div
-                id="appViewSub"
-                class="app-view-sub"
-                data-i18n="appViewSub"
-              >
+              <div id="appViewTitle" class="app-view-title">NahlHub App</div>
+              <div id="appViewSub" class="app-view-sub" data-i18n="appViewSub">
                 التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.
               </div>
             </div>
-            <button
-              id="btnBackFromApp"
-              type="button"
-              class="btn-ghost"
-            >
+            <button id="btnBackFromApp" type="button" class="btn-ghost">
               ← <span data-i18n="backToApps">التطبيقات</span>
             </button>
           </div>
           <div class="app-frame-wrap">
-            <iframe
-              id="appFrame"
-              class="app-frame hidden"
-              src=""
-              title="NahlHub App"
-            ></iframe>
-            <div
-              id="appFramePlaceholder"
-              class="app-frame-placeholder"
-            >
-              <span data-i18n="appPlaceholder">
-                اختر تطبيقاً من قائمة التطبيقات أو من المتجر.
-              </span>
+            <iframe id="appFrame" class="app-frame hidden" src="" title="NahlHub App"></iframe>
+            <div id="appFramePlaceholder" class="app-frame-placeholder">
+              <span data-i18n="appPlaceholder">اختر تطبيقاً من قائمة التطبيقات أو من المتجر.</span>
             </div>
           </div>
         </section>
@@ -1452,21 +931,17 @@
     (function () {
       "use strict";
 
-      // 🔹 IMPORTANT: This must match HUB_APP_ID in Vercel env
+      // IMPORTANT: Must match HUB_APP_ID in Vercel env
       var HUB_APP_ID = "HUB";
-
       var API_URL = "/api/hub/manage";
 
       var STORAGE_SESSION_KEY = "nahlhub_session_key";
       var STORAGE_LANG = "nahlhub_lang";
       var STORAGE_THEME = "nahlhub_theme";
 
-      var currentLang =
-        localStorage.getItem(STORAGE_LANG) || "ar";
-      var currentTheme =
-        localStorage.getItem(STORAGE_THEME) || "light";
-      var currentSessionKey =
-        localStorage.getItem(STORAGE_SESSION_KEY) || null;
+      var currentLang = localStorage.getItem(STORAGE_LANG) || "ar";
+      var currentTheme = localStorage.getItem(STORAGE_THEME) || "light";
+      var currentSessionKey = localStorage.getItem(STORAGE_SESSION_KEY) || null;
 
       var currentUser = null;
       var currentMobileRaw = "";
@@ -1483,20 +958,14 @@
       var statusPill = document.getElementById("statusPill");
       var statusText = document.getElementById("statusText");
 
-      var welcomeCard =
-        document.getElementById("welcomeCard");
-
-      var authOverlay =
-        document.getElementById("authOverlay");
-      var stepMobile =
-        document.getElementById("stepMobile");
+      var welcomeCard = document.getElementById("welcomeCard");
+      var authOverlay = document.getElementById("authOverlay");
+      var stepMobile = document.getElementById("stepMobile");
       var stepOtp = document.getElementById("stepOtp");
       var stepApps = document.getElementById("stepApps");
 
-      var mobileInput =
-        document.getElementById("mobileInput");
-      var btnSendOtp =
-        document.getElementById("btnSendOtp");
+      var mobileInput = document.getElementById("mobileInput");
+      var btnSendOtp = document.getElementById("btnSendOtp");
 
       var otpInputs = [
         document.getElementById("otp1"),
@@ -1504,64 +973,44 @@
         document.getElementById("otp3"),
         document.getElementById("otp4")
       ];
-      var btnVerifyOtp =
-        document.getElementById("btnVerifyOtp");
-      var btnChangeMobile =
-        document.getElementById("btnChangeMobile");
 
-      var workspaceCard =
-        document.getElementById("workspaceCard");
-      var workspaceMenu =
-        document.getElementById("workspaceMenu");
-      var workspaceNameEl =
-        document.getElementById("workspaceName");
-      var workspaceRoleEl =
-        document.getElementById("workspaceRole");
+      var btnVerifyOtp = document.getElementById("btnVerifyOtp");
+      var btnChangeMobile = document.getElementById("btnChangeMobile");
 
-      var btnViewApps =
-        document.getElementById("btnViewApps");
-      var btnViewMarketplace =
-        document.getElementById("btnViewMarketplace");
+      var workspaceCard = document.getElementById("workspaceCard");
+      var workspaceMenu = document.getElementById("workspaceMenu");
+      var workspaceNameEl = document.getElementById("workspaceName");
+      var workspaceRoleEl = document.getElementById("workspaceRole");
 
-      var sectionApps =
-        document.getElementById("sectionApps");
-      var sectionMarketplace =
-        document.getElementById("sectionMarketplace");
-      var sectionAppView =
-        document.getElementById("sectionAppView");
+      var btnViewApps = document.getElementById("btnViewApps");
+      var btnViewMarketplace = document.getElementById("btnViewMarketplace");
+
+      var sectionApps = document.getElementById("sectionApps");
+      var sectionMarketplace = document.getElementById("sectionMarketplace");
+      var sectionAppView = document.getElementById("sectionAppView");
 
       var appsGrid = document.getElementById("appsGrid");
-      var marketplaceGrid =
-        document.getElementById("marketplaceGrid");
+      var marketplaceGrid = document.getElementById("marketplaceGrid");
 
-      var appFrame =
-        document.getElementById("appFrame");
-      var appFramePlaceholder =
-        document.getElementById("appFramePlaceholder");
-      var appViewTitle =
-        document.getElementById("appViewTitle");
+      var appFrame = document.getElementById("appFrame");
+      var appFramePlaceholder = document.getElementById("appFramePlaceholder");
+      var appViewTitle = document.getElementById("appViewTitle");
 
-      var btnBackFromApp =
-        document.getElementById("btnBackFromApp");
+      var btnBackFromApp = document.getElementById("btnBackFromApp");
       var btnLogout = document.getElementById("btnLogout");
 
       var btnTheme = document.getElementById("btnTheme");
-      var themeIcon =
-        document.getElementById("themeIcon");
-      var btnLangAr =
-        document.getElementById("btnLangAr");
-      var btnLangEn =
-        document.getElementById("btnLangEn");
+      var themeIcon = document.getElementById("themeIcon");
+      var btnLangAr = document.getElementById("btnLangAr");
+      var btnLangEn = document.getElementById("btnLangEn");
 
-      var userNameLabel =
-        document.getElementById("userNameLabel");
+      var userNameLabel = document.getElementById("userNameLabel");
 
+      // NOTE: Backend returns template fields with Ar/En.
+      // We'll map based on currentLang so English labels show correctly.
       var tDict = {
         hubTitle: { ar: "NahlHub", en: "NahlHub" },
-        hubSub: {
-          ar: "تطبيقاتك في نحل هب",
-          en: "Your apps in NahlHub"
-        },
+        hubSub: { ar: "تطبيقاتك في نحل هب", en: "Your apps in NahlHub" },
         welcomeTitle: { ar: "مرحباً 👋", en: "Welcome 👋" },
         welcomeSub: {
           ar: "ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.",
@@ -1572,49 +1021,25 @@
         step1Label: { ar: "رقم الجوال", en: "Mobile" },
         btnSendOtp: { ar: "إرسال الرمز", en: "Send code" },
         step2Title: { ar: "رمز الدخول", en: "Login code" },
-        step2Sub: {
-          ar: "أدخل الرمز ٤ أرقام.",
-          en: "Enter the 4-digit code."
-        },
+        step2Sub: { ar: "أدخل الرمز ٤ أرقام.", en: "Enter the 4-digit code." },
         changeMobile: { ar: "تعديل الرقم", en: "Change number" },
         btnVerify: { ar: "تأكيد", en: "Confirm" },
         logout: { ar: "تسجيل خروج", en: "Logout" },
+
         statusIdle: { ar: "جاهز.", en: "Ready." },
-        statusSendingOtp: {
-          ar: "يتم إرسال الرمز...",
-          en: "Sending code..."
-        },
-        statusOtpSent: {
-          ar: "تم إرسال الرمز.",
-          en: "Code sent."
-        },
+        statusSendingOtp: { ar: "يتم إرسال الرمز عبر واتساب...", en: "Sending code via WhatsApp..." },
+        statusOtpSent: { ar: "تم إرسال الرمز عبر واتساب.", en: "Code sent via WhatsApp." },
         statusVerifying: { ar: "يتم التحقق...", en: "Verifying..." },
-        statusError: {
-          ar: "حدث خطأ. حاول مرة أخرى.",
-          en: "Something went wrong. Try again."
-        },
-        statusNoWorkspaces: {
-          ar: "لا توجد مساحات عمل متاحة.",
-          en: "No workspaces available."
-        },
-        statusLoadingWorkspace: {
-          ar: "جاري تحميل مساحات العمل...",
-          en: "Loading workspaces..."
-        },
-        statusLoadingApps: {
-          ar: "جاري تحميل التطبيقات...",
-          en: "Loading apps..."
-        },
-        statusLoadingMarketplace: {
-          ar: "جاري تحميل متجر التطبيقات...",
-          en: "Loading marketplace..."
-        },
+        statusError: { ar: "حدث خطأ. حاول مرة أخرى.", en: "Something went wrong. Try again." },
+
+        statusNoWorkspaces: { ar: "لا توجد مساحات عمل متاحة.", en: "No workspaces available." },
+        statusLoadingWorkspace: { ar: "جاري تحميل مساحات العمل...", en: "Loading workspaces..." },
+        statusLoadingApps: { ar: "جاري تحميل التطبيقات...", en: "Loading apps..." },
+        statusLoadingMarketplace: { ar: "جاري تحميل متجر التطبيقات...", en: "Loading marketplace..." },
+
         workspaceLabel: { ar: "مساحة العمل", en: "Workspace" },
         yourAppsTitle: { ar: "تطبيقاتك", en: "Your apps" },
-        marketplaceTitle: {
-          ar: "App Marketplace",
-          en: "App Marketplace"
-        },
+        marketplaceTitle: { ar: "App Marketplace", en: "App Marketplace" },
         marketplaceSub: {
           ar: "اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.",
           en: "Choose a workspace and install the right apps for your team."
@@ -1629,10 +1054,8 @@
           ar: "التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.",
           en: "The app is shown inside NahlHub. Use Back to return to apps."
         },
-        backToApps: {
-          ar: "التطبيقات",
-          en: "Apps"
-        },
+        backToApps: { ar: "التطبيقات", en: "Apps" },
+
         userNotFound: {
           ar: "هذا الرقم غير مسجل. تواصل مع مسؤول النظام لإنشاء حساب.",
           en: "This mobile is not registered. Contact your admin to create an account."
@@ -1647,8 +1070,7 @@
 
       function applyLanguage() {
         document.documentElement.lang = currentLang;
-        document.documentElement.dir =
-          currentLang === "ar" ? "rtl" : "ltr";
+        document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
 
         var nodes = document.querySelectorAll("[data-i18n]");
         nodes.forEach(function (node) {
@@ -1667,12 +1089,17 @@
         }
 
         updateUserUi();
+
+        // rerender with translated fields if already loaded
+        if (currentWorkspaceId) {
+          renderApps();
+          renderMarketplace();
+        }
       }
 
       function applyTheme() {
         bodyEl.setAttribute("data-theme", currentTheme);
-        themeIcon.textContent =
-          currentTheme === "light" ? "🌞" : "🌙";
+        themeIcon.textContent = currentTheme === "light" ? "🌞" : "🌙";
       }
 
       function setStatus(msgKeyOrText, type) {
@@ -1682,23 +1109,19 @@
           return;
         }
         var text =
-          tDict[msgKeyOrText] &&
-          tDict[msgKeyOrText][currentLang]
+          tDict[msgKeyOrText] && tDict[msgKeyOrText][currentLang]
             ? t(msgKeyOrText)
             : msgKeyOrText;
+
         statusPill.classList.remove("ok", "error");
         if (type === "ok") statusPill.classList.add("ok");
-        else if (type === "error")
-          statusPill.classList.add("error");
+        else if (type === "error") statusPill.classList.add("error");
         statusText.textContent = text;
       }
 
       function postJson(payload) {
         var body = Object.assign({}, payload || {});
-        // 🔹 Inject default appId if missing
-        if (!body.appId && !body.appid && HUB_APP_ID) {
-          body.appId = HUB_APP_ID;
-        }
+        if (!body.appId && !body.appid && HUB_APP_ID) body.appId = HUB_APP_ID;
 
         return fetch(API_URL, {
           method: "POST",
@@ -1735,54 +1158,29 @@
         input.addEventListener("input", function (e) {
           var value = e.target.value.replace(/\D/g, "");
           e.target.value = value.slice(0, 1);
-          if (value && idx < otpInputs.length - 1) {
-            otpInputs[idx + 1].focus();
-          }
+          if (value && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
         });
 
         input.addEventListener("keydown", function (e) {
-          if (e.key === "Backspace" && !e.target.value && idx > 0) {
-            otpInputs[idx - 1].focus();
-          }
-          if (e.key === "ArrowLeft" && idx > 0) {
-            otpInputs[idx - 1].focus();
-          }
-          if (
-            e.key === "ArrowRight" &&
-            idx < otpInputs.length - 1
-          ) {
-            otpInputs[idx + 1].focus();
-          }
-          if (e.key === "Enter") {
-            e.preventDefault();
-            verifyOtp();
-          }
+          if (e.key === "Backspace" && !e.target.value && idx > 0) otpInputs[idx - 1].focus();
+          if (e.key === "ArrowLeft" && idx > 0) otpInputs[idx - 1].focus();
+          if (e.key === "ArrowRight" && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+          if (e.key === "Enter") { e.preventDefault(); verifyOtp(); }
         });
       });
 
       function readOtp() {
-        return otpInputs
-          .map(function (el) {
-            return el.value || "";
-          })
-          .join("");
+        return otpInputs.map(function (el) { return el.value || ""; }).join("");
       }
 
       function clearOtpInputs() {
-        otpInputs.forEach(function (el) {
-          el.value = "";
-        });
+        otpInputs.forEach(function (el) { el.value = ""; });
       }
 
       function sendOtp() {
         var mobile = (mobileInput.value || "").trim();
         if (!mobile) {
-          setStatus(
-            currentLang === "ar"
-              ? "أدخل رقم الجوال."
-              : "Enter your mobile.",
-            "error"
-          );
+          setStatus(currentLang === "ar" ? "أدخل رقم الجوال." : "Enter your mobile.", "error");
           mobileInput.focus();
           return;
         }
@@ -1791,14 +1189,13 @@
         btnSendOtp.disabled = true;
         setStatus("statusSendingOtp");
 
+        // OTP is sent by Vercel via Green API
         postJson({ action: "sendOtp", mobile: mobile })
           .then(function (res) {
             if (!res || !res.success) {
               var msg =
                 (res && res.error) ||
-                (currentLang === "ar"
-                  ? "تعذر إرسال الرمز."
-                  : "Failed to send code.");
+                (currentLang === "ar" ? "تعذر إرسال الرمز عبر واتساب." : "Failed to send code via WhatsApp.");
               setStatus(msg, "error");
               return;
             }
@@ -1817,12 +1214,7 @@
       function verifyOtp() {
         var otp = readOtp();
         if (!otp || otp.length !== 4) {
-          setStatus(
-            currentLang === "ar"
-              ? "أدخل الرمز ٤ أرقام."
-              : "Enter the 4-digit code.",
-            "error"
-          );
+          setStatus(currentLang === "ar" ? "أدخل الرمز ٤ أرقام." : "Enter the 4-digit code.", "error");
           otpInputs[0].focus();
           return;
         }
@@ -1830,25 +1222,20 @@
         btnVerifyOtp.disabled = true;
         setStatus("statusVerifying");
 
-        postJson({
-          action: "verifyOtp",
-          mobile: currentMobileRaw,
-          otp: otp
-        })
+        // verifyOtp is done in Vercel, then it calls Apps Script to create session
+        postJson({ action: "verifyOtp", mobile: currentMobileRaw, otp: otp })
           .then(function (res) {
             if (!res || !res.success) {
               var msg =
                 (res && res.error) ||
-                (currentLang === "ar"
-                  ? "رمز غير صحيح أو منتهي."
-                  : "Invalid or expired code.");
+                (currentLang === "ar" ? "رمز غير صحيح أو منتهي." : "Invalid or expired code.");
               setStatus(msg, "error");
               clearOtpInputs();
               otpInputs[0].focus();
               return;
             }
 
-            // 🔹 If backend says user doesn't exist → show message and stop
+            // If policy is "no auto create user", backend may return userExists:false
             if (res.userExists === false) {
               setStatus("userNotFound", "error");
               clearOtpInputs();
@@ -1858,18 +1245,13 @@
 
             currentSessionKey = res.sessionKey || null;
             currentUser = res.user || null;
-            if (currentSessionKey) {
-              localStorage.setItem(
-                STORAGE_SESSION_KEY,
-                currentSessionKey
-              );
-            }
 
-            if (welcomeCard)
-              welcomeCard.classList.add("hidden");
+            if (currentSessionKey) localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
+
+            if (welcomeCard) welcomeCard.classList.add("hidden");
             updateUserUi();
 
-            // load workspaces + apps
+            // Load workspaces
             loadWorkspaces().then(function () {
               showStep("apps");
               setStatus("statusIdle");
@@ -1884,15 +1266,11 @@
       }
 
       function updateUserUi() {
-        if (!currentUser) {
-          userNameLabel.textContent = "";
-          return;
-        }
+        if (!currentUser) { userNameLabel.textContent = ""; return; }
         var suffix = " · " + (currentUser.mobile || "");
-        var greetName =
-          currentLang === "ar"
-            ? "مرحباً " + (currentUser.name || "")
-            : "Hi " + (currentUser.name || "");
+        var greetName = currentLang === "ar"
+          ? "مرحباً " + (currentUser.name || "")
+          : "Hi " + (currentUser.name || "");
         userNameLabel.textContent = greetName + suffix;
       }
 
@@ -1910,37 +1288,20 @@
         workspaceRoleEl.textContent = "—";
         setMainView("apps");
 
-        if (welcomeCard)
-          welcomeCard.classList.remove("hidden");
+        if (welcomeCard) welcomeCard.classList.remove("hidden");
         setStatus("statusIdle");
         showStep("mobile");
       }
 
-      /* -------- Workspace & views ---------- */
-
+      /* Workspace & views */
       function setMainView(view) {
         currentMainView = view;
-        sectionApps.classList.toggle(
-          "hidden",
-          view !== "apps"
-        );
-        sectionMarketplace.classList.toggle(
-          "hidden",
-          view !== "marketplace"
-        );
-        sectionAppView.classList.toggle(
-          "hidden",
-          view !== "app"
-        );
+        sectionApps.classList.toggle("hidden", view !== "apps");
+        sectionMarketplace.classList.toggle("hidden", view !== "marketplace");
+        sectionAppView.classList.toggle("hidden", view !== "app");
 
-        btnViewApps.classList.toggle(
-          "active",
-          view === "apps"
-        );
-        btnViewMarketplace.classList.toggle(
-          "active",
-          view === "marketplace"
-        );
+        btnViewApps.classList.toggle("active", view === "apps");
+        btnViewMarketplace.classList.toggle("active", view === "marketplace");
       }
 
       function buildWorkspaceMenu() {
@@ -1958,9 +1319,7 @@
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "workspace-menu-item";
-          if (ws.workspaceId === currentWorkspaceId) {
-            btn.classList.add("active");
-          }
+          if (ws.workspaceId === currentWorkspaceId) btn.classList.add("active");
 
           var main = document.createElement("div");
           main.className = "workspace-menu-item-main";
@@ -1971,15 +1330,12 @@
 
           var meta = document.createElement("div");
           meta.className = "workspace-menu-item-meta";
-          meta.textContent =
-            (ws.slug || "") +
-            (ws.plan ? " · " + ws.plan : "");
+          meta.textContent = (ws.slug || "") + (ws.plan ? " · " + ws.plan : "");
 
           main.appendChild(name);
           main.appendChild(meta);
 
-          var rolePill =
-            document.createElement("span");
+          var rolePill = document.createElement("span");
           rolePill.className = "workspace-menu-item-role";
           rolePill.textContent = ws.role || "member";
 
@@ -1997,18 +1353,14 @@
       }
 
       function selectWorkspace(workspaceId) {
-        var ws = currentWorkspaces.find(function (w) {
-          return w.workspaceId === workspaceId;
-        });
+        var ws = currentWorkspaces.find(function (w) { return w.workspaceId === workspaceId; });
         if (!ws) return;
 
         currentWorkspaceId = workspaceId;
         currentWorkspaceRole = ws.role || "member";
 
-        workspaceNameEl.textContent =
-          ws.name || ws.workspaceId;
-        workspaceRoleEl.textContent =
-          ws.role === "admin" ? "admin" : "member";
+        workspaceNameEl.textContent = ws.name || ws.workspaceId;
+        workspaceRoleEl.textContent = ws.role === "admin" ? "admin" : "member";
 
         buildWorkspaceMenu();
         setStatus("statusLoadingApps");
@@ -2016,83 +1368,71 @@
       }
 
       function loadWorkspaces() {
-        if (!currentUser || !currentUser.userId) {
-          return Promise.resolve();
-        }
+        if (!currentUser || !currentUser.userId) return Promise.resolve();
         setStatus("statusLoadingWorkspace");
-        return postJson({
-          action: "workspace.listForUser",
-          userId: currentUser.userId
-        })
+
+        return postJson({ action: "workspace.listForUser", userId: currentUser.userId })
           .then(function (res) {
-            currentWorkspaces =
-              (res && res.items) || [];
-            if (
-              !currentWorkspaces ||
-              !currentWorkspaces.length
-            ) {
+            currentWorkspaces = (res && res.items) || [];
+            if (!currentWorkspaces || !currentWorkspaces.length) {
               setStatus("statusNoWorkspaces", "error");
               return;
             }
-            selectWorkspace(
-              currentWorkspaces[0].workspaceId
-            );
+            selectWorkspace(currentWorkspaces[0].workspaceId);
           })
           .catch(function () {
             setStatus("statusError", "error");
           });
       }
 
+      function langPick(objAr, objEn) {
+        return currentLang === "ar" ? (objAr || "") : (objEn || objAr || "");
+      }
+
       function loadWorkspaceData() {
         if (!currentWorkspaceId) return;
 
         Promise.all([
-          postJson({
-            action: "marketplace.listWorkspaceApps",
-            workspaceId: currentWorkspaceId
-          }),
-          postJson({
-            action: "marketplace.listTemplates",
-            workspaceId: currentWorkspaceId
-          })
+          postJson({ action: "marketplace.listWorkspaceApps", workspaceId: currentWorkspaceId }),
+          postJson({ action: "marketplace.listTemplates", workspaceId: currentWorkspaceId })
         ])
           .then(function (results) {
             var appsRes = results[0] || {};
             var tplRes = results[1] || {};
             currentTemplates = tplRes.items || [];
 
+            // Build template index
             var tplById = {};
             currentTemplates.forEach(function (tpl) {
               tplById[tpl.templateId] = tpl;
             });
 
-            currentWorkspaceApps = (appsRes.items || []).map(
-              function (app) {
-                var tpl =
-                  tplById[app.templateId] || {};
-                return {
-                  workspaceAppId:
-                    app.workspaceAppId,
-                  appId: app.appId,
-                  templateId: app.templateId,
-                  name:
-                    app.name ||
-                    tpl.name ||
-                    app.templateId,
-                  category: tpl.category || "",
-                  shortDesc:
-                    tpl.shortDesc || "",
-                  status: app.status || "",
-                  visibleInHub:
-                    app.visibleInHub || "",
-                  defaultRoute:
-                    tpl.defaultRoute || "",
-                  iconUrl: tpl.iconUrl || "",
-                  featureTags:
-                    tpl.featureTags || ""
-                };
-              }
-            );
+            // Map workspace apps with translated fields
+            currentWorkspaceApps = (appsRes.items || []).map(function (app) {
+              var tpl = tplById[app.templateId] || {};
+
+              var nameFromApp = langPick(app.nameAr, app.nameEn) || app.name || "";
+              var nameFromTpl = langPick(tpl.nameAr, tpl.nameEn) || tpl.name || "";
+
+              var shortDesc = langPick(tpl.shortDescAr, tpl.shortDescEn) || tpl.shortDesc || "";
+              var desc = langPick(tpl.descriptionAr, tpl.descriptionEn) || "";
+
+              return {
+                workspaceAppId: app.workspaceAppId,
+                appId: app.appId,
+                templateId: app.templateId,
+                name: nameFromApp || nameFromTpl || app.templateId,
+                category: tpl.category || "",
+                shortDesc: shortDesc || desc || "",
+                status: app.status || "",
+                visibleInHub: app.visibleInHub || "",
+                defaultRoute: tpl.defaultRoute || "",
+                iconUrl: tpl.iconUrl || "",
+                featureTags: tpl.featureTags || "",
+                type: tpl.type || "app",
+                installed: true
+              };
+            });
 
             renderApps();
             renderMarketplace();
@@ -2105,16 +1445,12 @@
 
       function renderApps() {
         appsGrid.innerHTML = "";
-        if (
-          !currentWorkspaceApps ||
-          !currentWorkspaceApps.length
-        ) {
+        if (!currentWorkspaceApps || !currentWorkspaceApps.length) {
           var empty = document.createElement("div");
           empty.className = "card-caption";
-          empty.textContent =
-            currentLang === "ar"
-              ? "لا توجد تطبيقات مثبتة في هذه المساحة."
-              : "No apps installed in this workspace.";
+          empty.textContent = currentLang === "ar"
+            ? "لا توجد تطبيقات مثبتة في هذه المساحة."
+            : "No apps installed in this workspace.";
           appsGrid.appendChild(empty);
           return;
         }
@@ -2123,29 +1459,31 @@
           var card = document.createElement("article");
           card.className = "app-card";
 
-          var header =
-            document.createElement("div");
+          var header = document.createElement("div");
           header.className = "app-card-header";
 
-          var main =
-            document.createElement("div");
+          var main = document.createElement("div");
           main.className = "app-card-main";
 
-          var icon =
-            document.createElement("div");
+          var icon = document.createElement("div");
           icon.className = "app-card-icon";
-          icon.textContent = "⋯";
+          if (app.iconUrl) {
+            var img = document.createElement("img");
+            img.src = app.iconUrl;
+            img.alt = "";
+            img.loading = "lazy";
+            img.referrerPolicy = "no-referrer";
+            icon.appendChild(img);
+          } else {
+            icon.textContent = "⋯";
+          }
 
-          var titleWrap =
-            document.createElement("div");
-          var title =
-            document.createElement("div");
+          var titleWrap = document.createElement("div");
+          var title = document.createElement("div");
           title.className = "app-card-title";
-          title.textContent =
-            app.name || app.templateId;
+          title.textContent = app.name || app.templateId;
 
-          var tagLine =
-            document.createElement("div");
+          var tagLine = document.createElement("div");
           tagLine.className = "app-card-tagline";
           tagLine.textContent = app.category || "";
 
@@ -2155,53 +1493,35 @@
           main.appendChild(icon);
           main.appendChild(titleWrap);
 
-          var statusBadge =
-            document.createElement("span");
-          statusBadge.className =
-            "badge-installed";
-          statusBadge.textContent =
-            currentLang === "ar"
-              ? "مثبّت"
-              : "Installed";
+          var statusBadge = document.createElement("span");
+          statusBadge.className = "badge-installed";
+          statusBadge.textContent = currentLang === "ar" ? "مثبّت" : "Installed";
 
           header.appendChild(main);
           header.appendChild(statusBadge);
 
-          var body =
-            document.createElement("div");
+          var body = document.createElement("div");
           body.className = "app-card-body";
           body.textContent = app.shortDesc || "";
 
-          var footer =
-            document.createElement("div");
+          var footer = document.createElement("div");
           footer.className = "app-card-footer";
 
-          var cat =
-            document.createElement("span");
-          cat.textContent =
-            app.category || "—";
+          var cat = document.createElement("span");
+          cat.textContent = app.category || "—";
 
-          var actions =
-            document.createElement("div");
+          var actions = document.createElement("div");
           actions.className = "app-card-actions";
 
-          var openBtn =
-            document.createElement("button");
+          var openBtn = document.createElement("button");
           openBtn.type = "button";
-          openBtn.className =
-            "btn-pill-sm primary";
-          openBtn.textContent =
-            currentLang === "ar"
-              ? "فتح التطبيق"
-              : "Open app";
+          openBtn.className = "btn-pill-sm primary";
+          openBtn.textContent = currentLang === "ar" ? "فتح التطبيق" : "Open app";
 
-          openBtn.addEventListener(
-            "click",
-            function (e) {
-              e.stopPropagation();
-              openWorkspaceApp(app);
-            }
-          );
+          openBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            openWorkspaceApp(app);
+          });
 
           actions.appendChild(openBtn);
           footer.appendChild(cat);
@@ -2211,12 +1531,9 @@
           card.appendChild(body);
           card.appendChild(footer);
 
-          card.addEventListener(
-            "click",
-            function () {
-              openWorkspaceApp(app);
-            }
-          );
+          card.addEventListener("click", function () {
+            openWorkspaceApp(app);
+          });
 
           appsGrid.appendChild(card);
         });
@@ -2227,10 +1544,9 @@
         if (!currentTemplates.length) {
           var empty = document.createElement("div");
           empty.className = "card-caption";
-          empty.textContent =
-            currentLang === "ar"
-              ? "لا توجد تطبيقات في المتجر."
-              : "No apps available in marketplace.";
+          empty.textContent = currentLang === "ar"
+            ? "لا توجد تطبيقات في المتجر."
+            : "No apps available in marketplace.";
           marketplaceGrid.appendChild(empty);
           return;
         }
@@ -2239,29 +1555,32 @@
           var card = document.createElement("article");
           card.className = "app-card";
 
-          var header =
-            document.createElement("div");
+          var header = document.createElement("div");
           header.className = "app-card-header";
 
-          var main =
-            document.createElement("div");
+          var main = document.createElement("div");
           main.className = "app-card-main";
 
-          var icon =
-            document.createElement("div");
+          var icon = document.createElement("div");
           icon.className = "app-card-icon";
-          icon.textContent = "✴";
+          if (tpl.iconUrl) {
+            var img = document.createElement("img");
+            img.src = tpl.iconUrl;
+            img.alt = "";
+            img.loading = "lazy";
+            img.referrerPolicy = "no-referrer";
+            icon.appendChild(img);
+          } else {
+            icon.textContent = (tpl.type === "module") ? "🧩" : "✴";
+          }
 
-          var titleWrap =
-            document.createElement("div");
-          var title =
-            document.createElement("div");
+          var titleWrap = document.createElement("div");
+
+          var title = document.createElement("div");
           title.className = "app-card-title";
-          title.textContent =
-            tpl.name || tpl.templateId;
+          title.textContent = langPick(tpl.nameAr, tpl.nameEn) || tpl.templateId;
 
-          var tagLine =
-            document.createElement("div");
+          var tagLine = document.createElement("div");
           tagLine.className = "app-card-tagline";
           tagLine.textContent = tpl.category || "";
 
@@ -2271,60 +1590,43 @@
           main.appendChild(icon);
           main.appendChild(titleWrap);
 
-          var statusSpan =
-            document.createElement("span");
+          var statusSpan = document.createElement("span");
           statusSpan.className = "badge-soft";
-          statusSpan.textContent =
-            tpl.planRequired || "free";
+          statusSpan.textContent = tpl.planRequired || "free";
 
           header.appendChild(main);
           header.appendChild(statusSpan);
 
-          var body =
-            document.createElement("div");
+          var body = document.createElement("div");
           body.className = "app-card-body";
-          body.textContent = tpl.shortDesc || "";
+          body.textContent = langPick(tpl.shortDescAr, tpl.shortDescEn) || "";
 
-          var footer =
-            document.createElement("div");
+          var footer = document.createElement("div");
           footer.className = "app-card-footer";
 
-          var tags =
-            document.createElement("span");
+          var tags = document.createElement("span");
           tags.textContent = tpl.featureTags || "";
 
-          var actions =
-            document.createElement("div");
+          var actions = document.createElement("div");
           actions.className = "app-card-actions";
 
-          var installBtn =
-            document.createElement("button");
+          var installBtn = document.createElement("button");
           installBtn.type = "button";
-          installBtn.className =
-            "btn-pill-sm primary";
+          installBtn.className = "btn-pill-sm primary";
 
           var isInstalled = !!tpl.installed;
 
           installBtn.textContent = isInstalled
-            ? currentLang === "ar"
-              ? "مثبّت"
-              : "Installed"
-            : currentLang === "ar"
-            ? "تثبيت"
-            : "Install";
+            ? (currentLang === "ar" ? "مثبّت" : "Installed")
+            : (currentLang === "ar" ? "تثبيت" : "Install");
 
-          if (isInstalled) {
-            installBtn.disabled = true;
-          }
+          if (isInstalled) installBtn.disabled = true;
 
-          installBtn.addEventListener(
-            "click",
-            function (e) {
-              e.stopPropagation();
-              if (isInstalled) return;
-              installTemplate(tpl);
-            }
-          );
+          installBtn.addEventListener("click", function (e) {
+            e.stopPropagation();
+            if (isInstalled) return;
+            installTemplate(tpl);
+          });
 
           actions.appendChild(installBtn);
           footer.appendChild(tags);
@@ -2340,20 +1642,27 @@
 
       function installTemplate(tpl) {
         if (!currentWorkspaceId || !currentUser) return;
+
+        // Only admins can install
+        if (currentWorkspaceRole !== "admin") {
+          setStatus(currentLang === "ar" ? "ليس لديك صلاحية التثبيت. يلزم Admin." : "Install requires admin access.", "error");
+          return;
+        }
+
         setStatus("statusLoadingMarketplace");
 
+        var isModule = String(tpl.type || "").toLowerCase() === "module";
+        var action = isModule ? "marketplace.installModule" : "marketplace.installApp";
+
         postJson({
-          action: "marketplace.installApp",
+          action: action,
           workspaceId: currentWorkspaceId,
           templateId: tpl.templateId,
           userId: currentUser.userId
         })
           .then(function (res) {
             if (!res || !res.success) {
-              setStatus(
-                (res && res.error) || "Install failed",
-                "error"
-              );
+              setStatus((res && res.error) || "Install failed", "error");
               return;
             }
             loadWorkspaceData();
@@ -2363,67 +1672,52 @@
           });
       }
 
-function openWorkspaceApp(app) {
-  if (!app || !app.defaultRoute) {
-    setStatus(
-      currentLang === "ar"
-        ? "رابط التطبيق غير مهيأ."
-        : "App URL is not configured yet.",
-      "error"
-    );
-    setMainView("apps");
-    return;
-  }
+      function openWorkspaceApp(app) {
+        if (!app || !app.defaultRoute) {
+          setStatus(currentLang === "ar" ? "رابط التطبيق غير مهيأ." : "App URL is not configured yet.", "error");
+          setMainView("apps");
+          return;
+        }
 
-  if (!currentWorkspaceId) {
-    setStatus(
-      currentLang === "ar"
-        ? "اختر مساحة عمل أولاً."
-        : "Please select a workspace first.",
-      "error"
-    );
-    return;
-  }
+        if (!currentWorkspaceId) {
+          setStatus(currentLang === "ar" ? "اختر مساحة عمل أولاً." : "Please select a workspace first.", "error");
+          return;
+        }
 
-  appViewTitle.textContent = app.name || app.templateId;
-  appFramePlaceholder.classList.add("hidden");
-  appFrame.classList.remove("hidden");
+        appViewTitle.textContent = app.name || app.templateId;
+        appFramePlaceholder.classList.add("hidden");
+        appFrame.classList.remove("hidden");
 
-  var route = app.defaultRoute;
-  var join = route.indexOf("?") >= 0 ? "&" : "?";
-  appFrame.src = route + join + "workspaceId=" + encodeURIComponent(currentWorkspaceId);
+        var route = app.defaultRoute;
+        var join = route.indexOf("?") >= 0 ? "&" : "?";
+        appFrame.src =
+          route +
+          join +
+          "workspaceId=" +
+          encodeURIComponent(currentWorkspaceId) +
+          "&sessionKey=" +
+          encodeURIComponent(currentSessionKey || "");
 
-  setMainView("app");
-}
+        setMainView("app");
+      }
 
-
-      /* -------- Event wiring ---------- */
-
+      /* Event wiring */
       btnSendOtp.addEventListener("click", sendOtp);
       mobileInput.addEventListener("keydown", function (e) {
-        if (e.key === "Enter") {
-          e.preventDefault();
-          sendOtp();
-        }
+        if (e.key === "Enter") { e.preventDefault(); sendOtp(); }
       });
+
       btnVerifyOtp.addEventListener("click", verifyOtp);
-      btnChangeMobile.addEventListener(
-        "click",
-        function () {
-          showStep("mobile");
-          setStatus("statusIdle");
-        }
-      );
+      btnChangeMobile.addEventListener("click", function () {
+        showStep("mobile");
+        setStatus("statusIdle");
+      });
 
       btnLogout.addEventListener("click", logout);
 
       btnTheme.addEventListener("click", function () {
-        currentTheme =
-          currentTheme === "light" ? "dark" : "light";
-        localStorage.setItem(
-          STORAGE_THEME,
-          currentTheme
-        );
+        currentTheme = currentTheme === "light" ? "dark" : "light";
+        localStorage.setItem(STORAGE_THEME, currentTheme);
         applyTheme();
       });
 
@@ -2431,63 +1725,51 @@ function openWorkspaceApp(app) {
         currentLang = "ar";
         localStorage.setItem(STORAGE_LANG, currentLang);
         applyLanguage();
-        if (currentWorkspaceId) {
-          renderApps();
-          renderMarketplace();
-        }
       });
 
       btnLangEn.addEventListener("click", function () {
         currentLang = "en";
         localStorage.setItem(STORAGE_LANG, currentLang);
         applyLanguage();
-        if (currentWorkspaceId) {
-          renderApps();
-          renderMarketplace();
-        }
       });
 
-      btnViewApps.addEventListener("click", function () {
+      btnViewApps.addEventListener("click", function () { setMainView("apps"); });
+      btnViewMarketplace.addEventListener("click", function () { setMainView("marketplace"); });
+
+      btnBackFromApp.addEventListener("click", function () {
+        // stop iframe
+        appFrame.src = "";
+        appFrame.classList.add("hidden");
+        appFramePlaceholder.classList.remove("hidden");
         setMainView("apps");
       });
 
-      btnViewMarketplace.addEventListener(
-        "click",
-        function () {
-          setMainView("marketplace");
-        }
-      );
-
-      btnBackFromApp.addEventListener(
-        "click",
-        function () {
-          setMainView("apps");
-        }
-      );
-
-      workspaceCard.addEventListener(
-        "click",
-        function (e) {
-          e.stopPropagation();
-          workspaceMenu.classList.toggle("hidden");
-        }
-      );
-
-      document.addEventListener("click", function () {
-        workspaceMenu.classList.add("hidden");
+      workspaceCard.addEventListener("click", function (e) {
+        e.stopPropagation();
+        workspaceMenu.classList.toggle("hidden");
       });
-      workspaceMenu.addEventListener(
-        "click",
-        function (e) {
-          e.stopPropagation();
+
+      document.addEventListener("click", function () { workspaceMenu.classList.add("hidden"); });
+      workspaceMenu.addEventListener("click", function (e) { e.stopPropagation(); });
+
+      // Auto-session bootstrap (optional)
+      function bootstrapSessionIfAny() {
+        if (!currentSessionKey) {
+          setStatus("statusIdle");
+          showStep("mobile");
+          return;
         }
-      );
+        // If you later implement auth.me, you can auto-login here.
+        // For now we keep it simple:
+        setStatus("statusIdle");
+        showStep("mobile");
+      }
 
       // Init
       applyTheme();
       applyLanguage();
       setStatus("statusIdle");
-      showStep("mobile");
+      bootstrapSessionIfAny();
     })();
   </script>
 </body>
