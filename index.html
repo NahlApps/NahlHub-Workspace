@@ -2,7 +2,10 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
   <title>NahlHub</title>
 
   <!-- Font -->
@@ -37,16 +40,26 @@
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
     }
 
     body[data-theme="light"] {
-      background: radial-gradient(circle at top left, rgba(244, 206, 20, 0.18), transparent 55%), var(--bg-light);
+      background: radial-gradient(
+          circle at top left,
+          rgba(244, 206, 20, 0.18),
+          transparent 55%
+        ),
+        var(--bg-light);
       color: var(--text-light);
     }
 
     body[data-theme="dark"] {
-      background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.14), transparent 50%),
+      background: radial-gradient(
+          circle at top left,
+          rgba(250, 204, 21, 0.14),
+          transparent 50%
+        ),
         linear-gradient(145deg, #020617, #020617);
       color: var(--text-dark);
     }
@@ -61,6 +74,7 @@
     }
 
     /* Topbar */
+
     .topbar {
       display: flex;
       align-items: center;
@@ -73,10 +87,12 @@
       position: relative;
       z-index: 10;
     }
+
     body[data-theme="light"] .topbar {
       background: rgba(255, 255, 255, 0.9);
       border-color: var(--border-light);
     }
+
     body[data-theme="dark"] .topbar {
       background: rgba(15, 23, 42, 0.9);
       border-color: var(--border-dark);
@@ -88,6 +104,7 @@
       gap: 10px;
       min-width: 0;
     }
+
     .brand-logo {
       width: 30px;
       height: 30px;
@@ -100,6 +117,7 @@
       background: radial-gradient(circle at 20% 0, #facc15, #f97316);
       color: #111827;
     }
+
     .brand-text {
       display: flex;
       flex-direction: column;
@@ -107,11 +125,13 @@
       font-size: 13px;
       line-height: 1.2;
     }
+
     .brand-title {
       font-weight: 700;
       letter-spacing: 0.02em;
       white-space: nowrap;
     }
+
     .brand-subtitle {
       font-size: 11px;
       opacity: 0.75;
@@ -131,10 +151,12 @@
       background: transparent;
       gap: 2px;
     }
+
     body[data-theme="light"] .chip-group {
       border-color: rgba(148, 163, 184, 0.42);
       background: rgba(255, 255, 255, 0.9);
     }
+
     body[data-theme="dark"] .chip-group {
       border-color: rgba(148, 163, 184, 0.4);
       background: rgba(15, 23, 42, 0.95);
@@ -153,26 +175,40 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: background var(--transition-fast), color var(--transition-fast),
-        transform var(--transition-fast), box-shadow var(--transition-fast);
+      transition: background var(--transition-fast),
+        color var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast);
       white-space: nowrap;
     }
+
     .chip-btn span.icon {
       font-size: 13px;
       line-height: 1;
     }
+
     .chip-btn.active {
       background: var(--accent);
       color: #111827;
       box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
       transform: translateY(-0.5px);
     }
-    .chip-btn:not(.active):hover { background: rgba(148, 163, 184, 0.25); }
-    body[data-theme="dark"] .chip-btn:not(.active):hover { background: rgba(31, 41, 55, 0.8); }
 
-    .chip-btn-mini { border-radius: 999px; padding: 5px 7px; font-size: 11px; }
+    .chip-btn:not(.active):hover {
+      background: rgba(148, 163, 184, 0.25);
+    }
+
+    body[data-theme="dark"] .chip-btn:not(.active):hover {
+      background: rgba(31, 41, 55, 0.8);
+    }
+
+    .chip-btn-mini {
+      border-radius: 999px;
+      padding: 5px 7px;
+      font-size: 11px;
+    }
 
     /* Status pill */
+
     .status-pill {
       align-self: stretch;
       margin: 0 4px;
@@ -188,22 +224,45 @@
       text-overflow: ellipsis;
       overflow: hidden;
     }
+
     body[data-theme="light"] .status-pill {
       background: rgba(255, 255, 255, 0.9);
       border-color: var(--border-light);
       color: var(--muted-light);
     }
+
     body[data-theme="dark"] .status-pill {
       background: rgba(15, 23, 42, 0.9);
       border-color: var(--border-dark);
       color: var(--muted-dark);
     }
-    .status-pill.ok { border-color: rgba(34, 197, 94, 0.7); color: rgba(34, 197, 94, 0.95); }
-    .status-pill.error { border-color: rgba(239, 68, 68, 0.85); color: rgba(248, 113, 113, 0.96); }
-    .status-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--accent); }
+
+    .status-pill.ok {
+      border-color: rgba(34, 197, 94, 0.7);
+      color: rgba(34, 197, 94, 0.95);
+    }
+
+    .status-pill.error {
+      border-color: rgba(239, 68, 68, 0.85);
+      color: rgba(248, 113, 113, 0.96);
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
 
     /* Main content */
-    .main-panel { flex: 1; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
+
+    .main-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
 
     .welcome-card {
       border-radius: var(--surface-radius);
@@ -213,19 +272,44 @@
       flex-direction: column;
       gap: 6px;
     }
+
     body[data-theme="light"] .welcome-card {
-      background: linear-gradient(135deg, rgba(244, 206, 20, 0.12), rgba(255, 255, 255, 0.96));
+      background: linear-gradient(
+        135deg,
+        rgba(244, 206, 20, 0.12),
+        rgba(255, 255, 255, 0.96)
+      );
       border-color: var(--border-light);
     }
+
     body[data-theme="dark"] .welcome-card {
-      background: linear-gradient(145deg, rgba(250, 204, 21, 0.16), rgba(15, 23, 42, 0.96));
+      background: linear-gradient(
+        145deg,
+        rgba(250, 204, 21, 0.16),
+        rgba(15, 23, 42, 0.96)
+      );
       border-color: rgba(148, 163, 184, 0.45);
     }
-    .welcome-header-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .welcome-title { font-size: 16px; font-weight: 700; }
-    .welcome-sub { font-size: 12px; opacity: 0.85; }
+
+    .welcome-header-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .welcome-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .welcome-sub {
+      font-size: 12px;
+      opacity: 0.85;
+    }
 
     /* Generic card */
+
     .card {
       border-radius: var(--surface-radius);
       padding: 12px 14px 14px;
@@ -234,16 +318,50 @@
       flex-direction: column;
       gap: 12px;
     }
-    body[data-theme="light"] .card { background: #ffffff; border-color: var(--border-light); }
-    body[data-theme="dark"] .card { background: rgba(15, 23, 42, 0.96); border-color: var(--border-dark); }
 
-    .card-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .card-title { font-size: 15px; font-weight: 600; }
-    .card-caption { font-size: 12px; opacity: 0.7; }
-    .card-body { display: flex; flex-direction: column; gap: 10px; }
+    body[data-theme="light"] .card {
+      background: #ffffff;
+      border-color: var(--border-light);
+    }
 
-    .field-group { display: flex; flex-direction: column; gap: 6px; }
-    .field-label { font-size: 12px; opacity: 0.85; }
+    body[data-theme="dark"] .card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: var(--border-dark);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .card-caption {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    .card-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 12px;
+      opacity: 0.85;
+    }
 
     .btn {
       border-radius: 999px;
@@ -257,17 +375,29 @@
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
-        background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
+      transition: transform var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast),
+        color var(--transition-fast), opacity var(--transition-fast);
       white-space: nowrap;
     }
+
     .btn-primary {
       background: var(--accent);
       color: #111827;
       box-shadow: 0 8px 20px rgba(250, 204, 21, 0.45);
     }
-    .btn-primary:hover:enabled { transform: translateY(-0.5px); box-shadow: 0 10px 28px rgba(250, 204, 21, 0.6); }
-    .btn:disabled { opacity: 0.6; cursor: default; box-shadow: none; transform: none; }
+
+    .btn-primary:hover:enabled {
+      transform: translateY(-0.5px);
+      box-shadow: 0 10px 28px rgba(250, 204, 21, 0.6);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
 
     .btn-ghost {
       background: transparent;
@@ -278,11 +408,24 @@
       border: none;
       cursor: pointer;
     }
-    body[data-theme="light"] .btn-ghost:hover { background: rgba(148, 163, 184, 0.18); }
-    body[data-theme="dark"] .btn-ghost:hover { background: rgba(31, 41, 55, 0.9); }
+
+    body[data-theme="light"] .btn-ghost:hover {
+      background: rgba(148, 163, 184, 0.18);
+    }
+
+    body[data-theme="dark"] .btn-ghost:hover {
+      background: rgba(31, 41, 55, 0.9);
+    }
 
     /* OTP row: LTR */
-    .otp-row { display: flex; align-items: center; justify-content: center; gap: 10px; direction: ltr; }
+
+    .otp-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      direction: ltr;
+    }
 
     .otp-input {
       width: 44px;
@@ -293,30 +436,52 @@
       border-radius: 16px;
       border: 1px solid;
       outline: none;
-      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+      transition: border-color var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast);
     }
+
     body[data-theme="light"] .otp-input {
       background: rgba(248, 250, 252, 0.96);
       border-color: rgba(148, 163, 184, 0.5);
       color: var(--text-light);
     }
+
     body[data-theme="dark"] .otp-input {
       background: rgba(15, 23, 42, 0.97);
       border-color: rgba(148, 163, 184, 0.7);
       color: var(--text-dark);
     }
+
     .otp-input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
       background: rgba(255, 251, 235, 0.96);
     }
-    body[data-theme="dark"] .otp-input:focus { background: rgba(15, 23, 42, 1); }
 
-    /* Apps layout */
-    .apps-layout { display: flex; flex-direction: column; gap: 12px; min-height: 0; flex: 1; }
-    .apps-header-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    body[data-theme="dark"] .otp-input:focus {
+      background: rgba(15, 23, 42, 1);
+    }
+
+    /* Apps sections layout */
+
+    .apps-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 0;
+      flex: 1;
+    }
+
+    .apps-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
     /* Workspace selector */
+
     .workspace-card {
       flex: 1;
       min-width: 260px;
@@ -329,26 +494,45 @@
       border: 1px solid;
       cursor: pointer;
       position: relative;
-      transition: box-shadow var(--transition-fast), border-color var(--transition-fast),
-        background var(--transition-fast), transform var(--transition-fast);
+      transition: box-shadow var(--transition-fast),
+        border-color var(--transition-fast), background var(--transition-fast),
+        transform var(--transition-fast);
     }
+
     body[data-theme="light"] .workspace-card {
       background: rgba(255, 255, 255, 0.9);
       border-color: rgba(148, 163, 184, 0.35);
     }
+
     body[data-theme="dark"] .workspace-card {
       background: rgba(15, 23, 42, 0.95);
       border-color: rgba(148, 163, 184, 0.6);
     }
+
     .workspace-card:hover {
       box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
       border-color: rgba(250, 204, 21, 0.7);
       transform: translateY(-0.5px);
     }
 
-    .workspace-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-    .workspace-label { font-size: 11px; opacity: 0.7; }
-    .workspace-name-row { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+    .workspace-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .workspace-label {
+      font-size: 11px;
+      opacity: 0.7;
+    }
+
+    .workspace-name-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+    }
 
     .workspace-name {
       font-size: 13px;
@@ -358,6 +542,7 @@
       text-overflow: ellipsis;
       max-width: 220px;
     }
+
     .workspace-role-pill {
       font-size: 10px;
       padding: 2px 7px;
@@ -365,6 +550,7 @@
       background: rgba(34, 197, 94, 0.1);
       color: #15803d;
     }
+
     body[data-theme="dark"] .workspace-role-pill {
       background: rgba(34, 197, 94, 0.2);
       color: #bbf7d0;
@@ -380,10 +566,12 @@
       font-size: 13px;
       border: 1px solid transparent;
     }
+
     body[data-theme="light"] .workspace-dropdown-icon {
       background: rgba(248, 250, 252, 0.9);
       border-color: rgba(148, 163, 184, 0.45);
     }
+
     body[data-theme="dark"] .workspace-dropdown-icon {
       background: rgba(15, 23, 42, 0.9);
       border-color: rgba(148, 163, 184, 0.7);
@@ -401,10 +589,12 @@
       z-index: 15;
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
     }
+
     body[data-theme="light"] .workspace-menu {
       background: #ffffff;
       border-color: rgba(148, 163, 184, 0.4);
     }
+
     body[data-theme="dark"] .workspace-menu {
       background: rgba(15, 23, 42, 0.98);
       border-color: rgba(148, 163, 184, 0.65);
@@ -424,11 +614,29 @@
       color: inherit;
       cursor: pointer;
       text-align: start;
-      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+      transition: background var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast);
     }
-    .workspace-menu-item-main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
-    .workspace-menu-item-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .workspace-menu-item-meta { font-size: 11px; opacity: 0.7; }
+
+    .workspace-menu-item-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .workspace-menu-item-name {
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .workspace-menu-item-meta {
+      font-size: 11px;
+      opacity: 0.7;
+    }
 
     .workspace-menu-item-role {
       font-size: 10px;
@@ -437,6 +645,7 @@
       background: rgba(34, 197, 94, 0.08);
       color: #15803d;
     }
+
     body[data-theme="dark"] .workspace-menu-item-role {
       background: rgba(34, 197, 94, 0.16);
       color: #bbf7d0;
@@ -446,16 +655,19 @@
       background: rgba(248, 250, 252, 0.9);
       border-color: rgba(148, 163, 184, 0.4);
     }
+
     body[data-theme="dark"] .workspace-menu-item:hover {
       background: rgba(30, 64, 175, 0.2);
       border-color: rgba(129, 140, 248, 0.6);
     }
+
     .workspace-menu-item.active {
       border-color: rgba(250, 204, 21, 0.9);
       background: rgba(250, 204, 21, 0.12);
     }
 
     /* View toggle */
+
     .view-toggle-group {
       display: inline-flex;
       border-radius: 999px;
@@ -464,10 +676,12 @@
       background: transparent;
       gap: 2px;
     }
+
     body[data-theme="light"] .view-toggle-group {
       border-color: rgba(148, 163, 184, 0.35);
       background: rgba(255, 255, 255, 0.9);
     }
+
     body[data-theme="dark"] .view-toggle-group {
       border-color: rgba(148, 163, 184, 0.5);
       background: rgba(15, 23, 42, 0.95);
@@ -484,20 +698,30 @@
       gap: 5px;
       background: transparent;
       color: inherit;
-      transition: background var(--transition-fast), color var(--transition-fast),
-        box-shadow var(--transition-fast), transform var(--transition-fast);
+      transition: background var(--transition-fast),
+        color var(--transition-fast), box-shadow var(--transition-fast),
+        transform var(--transition-fast);
     }
+
     .view-toggle-btn span.icon { font-size: 13px; }
+
     .view-toggle-btn.active {
       background: var(--accent);
       color: #111827;
       box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
       transform: translateY(-0.5px);
     }
-    .view-toggle-btn:not(.active):hover { background: rgba(148, 163, 184, 0.18); }
-    body[data-theme="dark"] .view-toggle-btn:not(.active):hover { background: rgba(31, 41, 55, 0.9); }
 
-    /* Apps / marketplace cards */
+    .view-toggle-btn:not(.active):hover {
+      background: rgba(148, 163, 184, 0.18);
+    }
+
+    body[data-theme="dark"] .view-toggle-btn:not(.active):hover {
+      background: rgba(31, 41, 55, 0.9);
+    }
+
+    /* Apps list / marketplace cards */
+
     .apps-section-card {
       border-radius: var(--surface-radius);
       padding: 12px 14px 14px;
@@ -506,8 +730,16 @@
       flex-direction: column;
       gap: 10px;
     }
-    body[data-theme="light"] .apps-section-card { background: #ffffff; border-color: var(--border-light); }
-    body[data-theme="dark"] .apps-section-card { background: rgba(15, 23, 42, 0.96); border-color: var(--border-dark); }
+
+    body[data-theme="light"] .apps-section-card {
+      background: #ffffff;
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .apps-section-card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: var(--border-dark);
+    }
 
     .apps-grid {
       display: grid;
@@ -523,12 +755,21 @@
       flex-direction: column;
       gap: 6px;
       position: relative;
-      transition: background var(--transition-fast), border-color var(--transition-fast),
-        transform var(--transition-fast), box-shadow var(--transition-fast);
+      transition: background var(--transition-fast),
+        border-color var(--transition-fast), transform var(--transition-fast),
+        box-shadow var(--transition-fast);
       cursor: pointer;
     }
-    body[data-theme="light"] .app-card { background: rgba(255, 255, 255, 0.96); border-color: rgba(148, 163, 184, 0.35); }
-    body[data-theme="dark"] .app-card { background: rgba(15, 23, 42, 0.96); border-color: rgba(148, 163, 184, 0.55); }
+
+    body[data-theme="light"] .app-card {
+      background: rgba(255, 255, 255, 0.96);
+      border-color: rgba(148, 163, 184, 0.35);
+    }
+
+    body[data-theme="dark"] .app-card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: rgba(148, 163, 184, 0.55);
+    }
 
     .app-card:hover {
       transform: translateY(-1px);
@@ -536,8 +777,19 @@
       border-color: rgba(250, 204, 21, 0.9);
     }
 
-    .app-card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-    .app-card-main { display: flex; align-items: center; gap: 8px; min-width: 0; }
+    .app-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .app-card-main {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
 
     .app-card-icon {
       width: 30px;
@@ -550,18 +802,48 @@
       background: rgba(244, 206, 20, 0.15);
       color: #92400e;
       flex-shrink: 0;
+    }
+
+    body[data-theme="dark"] .app-card-icon {
+      background: rgba(250, 204, 21, 0.16);
+      color: #fbbf24;
+    }
+
+    .app-card-title {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .app-card-tagline {
+      font-size: 11px;
+      opacity: 0.75;
+    }
+
+    .app-card-body {
+      font-size: 11px;
+      opacity: 0.78;
+      height: 2.4em;
       overflow: hidden;
     }
-    .app-card-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-    body[data-theme="dark"] .app-card-icon { background: rgba(250, 204, 21, 0.16); color: #fbbf24; }
+    .app-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      opacity: 0.82;
+      margin-top: 4px;
+    }
 
-    .app-card-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .app-card-tagline { font-size: 11px; opacity: 0.75; }
-    .app-card-body { font-size: 11px; opacity: 0.78; height: 2.4em; overflow: hidden; }
-
-    .app-card-footer { display: flex; align-items: center; justify-content: space-between; font-size: 11px; opacity: 0.82; margin-top: 4px; }
-    .badge-soft { border-radius: 999px; padding: 2px 6px; font-size: 10px; background: rgba(148, 163, 184, 0.14); }
+    .badge-soft {
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 10px;
+      background: rgba(148, 163, 184, 0.14);
+    }
 
     .badge-installed {
       border-radius: 999px;
@@ -570,7 +852,11 @@
       background: rgba(250, 204, 21, 0.15);
       color: #92400e;
     }
-    body[data-theme="dark"] .badge-installed { background: rgba(250, 204, 21, 0.22); color: #facc15; }
+
+    body[data-theme="dark"] .badge-installed {
+      background: rgba(250, 204, 21, 0.22);
+      color: #facc15;
+    }
 
     .app-card-actions { display: flex; gap: 6px; }
 
@@ -587,10 +873,16 @@
       color: inherit;
       transition: background var(--transition-fast), transform var(--transition-fast);
     }
-    .btn-pill-sm.primary { background: var(--accent); color: #111827; }
+
+    .btn-pill-sm.primary {
+      background: var(--accent);
+      color: #111827;
+    }
+
     .btn-pill-sm:hover { transform: translateY(-0.5px); }
 
-    /* App view */
+    /* App View */
+
     .app-view-card {
       border-radius: var(--surface-radius);
       padding: 12px 14px;
@@ -600,8 +892,16 @@
       gap: 8px;
       min-height: 240px;
     }
-    body[data-theme="light"] .app-view-card { background: #ffffff; border-color: var(--border-light); }
-    body[data-theme="dark"] .app-view-card { background: rgba(15, 23, 42, 0.96); border-color: var(--border-dark); }
+
+    body[data-theme="light"] .app-view-card {
+      background: #ffffff;
+      border-color: var(--border-light);
+    }
+
+    body[data-theme="dark"] .app-view-card {
+      background: rgba(15, 23, 42, 0.96);
+      border-color: var(--border-dark);
+    }
 
     .app-view-header {
       display: flex;
@@ -611,6 +911,7 @@
       border-bottom: 1px solid;
       padding-bottom: 6px;
     }
+
     body[data-theme="light"] .app-view-header { border-color: rgba(148, 163, 184, 0.25); }
     body[data-theme="dark"] .app-view-header { border-color: rgba(51, 65, 85, 0.9); }
 
@@ -623,7 +924,15 @@
       max-height: calc(100vh - 220px);
       margin-top: 4px;
     }
-    .app-frame { width: 100%; height: 100%; border: none; display: block; background: transparent; }
+
+    .app-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+      background: transparent;
+    }
+
     .app-frame-placeholder {
       width: 100%;
       height: 100%;
@@ -639,6 +948,7 @@
     .hidden { display: none !important; }
 
     /* Auth popup overlay */
+
     .auth-overlay {
       position: fixed;
       inset: 0;
@@ -649,11 +959,22 @@
       z-index: 30;
       backdrop-filter: blur(10px);
     }
+
     body[data-theme="light"] .auth-overlay {
-      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.16), transparent 60%), rgba(15, 23, 42, 0.18);
+      background: radial-gradient(
+          circle at top,
+          rgba(148, 163, 184, 0.16),
+          transparent 60%
+        ),
+        rgba(15, 23, 42, 0.18);
     }
+
     body[data-theme="dark"] .auth-overlay {
-      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      background: radial-gradient(
+          circle at top,
+          rgba(15, 23, 42, 0.95),
+          rgba(15, 23, 42, 0.98)
+        );
     }
 
     .auth-modal {
@@ -664,12 +985,19 @@
       padding: 14px 12px 12px;
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.55);
     }
+
     body[data-theme="light"] .auth-modal {
       background: linear-gradient(140deg, rgba(244, 206, 20, 0.12), #ffffff);
       border-color: rgba(148, 163, 184, 0.5);
     }
+
     body[data-theme="dark"] .auth-modal {
-      background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.18), transparent 50%), rgba(15, 23, 42, 0.98);
+      background: radial-gradient(
+          circle at top left,
+          rgba(250, 204, 21, 0.18),
+          transparent 50%
+        ),
+        rgba(15, 23, 42, 0.98);
       border-color: rgba(148, 163, 184, 0.6);
     }
 
@@ -679,6 +1007,7 @@
       justify-content: space-between;
       padding: 2px 4px 10px;
     }
+
     .auth-title { font-size: 15px; font-weight: 700; }
     .auth-sub { font-size: 12px; opacity: 0.78; }
 
@@ -690,7 +1019,11 @@
       opacity: 0.9;
     }
 
-    .auth-modal-body { display: flex; flex-direction: column; gap: 10px; }
+    .auth-modal-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
     .input {
       flex: 1;
@@ -699,28 +1032,38 @@
       padding: 8px 12px;
       font-size: 13px;
       outline: none;
-      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+      transition: border-color var(--transition-fast),
+        box-shadow var(--transition-fast), background var(--transition-fast);
     }
+
     body[data-theme="light"] .input {
       background: rgba(248, 250, 252, 0.95);
       border-color: rgba(148, 163, 184, 0.5);
       color: var(--text-light);
     }
+
     body[data-theme="dark"] .input {
       background: rgba(15, 23, 42, 0.96);
       border-color: rgba(148, 163, 184, 0.6);
       color: var(--text-dark);
     }
+
     .input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
       background: rgba(255, 251, 235, 0.9);
     }
-    body[data-theme="dark"] .input:focus { background: rgba(15, 23, 42, 0.98); }
+
+    body[data-theme="dark"] .input:focus {
+      background: rgba(15, 23, 42, 0.98);
+    }
 
     @media (min-width: 768px) {
       .app-shell { padding: 6px 10px; }
-      .app-frame-wrap { height: calc(100vh - 210px); max-height: calc(100vh - 190px); }
+      .app-frame-wrap {
+        height: calc(100vh - 210px);
+        max-height: calc(100vh - 190px);
+      }
     }
   </style>
 </head>
@@ -738,8 +1081,12 @@
       </div>
       <div class="topbar-right">
         <div class="chip-group">
-          <button class="chip-btn" id="btnLangAr" type="button" data-lang="ar"><span>عربي</span></button>
-          <button class="chip-btn" id="btnLangEn" type="button" data-lang="en"><span>EN</span></button>
+          <button class="chip-btn" id="btnLangAr" type="button" data-lang="ar">
+            <span>عربي</span>
+          </button>
+          <button class="chip-btn" id="btnLangEn" type="button" data-lang="en">
+            <span>EN</span>
+          </button>
         </div>
         <button class="chip-btn chip-btn-mini" id="btnTheme" type="button">
           <span class="icon" id="themeIcon">🌞</span>
@@ -766,7 +1113,6 @@
             <span data-i18n="step2Title">رمز</span>
           </div>
         </div>
-
         <div class="auth-modal-body">
           <!-- Step 1: Mobile -->
           <section id="stepMobile" class="card" style="margin:0;">
@@ -776,7 +1122,6 @@
                 <div class="card-caption" data-i18n="step1Sub">ادخل رقم الجوال.</div>
               </div>
             </div>
-
             <div class="card-body">
               <div class="field-group">
                 <label class="field-label" for="mobileInput" data-i18n="step1Label">رقم الجوال</label>
@@ -789,7 +1134,6 @@
                   placeholder="5XXXXXXXX"
                 />
               </div>
-
               <div style="display:flex; justify-content:flex-end; margin-top:6px;">
                 <button id="btnSendOtp" class="btn btn-primary" type="button">
                   <span data-i18n="btnSendOtp">إرسال الرمز</span>
@@ -809,7 +1153,6 @@
                 <span data-i18n="changeMobile">تعديل الرقم</span>
               </button>
             </div>
-
             <div class="card-body">
               <div class="otp-row">
                 <input class="otp-input" id="otp1" type="tel" inputmode="numeric" maxlength="1" />
@@ -817,7 +1160,6 @@
                 <input class="otp-input" id="otp3" type="tel" inputmode="numeric" maxlength="1" />
                 <input class="otp-input" id="otp4" type="tel" inputmode="numeric" maxlength="1" />
               </div>
-
               <div style="display:flex; justify-content:flex-end; margin-top:10px;">
                 <button id="btnVerifyOtp" class="btn btn-primary" type="button">
                   <span data-i18n="btnVerify">تأكيد</span>
@@ -836,9 +1178,7 @@
         <div class="welcome-header-line">
           <div>
             <div class="welcome-title" data-i18n="welcomeTitle">مرحباً 👋</div>
-            <div class="welcome-sub" data-i18n="welcomeSub">
-              ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.
-            </div>
+            <div class="welcome-sub" data-i18n="welcomeSub">ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.</div>
           </div>
         </div>
       </section>
@@ -847,7 +1187,6 @@
       <section id="stepApps" class="apps-layout hidden">
         <!-- Workspace row -->
         <div class="apps-header-row">
-          <!-- Workspace selector card -->
           <div class="workspace-card" id="workspaceCard">
             <div class="workspace-meta">
               <div class="workspace-label" data-i18n="workspaceLabel">مساحة العمل</div>
@@ -856,11 +1195,12 @@
                 <span class="workspace-role-pill" id="workspaceRole">—</span>
               </div>
             </div>
-            <div class="workspace-dropdown-icon"><span id="workspaceChevron">▾</span></div>
+            <div class="workspace-dropdown-icon">
+              <span id="workspaceChevron">▾</span>
+            </div>
             <div id="workspaceMenu" class="workspace-menu hidden"></div>
           </div>
 
-          <!-- View toggle -->
           <div class="view-toggle-group">
             <button id="btnViewApps" type="button" class="view-toggle-btn active">
               <span class="icon">⚙️</span>
@@ -895,7 +1235,9 @@
           <div class="card-header" style="padding:0;">
             <div>
               <div class="card-title" data-i18n="marketplaceTitle">App Marketplace</div>
-              <div class="card-caption" data-i18n="marketplaceSub">اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.</div>
+              <div class="card-caption" data-i18n="marketplaceSub">
+                اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.
+              </div>
             </div>
           </div>
           <div class="card-body">
@@ -931,7 +1273,6 @@
     (function () {
       "use strict";
 
-      // IMPORTANT: Must match HUB_APP_ID in Vercel env
       var HUB_APP_ID = "HUB";
       var API_URL = "/api/hub/manage";
 
@@ -951,14 +1292,14 @@
       var currentWorkspaceApps = [];
       var currentTemplates = [];
 
-      // 'apps' | 'marketplace' | 'app'
-      var currentMainView = "apps";
+      var currentMainView = "apps"; // 'apps' | 'marketplace' | 'app'
 
       var bodyEl = document.body;
       var statusPill = document.getElementById("statusPill");
       var statusText = document.getElementById("statusText");
 
       var welcomeCard = document.getElementById("welcomeCard");
+
       var authOverlay = document.getElementById("authOverlay");
       var stepMobile = document.getElementById("stepMobile");
       var stepOtp = document.getElementById("stepOtp");
@@ -973,7 +1314,6 @@
         document.getElementById("otp3"),
         document.getElementById("otp4")
       ];
-
       var btnVerifyOtp = document.getElementById("btnVerifyOtp");
       var btnChangeMobile = document.getElementById("btnChangeMobile");
 
@@ -1006,16 +1346,11 @@
 
       var userNameLabel = document.getElementById("userNameLabel");
 
-      // NOTE: Backend returns template fields with Ar/En.
-      // We'll map based on currentLang so English labels show correctly.
       var tDict = {
         hubTitle: { ar: "NahlHub", en: "NahlHub" },
         hubSub: { ar: "تطبيقاتك في نحل هب", en: "Your apps in NahlHub" },
         welcomeTitle: { ar: "مرحباً 👋", en: "Welcome 👋" },
-        welcomeSub: {
-          ar: "ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.",
-          en: "Enter your mobile, then choose workspace and app."
-        },
+        welcomeSub: { ar: "ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.", en: "Enter your mobile, then choose workspace and app." },
         step1Title: { ar: "رقم الجوال", en: "Mobile number" },
         step1Sub: { ar: "ادخل رقم الجوال.", en: "Enter your mobile." },
         step1Label: { ar: "رقم الجوال", en: "Mobile" },
@@ -1025,41 +1360,24 @@
         changeMobile: { ar: "تعديل الرقم", en: "Change number" },
         btnVerify: { ar: "تأكيد", en: "Confirm" },
         logout: { ar: "تسجيل خروج", en: "Logout" },
-
         statusIdle: { ar: "جاهز.", en: "Ready." },
         statusSendingOtp: { ar: "يتم إرسال الرمز عبر واتساب...", en: "Sending code via WhatsApp..." },
         statusOtpSent: { ar: "تم إرسال الرمز عبر واتساب.", en: "Code sent via WhatsApp." },
         statusVerifying: { ar: "يتم التحقق...", en: "Verifying..." },
         statusError: { ar: "حدث خطأ. حاول مرة أخرى.", en: "Something went wrong. Try again." },
-
         statusNoWorkspaces: { ar: "لا توجد مساحات عمل متاحة.", en: "No workspaces available." },
         statusLoadingWorkspace: { ar: "جاري تحميل مساحات العمل...", en: "Loading workspaces..." },
         statusLoadingApps: { ar: "جاري تحميل التطبيقات...", en: "Loading apps..." },
         statusLoadingMarketplace: { ar: "جاري تحميل متجر التطبيقات...", en: "Loading marketplace..." },
-
         workspaceLabel: { ar: "مساحة العمل", en: "Workspace" },
         yourAppsTitle: { ar: "تطبيقاتك", en: "Your apps" },
         marketplaceTitle: { ar: "App Marketplace", en: "App Marketplace" },
-        marketplaceSub: {
-          ar: "اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.",
-          en: "Choose a workspace and install the right apps for your team."
-        },
+        marketplaceSub: { ar: "اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.", en: "Choose a workspace and install the right apps for your team." },
         viewApps: { ar: "التطبيقات", en: "Apps" },
         viewMarketplace: { ar: "المتجر", en: "Marketplace" },
-        appPlaceholder: {
-          ar: "اختر تطبيقاً من قائمة التطبيقات أو من المتجر.",
-          en: "Choose an app from your apps or from the marketplace."
-        },
-        appViewSub: {
-          ar: "التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.",
-          en: "The app is shown inside NahlHub. Use Back to return to apps."
-        },
-        backToApps: { ar: "التطبيقات", en: "Apps" },
-
-        userNotFound: {
-          ar: "هذا الرقم غير مسجل. تواصل مع مسؤول النظام لإنشاء حساب.",
-          en: "This mobile is not registered. Contact your admin to create an account."
-        }
+        appPlaceholder: { ar: "اختر تطبيقاً من قائمة التطبيقات أو من المتجر.", en: "Choose an app from your apps or from the marketplace." },
+        appViewSub: { ar: "التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.", en: "The app is shown inside NahlHub. Use Back to return to apps." },
+        backToApps: { ar: "التطبيقات", en: "Apps" }
       };
 
       function t(key) {
@@ -1078,19 +1396,13 @@
           node.textContent = t(key);
         });
 
-        if (currentLang === "ar") {
-          btnLangAr.classList.add("active");
-          btnLangEn.classList.remove("active");
-          mobileInput.placeholder = "5XXXXXXXX";
-        } else {
-          btnLangAr.classList.remove("active");
-          btnLangEn.classList.add("active");
-          mobileInput.placeholder = "5XXXXXXXX";
-        }
+        btnLangAr.classList.toggle("active", currentLang === "ar");
+        btnLangEn.classList.toggle("active", currentLang === "en");
+        mobileInput.placeholder = "5XXXXXXXX";
 
         updateUserUi();
 
-        // rerender with translated fields if already loaded
+        // Re-render lists to reflect language fields
         if (currentWorkspaceId) {
           renderApps();
           renderMarketplace();
@@ -1116,12 +1428,15 @@
         statusPill.classList.remove("ok", "error");
         if (type === "ok") statusPill.classList.add("ok");
         else if (type === "error") statusPill.classList.add("error");
+
         statusText.textContent = text;
       }
 
       function postJson(payload) {
         var body = Object.assign({}, payload || {});
-        if (!body.appId && !body.appid && HUB_APP_ID) body.appId = HUB_APP_ID;
+        if (!body.appId && !body.appid && HUB_APP_ID) {
+          body.appId = HUB_APP_ID;
+        }
 
         return fetch(API_URL, {
           method: "POST",
@@ -1189,13 +1504,12 @@
         btnSendOtp.disabled = true;
         setStatus("statusSendingOtp");
 
-        // OTP is sent by Vercel via Green API
         postJson({ action: "sendOtp", mobile: mobile })
           .then(function (res) {
             if (!res || !res.success) {
               var msg =
                 (res && res.error) ||
-                (currentLang === "ar" ? "تعذر إرسال الرمز عبر واتساب." : "Failed to send code via WhatsApp.");
+                (currentLang === "ar" ? "تعذر إرسال الرمز." : "Failed to send code.");
               setStatus(msg, "error");
               return;
             }
@@ -1222,7 +1536,6 @@
         btnVerifyOtp.disabled = true;
         setStatus("statusVerifying");
 
-        // verifyOtp is done in Vercel, then it calls Apps Script to create session
         postJson({ action: "verifyOtp", mobile: currentMobileRaw, otp: otp })
           .then(function (res) {
             if (!res || !res.success) {
@@ -1235,23 +1548,16 @@
               return;
             }
 
-            // If policy is "no auto create user", backend may return userExists:false
-            if (res.userExists === false) {
-              setStatus("userNotFound", "error");
-              clearOtpInputs();
-              otpInputs[0].focus();
-              return;
-            }
-
             currentSessionKey = res.sessionKey || null;
             currentUser = res.user || null;
 
-            if (currentSessionKey) localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
+            if (currentSessionKey) {
+              localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
+            }
 
             if (welcomeCard) welcomeCard.classList.add("hidden");
             updateUserUi();
 
-            // Load workspaces
             loadWorkspaces().then(function () {
               showStep("apps");
               setStatus("statusIdle");
@@ -1266,7 +1572,10 @@
       }
 
       function updateUserUi() {
-        if (!currentUser) { userNameLabel.textContent = ""; return; }
+        if (!currentUser) {
+          userNameLabel.textContent = "";
+          return;
+        }
         var suffix = " · " + (currentUser.mobile || "");
         var greetName = currentLang === "ar"
           ? "مرحباً " + (currentUser.name || "")
@@ -1275,6 +1584,11 @@
       }
 
       function logout() {
+        // also tell backend to expire session (best-effort)
+        if (currentSessionKey) {
+          postJson({ action: "auth.logout", sessionKey: currentSessionKey }).catch(function(){});
+        }
+
         currentSessionKey = null;
         localStorage.removeItem(STORAGE_SESSION_KEY);
         currentUser = null;
@@ -1282,6 +1596,7 @@
         currentWorkspaceId = null;
         currentWorkspaceApps = [];
         currentTemplates = [];
+
         appsGrid.innerHTML = "";
         marketplaceGrid.innerHTML = "";
         workspaceNameEl.textContent = "—";
@@ -1293,7 +1608,8 @@
         showStep("mobile");
       }
 
-      /* Workspace & views */
+      /* -------- Workspace & views ---------- */
+
       function setMainView(view) {
         currentMainView = view;
         sectionApps.classList.toggle("hidden", view !== "apps");
@@ -1353,7 +1669,9 @@
       }
 
       function selectWorkspace(workspaceId) {
-        var ws = currentWorkspaces.find(function (w) { return w.workspaceId === workspaceId; });
+        var ws = currentWorkspaces.find(function (w) {
+          return w.workspaceId === workspaceId;
+        });
         if (!ws) return;
 
         currentWorkspaceId = workspaceId;
@@ -1369,12 +1687,12 @@
 
       function loadWorkspaces() {
         if (!currentUser || !currentUser.userId) return Promise.resolve();
-        setStatus("statusLoadingWorkspace");
 
+        setStatus("statusLoadingWorkspace");
         return postJson({ action: "workspace.listForUser", userId: currentUser.userId })
           .then(function (res) {
             currentWorkspaces = (res && res.items) || [];
-            if (!currentWorkspaces || !currentWorkspaces.length) {
+            if (!currentWorkspaces.length) {
               setStatus("statusNoWorkspaces", "error");
               return;
             }
@@ -1385,8 +1703,25 @@
           });
       }
 
-      function langPick(objAr, objEn) {
-        return currentLang === "ar" ? (objAr || "") : (objEn || objAr || "");
+      function pickTplName(tpl) {
+        if (!tpl) return "";
+        return currentLang === "ar"
+          ? (tpl.nameAr || tpl.nameEn || tpl.templateId || "")
+          : (tpl.nameEn || tpl.nameAr || tpl.templateId || "");
+      }
+
+      function pickTplShort(tpl) {
+        if (!tpl) return "";
+        return currentLang === "ar"
+          ? (tpl.shortDescAr || tpl.shortDescEn || "")
+          : (tpl.shortDescEn || tpl.shortDescAr || "");
+      }
+
+      function pickTplDesc(tpl) {
+        if (!tpl) return "";
+        return currentLang === "ar"
+          ? (tpl.descriptionAr || tpl.descriptionEn || "")
+          : (tpl.descriptionEn || tpl.descriptionAr || "");
       }
 
       function loadWorkspaceData() {
@@ -1401,36 +1736,32 @@
             var tplRes = results[1] || {};
             currentTemplates = tplRes.items || [];
 
-            // Build template index
             var tplById = {};
             currentTemplates.forEach(function (tpl) {
               tplById[tpl.templateId] = tpl;
             });
 
-            // Map workspace apps with translated fields
             currentWorkspaceApps = (appsRes.items || []).map(function (app) {
               var tpl = tplById[app.templateId] || {};
 
-              var nameFromApp = langPick(app.nameAr, app.nameEn) || app.name || "";
-              var nameFromTpl = langPick(tpl.nameAr, tpl.nameEn) || tpl.name || "";
-
-              var shortDesc = langPick(tpl.shortDescAr, tpl.shortDescEn) || tpl.shortDesc || "";
-              var desc = langPick(tpl.descriptionAr, tpl.descriptionEn) || "";
+              var appName =
+                currentLang === "ar"
+                  ? (app.nameAr || pickTplName(tpl))
+                  : (app.nameEn || pickTplName(tpl));
 
               return {
                 workspaceAppId: app.workspaceAppId,
                 appId: app.appId,
                 templateId: app.templateId,
-                name: nameFromApp || nameFromTpl || app.templateId,
+                name: appName || app.templateId,
                 category: tpl.category || "",
-                shortDesc: shortDesc || desc || "",
+                shortDesc: pickTplShort(tpl) || "",
+                description: pickTplDesc(tpl) || "",
                 status: app.status || "",
                 visibleInHub: app.visibleInHub || "",
                 defaultRoute: tpl.defaultRoute || "",
                 iconUrl: tpl.iconUrl || "",
-                featureTags: tpl.featureTags || "",
-                type: tpl.type || "app",
-                installed: true
+                featureTags: tpl.featureTags || ""
               };
             });
 
@@ -1445,7 +1776,7 @@
 
       function renderApps() {
         appsGrid.innerHTML = "";
-        if (!currentWorkspaceApps || !currentWorkspaceApps.length) {
+        if (!currentWorkspaceApps.length) {
           var empty = document.createElement("div");
           empty.className = "card-caption";
           empty.textContent = currentLang === "ar"
@@ -1467,16 +1798,7 @@
 
           var icon = document.createElement("div");
           icon.className = "app-card-icon";
-          if (app.iconUrl) {
-            var img = document.createElement("img");
-            img.src = app.iconUrl;
-            img.alt = "";
-            img.loading = "lazy";
-            img.referrerPolicy = "no-referrer";
-            icon.appendChild(img);
-          } else {
-            icon.textContent = "⋯";
-          }
+          icon.textContent = "⋯";
 
           var titleWrap = document.createElement("div");
           var title = document.createElement("div");
@@ -1563,26 +1885,17 @@
 
           var icon = document.createElement("div");
           icon.className = "app-card-icon";
-          if (tpl.iconUrl) {
-            var img = document.createElement("img");
-            img.src = tpl.iconUrl;
-            img.alt = "";
-            img.loading = "lazy";
-            img.referrerPolicy = "no-referrer";
-            icon.appendChild(img);
-          } else {
-            icon.textContent = (tpl.type === "module") ? "🧩" : "✴";
-          }
+          icon.textContent = tpl.type === "module" ? "🧩" : "✴";
 
           var titleWrap = document.createElement("div");
 
           var title = document.createElement("div");
           title.className = "app-card-title";
-          title.textContent = langPick(tpl.nameAr, tpl.nameEn) || tpl.templateId;
+          title.textContent = pickTplName(tpl) || tpl.templateId;
 
           var tagLine = document.createElement("div");
           tagLine.className = "app-card-tagline";
-          tagLine.textContent = tpl.category || "";
+          tagLine.textContent = tpl.category || (tpl.type === "module" ? "Module" : "");
 
           titleWrap.appendChild(title);
           titleWrap.appendChild(tagLine);
@@ -1599,7 +1912,7 @@
 
           var body = document.createElement("div");
           body.className = "app-card-body";
-          body.textContent = langPick(tpl.shortDescAr, tpl.shortDescEn) || "";
+          body.textContent = pickTplShort(tpl) || "";
 
           var footer = document.createElement("div");
           footer.className = "app-card-footer";
@@ -1643,19 +1956,11 @@
       function installTemplate(tpl) {
         if (!currentWorkspaceId || !currentUser) return;
 
-        // Only admins can install
-        if (currentWorkspaceRole !== "admin") {
-          setStatus(currentLang === "ar" ? "ليس لديك صلاحية التثبيت. يلزم Admin." : "Install requires admin access.", "error");
-          return;
-        }
-
         setStatus("statusLoadingMarketplace");
 
-        var isModule = String(tpl.type || "").toLowerCase() === "module";
-        var action = isModule ? "marketplace.installModule" : "marketplace.installApp";
-
+        // ✅ use generic install to support app/module
         postJson({
-          action: action,
+          action: "marketplace.install",
           workspaceId: currentWorkspaceId,
           templateId: tpl.templateId,
           userId: currentUser.userId
@@ -1674,7 +1979,10 @@
 
       function openWorkspaceApp(app) {
         if (!app || !app.defaultRoute) {
-          setStatus(currentLang === "ar" ? "رابط التطبيق غير مهيأ." : "App URL is not configured yet.", "error");
+          setStatus(
+            currentLang === "ar" ? "رابط التطبيق غير مهيأ." : "App URL is not configured yet.",
+            "error"
+          );
           setMainView("apps");
           return;
         }
@@ -1690,24 +1998,60 @@
 
         var route = app.defaultRoute;
         var join = route.indexOf("?") >= 0 ? "&" : "?";
-        appFrame.src =
+
+        // ✅ pass workspaceId + sessionKey (useful for embedded apps)
+        var url =
           route +
           join +
-          "workspaceId=" +
-          encodeURIComponent(currentWorkspaceId) +
-          "&sessionKey=" +
-          encodeURIComponent(currentSessionKey || "");
+          "workspaceId=" + encodeURIComponent(currentWorkspaceId) +
+          (currentSessionKey ? "&sessionKey=" + encodeURIComponent(currentSessionKey) : "") +
+          (currentUser && currentUser.userId ? "&userId=" + encodeURIComponent(currentUser.userId) : "");
 
+        appFrame.src = url;
         setMainView("app");
       }
 
-      /* Event wiring */
+      // --------------------------
+      // Session resume (auto-login)
+      // --------------------------
+      function resumeSessionIfAny() {
+        if (!currentSessionKey) return Promise.resolve(false);
+
+        setStatus(currentLang === "ar" ? "جاري التحقق من الجلسة..." : "Checking session...");
+        return postJson({ action: "auth.me", sessionKey: currentSessionKey })
+          .then(function (res) {
+            if (!res || !res.success) {
+              // invalid/expired -> clear
+              currentSessionKey = null;
+              localStorage.removeItem(STORAGE_SESSION_KEY);
+              return false;
+            }
+            currentUser = res.user || null;
+            if (welcomeCard) welcomeCard.classList.add("hidden");
+            updateUserUi();
+
+            return loadWorkspaces().then(function () {
+              showStep("apps");
+              setStatus("statusIdle");
+              return true;
+            });
+          })
+          .catch(function () {
+            currentSessionKey = null;
+            localStorage.removeItem(STORAGE_SESSION_KEY);
+            return false;
+          });
+      }
+
+      // -------- Event wiring ----------
+
       btnSendOtp.addEventListener("click", sendOtp);
       mobileInput.addEventListener("keydown", function (e) {
         if (e.key === "Enter") { e.preventDefault(); sendOtp(); }
       });
 
       btnVerifyOtp.addEventListener("click", verifyOtp);
+
       btnChangeMobile.addEventListener("click", function () {
         showStep("mobile");
         setStatus("statusIdle");
@@ -1733,14 +2077,15 @@
         applyLanguage();
       });
 
-      btnViewApps.addEventListener("click", function () { setMainView("apps"); });
-      btnViewMarketplace.addEventListener("click", function () { setMainView("marketplace"); });
+      btnViewApps.addEventListener("click", function () {
+        setMainView("apps");
+      });
+
+      btnViewMarketplace.addEventListener("click", function () {
+        setMainView("marketplace");
+      });
 
       btnBackFromApp.addEventListener("click", function () {
-        // stop iframe
-        appFrame.src = "";
-        appFrame.classList.add("hidden");
-        appFramePlaceholder.classList.remove("hidden");
         setMainView("apps");
       });
 
@@ -1749,27 +2094,28 @@
         workspaceMenu.classList.toggle("hidden");
       });
 
-      document.addEventListener("click", function () { workspaceMenu.classList.add("hidden"); });
-      workspaceMenu.addEventListener("click", function (e) { e.stopPropagation(); });
+      document.addEventListener("click", function () {
+        workspaceMenu.classList.add("hidden");
+      });
 
-      // Auto-session bootstrap (optional)
-      function bootstrapSessionIfAny() {
-        if (!currentSessionKey) {
-          setStatus("statusIdle");
-          showStep("mobile");
-          return;
-        }
-        // If you later implement auth.me, you can auto-login here.
-        // For now we keep it simple:
-        setStatus("statusIdle");
-        showStep("mobile");
-      }
+      workspaceMenu.addEventListener("click", function (e) {
+        e.stopPropagation();
+      });
 
       // Init
       applyTheme();
       applyLanguage();
       setStatus("statusIdle");
-      bootstrapSessionIfAny();
+
+      // show mobile by default, then try resume
+      showStep("mobile");
+      resumeSessionIfAny().then(function (ok) {
+        if (!ok) {
+          setStatus("statusIdle");
+          showStep("mobile");
+        }
+      });
+
     })();
   </script>
 </body>
