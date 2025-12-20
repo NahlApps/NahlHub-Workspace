@@ -2,14 +2,16 @@
 // NahlHub – Vercel API → Apps Script proxy + OTP Sender (GreenAPI)
 // ==================================================================
 //
-// Actions used by frontend + backend (proxied to Apps Script):
-//   - sendOtp / auth.requestOtp      (Local: GreenAPI + otp.store in Apps Script)
-//   - verifyOtp / auth.verifyOtp     (Forward to Apps Script)
-//   - auth.me                        (Forward)
-//   - auth.logout                    (Forward)
-//   - workspace.*                    (Forward)
-//   - marketplace.*                  (Forward)
-//   - health                         (Local healthcheck)
+// Local actions:
+//   - sendOtp / auth.requestOtp  => GreenAPI send + Apps Script otp.store (HMAC signed)
+//   - health                     => local health response
+//
+// Forwarded actions (to Apps Script):
+//   - verifyOtp / auth.verifyOtp
+//   - auth.me
+//   - auth.logout
+//   - workspace.*
+//   - marketplace.*
 
 import crypto from "crypto";
 
@@ -21,7 +23,7 @@ const GREEN_API_URL = process.env.GREEN_API_URL || "https://api.green-api.com";
 const GREEN_API_INSTANCE_ID = process.env.GREEN_API_INSTANCE_ID;
 const GREEN_API_TOKEN = process.env.GREEN_API_TOKEN;
 
-// HMAC secret shared with Apps Script Script Properties
+// HMAC secret (must match Apps Script Script Properties)
 const OTP_HMAC_SECRET = process.env.OTP_HMAC_SECRET;
 
 // OTP settings
@@ -32,14 +34,37 @@ function errorJson(message, statusCode = 500, extra = {}) {
   return { success: false, statusCode, error: message, ...extra };
 }
 
-function normalizeMobile(mobileRaw = "") {
+/**
+ * Returns local mobile format used in Sheets:
+ * - "9665XXXXXXXX" -> "5XXXXXXXX"
+ * - "05XXXXXXXX"   -> "5XXXXXXXX"
+ * - "+9665..."     -> "5XXXXXXXX"
+ */
+function normalizeMobileLocal(mobileRaw = "") {
   const d = String(mobileRaw).trim().replace(/[^\d]/g, "");
-  // Saudi common formats:
-  // 9665XXXXXXXX -> 5XXXXXXXX
-  // 05XXXXXXXX   -> 5XXXXXXXX
-  if (d.length === 12 && d.startsWith("966")) return d.slice(3);
-  if (d.length === 10 && d.startsWith("0")) return d.slice(1);
-  return d;
+  if (!d) return "";
+  if (d.length === 12 && d.startsWith("966")) return d.slice(3); // 966XXXXXXXXX -> 5XXXXXXXX
+  if (d.length === 10 && d.startsWith("0")) return d.slice(1);   // 05XXXXXXXX -> 5XXXXXXXX
+  return d; // if already "5XXXXXXXX" keep it
+}
+
+/**
+ * GreenAPI usually needs international chatId:
+ * - local "5XXXXXXXX" => "9665XXXXXXXX@c.us"
+ * - already "9665..." => "9665...@c.us"
+ */
+function toGreenChatId(mobileLocalOrIntl = "") {
+  const d = String(mobileLocalOrIntl).trim().replace(/[^\d]/g, "");
+  if (!d) return "";
+
+  // if already intl starting 966 and length 12 (Saudi mobile)
+  if (d.startsWith("966") && d.length === 12) return `${d}@c.us`;
+
+  // if local 9 digits starting 5 => make it 966 + local
+  if (d.length === 9 && d.startsWith("5")) return `966${d}@c.us`;
+
+  // fallback: try as-is
+  return `${d}@c.us`;
 }
 
 function generateOtp(len = 4) {
@@ -50,7 +75,6 @@ function generateOtp(len = 4) {
 
 /**
  * Call Apps Script backend (JSON POST).
- * Automatically injects default appId if missing.
  */
 async function callHubBackend(payload) {
   if (!HUB_BACKEND_URL) {
@@ -58,8 +82,6 @@ async function callHubBackend(payload) {
   }
 
   const finalPayload = { ...(payload || {}) };
-
-  // Normalize appId / appid
   if (!finalPayload.appId && !finalPayload.appid && HUB_APP_ID) {
     finalPayload.appId = HUB_APP_ID;
   }
@@ -72,11 +94,10 @@ async function callHubBackend(payload) {
 
   const text = await res.text();
 
-  // Apps Script sometimes returns HTML (auth page / stacktrace). Detect early.
-  const maybeHtml = /<!doctype html>|<html/i.test(text || "");
-  if (maybeHtml) {
+  // Apps Script may return HTML if not deployed correctly
+  if (/<!doctype html>|<html/i.test(text || "")) {
     throw new Error(
-      `Apps Script returned HTML (HTTP ${res.status}). Check deployment: Web App access must be "Anyone".`
+      `Apps Script returned HTML (HTTP ${res.status}). Ensure Web App access: "Anyone".`
     );
   }
 
@@ -85,19 +106,12 @@ async function callHubBackend(payload) {
     data = JSON.parse(text || "{}");
   } catch {
     throw new Error(
-      `Apps Script returned non-JSON response (HTTP ${res.status}): ${String(text).slice(
-        0,
-        200
-      )}`
+      `Apps Script returned non-JSON (HTTP ${res.status}): ${String(text).slice(0, 200)}`
     );
   }
 
-  // If HTTP not ok OR body says success=false => treat as error
   if (!res.ok || data?.success === false) {
-    const msg =
-      data?.error ||
-      data?.message ||
-      `Apps Script error (HTTP ${res.status})`;
+    const msg = data?.error || data?.message || `Apps Script HTTP ${res.status}`;
     throw new Error(msg);
   }
 
@@ -123,10 +137,7 @@ async function greenSendMessage(chatId, message) {
     data = JSON.parse(text || "{}");
   } catch {
     throw new Error(
-      `GreenAPI returned non-JSON (HTTP ${res.status}): ${String(text).slice(
-        0,
-        200
-      )}`
+      `GreenAPI returned non-JSON (HTTP ${res.status}): ${String(text).slice(0, 200)}`
     );
   }
 
@@ -146,7 +157,7 @@ function signOtpStore({ appId, mobile, otp, ts }) {
 }
 
 export default async function handler(req, res) {
-  // Basic CORS
+  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader(
@@ -154,18 +165,13 @@ export default async function handler(req, res) {
     "Content-Type, Authorization, X-Requested-With"
   );
 
-  if (req.method === "OPTIONS") {
-    return res.status(204).end();
-  }
+  if (req.method === "OPTIONS") return res.status(204).end();
 
   if (req.method !== "GET" && req.method !== "POST") {
-    return res
-      .status(405)
-      .json(errorJson("Method not allowed. Use GET or POST.", 405));
+    return res.status(405).json(errorJson("Method not allowed. Use GET or POST.", 405));
   }
 
   try {
-    // Build payload from request
     const payload =
       req.method === "GET"
         ? { ...(req.query || {}) }
@@ -174,13 +180,9 @@ export default async function handler(req, res) {
         : {};
 
     const action = String(payload.action || "").trim();
-    if (!action) {
-      return res.status(400).json(errorJson("Missing action parameter", 400));
-    }
+    if (!action) return res.status(400).json(errorJson("Missing action parameter", 400));
 
-    // --------------------------------------------------------------
-    // Local health check (DO NOT forward to Apps Script)
-    // --------------------------------------------------------------
+    // Local health
     if (action === "health") {
       return res.status(200).json({
         success: true,
@@ -195,39 +197,53 @@ export default async function handler(req, res) {
       });
     }
 
-    // --------------------------------------------------------------
-    // Local OTP sender: GreenAPI + otp.store (Apps Script)
-    // --------------------------------------------------------------
+    // Local sendOtp
     if (action === "sendOtp" || action === "auth.requestOtp") {
-      const mobile = normalizeMobile(payload.mobile || "");
-      if (!mobile) {
+      const mobileLocal = normalizeMobileLocal(payload.mobile || "");
+      if (!mobileLocal) {
         return res.status(400).json(errorJson("Mobile is required.", 400));
       }
 
-      const appId = String(
-        payload.appId || payload.appid || HUB_APP_ID || "HUB"
-      ).trim();
-
-      // Generate OTP
+      const appId = String(payload.appId || payload.appid || HUB_APP_ID || "HUB").trim();
       const otp = generateOtp(OTP_LENGTH);
 
-      // 1) Send WhatsApp OTP (GreenAPI)
-      const chatId = `${mobile}@c.us`;
+      // IMPORTANT: WhatsApp uses international
+      const chatId = toGreenChatId(mobileLocal);
       const message = `رمز التحقق: ${otp}\nصالح لمدة ${OTP_TTL_MIN} دقائق.`;
-      const green = await greenSendMessage(chatId, message);
 
-      // 2) Store OTP in Apps Script with signature
+      // Stage: GreenAPI
+      let green;
+      try {
+        green = await greenSendMessage(chatId, message);
+      } catch (e) {
+        return res.status(500).json(
+          errorJson(e?.message || "GreenAPI send failed", 500, {
+            stage: "greenapi.send",
+            chatId,
+          })
+        );
+      }
+
+      // Stage: Apps Script otp.store
       const ts = Date.now();
-      const sig = signOtpStore({ appId, mobile, otp, ts });
+      const sig = signOtpStore({ appId, mobile: mobileLocal, otp, ts });
 
-      await callHubBackend({
-        action: "otp.store",
-        appId,
-        mobile,
-        otp,
-        ts,
-        sig,
-      });
+      try {
+        await callHubBackend({
+          action: "otp.store",
+          appId,
+          mobile: mobileLocal, // store local format to match verifyOtp normalization
+          otp,
+          ts,
+          sig,
+        });
+      } catch (e) {
+        return res.status(500).json(
+          errorJson(e?.message || "Apps Script otp.store failed", 500, {
+            stage: "backend.otp.store",
+          })
+        );
+      }
 
       return res.status(200).json({
         success: true,
@@ -236,16 +252,20 @@ export default async function handler(req, res) {
       });
     }
 
-    // --------------------------------------------------------------
-    // Forward all other actions to Apps Script
-    // --------------------------------------------------------------
-    const backendResponse = await callHubBackend(payload);
-    return res.status(200).json(backendResponse);
+    // Forward everything else
+    try {
+      const backendResponse = await callHubBackend(payload);
+      return res.status(200).json(backendResponse);
+    } catch (e) {
+      return res.status(500).json(
+        errorJson(e?.message || "Apps Script call failed", 500, {
+          stage: "backend.forward",
+          action,
+        })
+      );
+    }
   } catch (err) {
     console.error("❌ /api/hub/manage error:", err);
-
-    // Always return JSON (never crash UI)
-    const msg = err?.message || "Unexpected server error";
-    return res.status(500).json(errorJson(msg, 500));
+    return res.status(500).json(errorJson(err?.message || "Unexpected server error", 500));
   }
 }
