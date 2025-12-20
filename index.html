@@ -2,19 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>NahlHub</title>
 
   <!-- Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
   <style>
     :root {
@@ -33,549 +27,187 @@
       --surface-radius: 18px;
       --transition-fast: 0.18s ease-out;
     }
-
     * { box-sizing: border-box; }
-
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+      margin: 0; padding: 0; height: 100%;
+      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-
     body[data-theme="light"] {
-      background: radial-gradient(
-          circle at top left,
-          rgba(244, 206, 20, 0.18),
-          transparent 55%
-        ),
-        var(--bg-light);
+      background: radial-gradient(circle at top left, rgba(244, 206, 20, 0.18), transparent 55%), var(--bg-light);
       color: var(--text-light);
     }
-
     body[data-theme="dark"] {
-      background: radial-gradient(
-          circle at top left,
-          rgba(250, 204, 21, 0.14),
-          transparent 50%
-        ),
-        linear-gradient(145deg, #020617, #020617);
+      background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.14), transparent 50%), linear-gradient(145deg, #020617, #020617);
       color: var(--text-dark);
     }
-
     .app-shell {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding: 6px;
-      gap: 8px;
-      position: relative;
+      min-height: 100vh; display: flex; flex-direction: column;
+      padding: 6px; gap: 8px; position: relative;
     }
-
-    /* Topbar */
 
     .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid;
-      backdrop-filter: blur(14px);
-      gap: 12px;
-      position: relative;
-      z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 6px 10px; border-radius: 999px; border: 1px solid;
+      backdrop-filter: blur(14px); gap: 12px; position: relative; z-index: 10;
     }
+    body[data-theme="light"] .topbar { background: rgba(255, 255, 255, 0.9); border-color: var(--border-light); }
+    body[data-theme="dark"] .topbar { background: rgba(15, 23, 42, 0.9); border-color: var(--border-dark); }
 
-    body[data-theme="light"] .topbar {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: var(--border-light);
-    }
-
-    body[data-theme="dark"] .topbar {
-      background: rgba(15, 23, 42, 0.9);
-      border-color: var(--border-dark);
-    }
-
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      min-width: 0;
-    }
-
+    .topbar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
     .brand-logo {
-      width: 30px;
-      height: 30px;
-      border-radius: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 18px;
+      width: 30px; height: 30px; border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 18px;
       background: radial-gradient(circle at 20% 0, #facc15, #f97316);
       color: #111827;
     }
+    .brand-text { display: flex; flex-direction: column; gap: 0; font-size: 13px; line-height: 1.2; }
+    .brand-title { font-weight: 700; letter-spacing: 0.02em; white-space: nowrap; }
+    .brand-subtitle { font-size: 11px; opacity: 0.75; }
 
-    .brand-text {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      font-size: 13px;
-      line-height: 1.2;
-    }
-
-    .brand-title {
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      white-space: nowrap;
-    }
-
-    .brand-subtitle {
-      font-size: 11px;
-      opacity: 0.75;
-    }
-
-    .topbar-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .topbar-right { display: flex; align-items: center; gap: 6px; }
     .chip-group {
-      display: inline-flex;
-      padding: 2px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      background: transparent;
-      gap: 2px;
+      display: inline-flex; padding: 2px; border-radius: 999px;
+      border: 1px solid transparent; background: transparent; gap: 2px;
     }
-
-    body[data-theme="light"] .chip-group {
-      border-color: rgba(148, 163, 184, 0.42);
-      background: rgba(255, 255, 255, 0.9);
-    }
-
-    body[data-theme="dark"] .chip-group {
-      border-color: rgba(148, 163, 184, 0.4);
-      background: rgba(15, 23, 42, 0.95);
-    }
+    body[data-theme="light"] .chip-group { border-color: rgba(148, 163, 184, 0.42); background: rgba(255, 255, 255, 0.9); }
+    body[data-theme="dark"] .chip-group { border-color: rgba(148, 163, 184, 0.4); background: rgba(15, 23, 42, 0.95); }
 
     .chip-btn {
-      border: none;
-      outline: none;
-      border-radius: 999px;
-      padding: 4px 10px;
-      font-size: 11px;
-      cursor: pointer;
-      background: transparent;
-      color: inherit;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: background var(--transition-fast),
-        color var(--transition-fast), transform var(--transition-fast),
-        box-shadow var(--transition-fast);
+      border: none; outline: none; border-radius: 999px;
+      padding: 4px 10px; font-size: 11px; cursor: pointer;
+      background: transparent; color: inherit;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
       white-space: nowrap;
     }
-
-    .chip-btn span.icon {
-      font-size: 13px;
-      line-height: 1;
-    }
-
+    .chip-btn span.icon { font-size: 13px; line-height: 1; }
     .chip-btn.active {
-      background: var(--accent);
-      color: #111827;
+      background: var(--accent); color: #111827;
       box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
       transform: translateY(-0.5px);
     }
-
-    .chip-btn:not(.active):hover {
-      background: rgba(148, 163, 184, 0.25);
-    }
-
-    body[data-theme="dark"] .chip-btn:not(.active):hover {
-      background: rgba(31, 41, 55, 0.8);
-    }
-
-    .chip-btn-mini {
-      border-radius: 999px;
-      padding: 5px 7px;
-      font-size: 11px;
-    }
-
-    /* Status pill */
+    .chip-btn:not(.active):hover { background: rgba(148, 163, 184, 0.25); }
+    body[data-theme="dark"] .chip-btn:not(.active):hover { background: rgba(31, 41, 55, 0.8); }
+    .chip-btn-mini { border-radius: 999px; padding: 5px 7px; font-size: 11px; }
 
     .status-pill {
-      align-self: stretch;
-      margin: 0 4px;
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      align-self: stretch; margin: 0 4px; font-size: 11px;
+      padding: 4px 10px; border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 6px;
       border: 1px solid transparent;
-      max-width: 100%;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
+      max-width: 100%; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;
     }
+    body[data-theme="light"] .status-pill { background: rgba(255, 255, 255, 0.9); border-color: var(--border-light); color: var(--muted-light); }
+    body[data-theme="dark"] .status-pill { background: rgba(15, 23, 42, 0.9); border-color: var(--border-dark); color: var(--muted-dark); }
+    .status-pill.ok { border-color: rgba(34, 197, 94, 0.7); color: rgba(34, 197, 94, 0.95); }
+    .status-pill.error { border-color: rgba(239, 68, 68, 0.85); color: rgba(248, 113, 113, 0.96); }
+    .status-dot { width: 7px; height: 7px; border-radius: 999px; background: var(--accent); }
 
-    body[data-theme="light"] .status-pill {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: var(--border-light);
-      color: var(--muted-light);
-    }
-
-    body[data-theme="dark"] .status-pill {
-      background: rgba(15, 23, 42, 0.9);
-      border-color: var(--border-dark);
-      color: var(--muted-dark);
-    }
-
-    .status-pill.ok {
-      border-color: rgba(34, 197, 94, 0.7);
-      color: rgba(34, 197, 94, 0.95);
-    }
-
-    .status-pill.error {
-      border-color: rgba(239, 68, 68, 0.85);
-      color: rgba(248, 113, 113, 0.96);
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--accent);
-    }
-
-    /* Main content */
-
-    .main-panel {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-height: 0;
-    }
+    .main-panel { flex: 1; display: flex; flex-direction: column; gap: 8px; min-height: 0; }
 
     .welcome-card {
       border-radius: var(--surface-radius);
       padding: 12px 14px;
       border: 1px solid;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      display: flex; flex-direction: column; gap: 6px;
     }
-
     body[data-theme="light"] .welcome-card {
-      background: linear-gradient(
-        135deg,
-        rgba(244, 206, 20, 0.12),
-        rgba(255, 255, 255, 0.96)
-      );
+      background: linear-gradient(135deg, rgba(244, 206, 20, 0.12), rgba(255, 255, 255, 0.96));
       border-color: var(--border-light);
     }
-
     body[data-theme="dark"] .welcome-card {
-      background: linear-gradient(
-        145deg,
-        rgba(250, 204, 21, 0.16),
-        rgba(15, 23, 42, 0.96)
-      );
+      background: linear-gradient(145deg, rgba(250, 204, 21, 0.16), rgba(15, 23, 42, 0.96));
       border-color: rgba(148, 163, 184, 0.45);
     }
-
-    .welcome-header-line {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .welcome-title {
-      font-size: 16px;
-      font-weight: 700;
-    }
-
-    .welcome-sub {
-      font-size: 12px;
-      opacity: 0.85;
-    }
-
-    /* Generic card */
+    .welcome-header-line { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .welcome-title { font-size: 16px; font-weight: 700; }
+    .welcome-sub { font-size: 12px; opacity: 0.85; }
 
     .card {
       border-radius: var(--surface-radius);
       padding: 12px 14px 14px;
       border: 1px solid;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      display: flex; flex-direction: column; gap: 12px;
     }
+    body[data-theme="light"] .card { background: #ffffff; border-color: var(--border-light); }
+    body[data-theme="dark"] .card { background: rgba(15, 23, 42, 0.96); border-color: var(--border-dark); }
+    .card-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .card-title { font-size: 15px; font-weight: 600; }
+    .card-caption { font-size: 12px; opacity: 0.7; }
+    .card-body { display: flex; flex-direction: column; gap: 10px; }
 
-    body[data-theme="light"] .card {
-      background: #ffffff;
-      border-color: var(--border-light);
-    }
-
-    body[data-theme="dark"] .card {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: var(--border-dark);
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .card-title {
-      font-size: 15px;
-      font-weight: 600;
-    }
-
-    .card-caption {
-      font-size: 12px;
-      opacity: 0.7;
-    }
-
-    .card-body {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .field-group {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .field-label {
-      font-size: 12px;
-      opacity: 0.85;
-    }
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-label { font-size: 12px; opacity: 0.85; }
 
     .btn {
       border-radius: 999px;
-      border: none;
-      outline: none;
+      border: none; outline: none;
       padding: 9px 18px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 13px; font-weight: 600;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      transition: transform var(--transition-fast),
-        box-shadow var(--transition-fast), background var(--transition-fast),
-        color var(--transition-fast), opacity var(--transition-fast);
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
       white-space: nowrap;
     }
-
     .btn-primary {
       background: var(--accent);
       color: #111827;
       box-shadow: 0 8px 20px rgba(250, 204, 21, 0.45);
     }
-
-    .btn-primary:hover:enabled {
-      transform: translateY(-0.5px);
-      box-shadow: 0 10px 28px rgba(250, 204, 21, 0.6);
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: default;
-      box-shadow: none;
-      transform: none;
-    }
+    .btn-primary:hover:enabled { transform: translateY(-0.5px); box-shadow: 0 10px 28px rgba(250, 204, 21, 0.6); }
+    .btn:disabled { opacity: 0.6; cursor: default; box-shadow: none; transform: none; }
 
     .btn-ghost {
-      background: transparent;
-      color: inherit;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font-size: 11px;
-      border: none;
-      cursor: pointer;
+      background: transparent; color: inherit; border-radius: 999px;
+      padding: 6px 10px; font-size: 11px; border: none; cursor: pointer;
     }
+    body[data-theme="light"] .btn-ghost:hover { background: rgba(148, 163, 184, 0.18); }
+    body[data-theme="dark"] .btn-ghost:hover { background: rgba(31, 41, 55, 0.9); }
 
-    body[data-theme="light"] .btn-ghost:hover {
-      background: rgba(148, 163, 184, 0.18);
-    }
-
-    body[data-theme="dark"] .btn-ghost:hover {
-      background: rgba(31, 41, 55, 0.9);
-    }
-
-    /* OTP row: LTR */
-
-    .otp-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      direction: ltr;
-    }
-
+    .otp-row { display: flex; align-items: center; justify-content: center; gap: 10px; direction: ltr; }
     .otp-input {
-      width: 44px;
-      height: 44px;
-      text-align: center;
-      font-size: 18px;
-      font-weight: 600;
-      border-radius: 16px;
-      border: 1px solid;
-      outline: none;
-      transition: border-color var(--transition-fast),
-        box-shadow var(--transition-fast), background var(--transition-fast);
+      width: 44px; height: 44px; text-align: center;
+      font-size: 18px; font-weight: 600;
+      border-radius: 16px; border: 1px solid; outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
     }
-
-    body[data-theme="light"] .otp-input {
-      background: rgba(248, 250, 252, 0.96);
-      border-color: rgba(148, 163, 184, 0.5);
-      color: var(--text-light);
-    }
-
-    body[data-theme="dark"] .otp-input {
-      background: rgba(15, 23, 42, 0.97);
-      border-color: rgba(148, 163, 184, 0.7);
-      color: var(--text-dark);
-    }
-
+    body[data-theme="light"] .otp-input { background: rgba(248, 250, 252, 0.96); border-color: rgba(148, 163, 184, 0.5); color: var(--text-light); }
+    body[data-theme="dark"] .otp-input { background: rgba(15, 23, 42, 0.97); border-color: rgba(148, 163, 184, 0.7); color: var(--text-dark); }
     .otp-input:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
       background: rgba(255, 251, 235, 0.96);
     }
+    body[data-theme="dark"] .otp-input:focus { background: rgba(15, 23, 42, 1); }
 
-    body[data-theme="dark"] .otp-input:focus {
-      background: rgba(15, 23, 42, 1);
-    }
-
-    /* Apps sections layout */
-
-    .apps-layout {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      min-height: 0;
-      flex: 1;
-    }
-
-    .apps-header-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    /* Workspace selector */
+    .apps-layout { display: flex; flex-direction: column; gap: 12px; min-height: 0; flex: 1; }
+    .apps-header-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 
     .workspace-card {
-      flex: 1;
-      min-width: 260px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      border-radius: 999px;
-      padding: 8px 12px;
-      border: 1px solid;
-      cursor: pointer;
-      position: relative;
-      transition: box-shadow var(--transition-fast),
-        border-color var(--transition-fast), background var(--transition-fast),
-        transform var(--transition-fast);
+      flex: 1; min-width: 260px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px;
+      border-radius: 999px; padding: 8px 12px; border: 1px solid;
+      cursor: pointer; position: relative;
+      transition: box-shadow var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
     }
-
-    body[data-theme="light"] .workspace-card {
-      background: rgba(255, 255, 255, 0.9);
-      border-color: rgba(148, 163, 184, 0.35);
-    }
-
-    body[data-theme="dark"] .workspace-card {
-      background: rgba(15, 23, 42, 0.95);
-      border-color: rgba(148, 163, 184, 0.6);
-    }
-
-    .workspace-card:hover {
-      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
-      border-color: rgba(250, 204, 21, 0.7);
-      transform: translateY(-0.5px);
-    }
-
-    .workspace-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-
-    .workspace-label {
-      font-size: 11px;
-      opacity: 0.7;
-    }
-
-    .workspace-name-row {
-      display: flex;
-      align-items: baseline;
-      gap: 6px;
-      min-width: 0;
-    }
-
-    .workspace-name {
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 220px;
-    }
-
-    .workspace-role-pill {
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      background: rgba(34, 197, 94, 0.1);
-      color: #15803d;
-    }
-
-    body[data-theme="dark"] .workspace-role-pill {
-      background: rgba(34, 197, 94, 0.2);
-      color: #bbf7d0;
-    }
+    body[data-theme="light"] .workspace-card { background: rgba(255, 255, 255, 0.9); border-color: rgba(148, 163, 184, 0.35); }
+    body[data-theme="dark"] .workspace-card { background: rgba(15, 23, 42, 0.95); border-color: rgba(148, 163, 184, 0.6); }
+    .workspace-card:hover { box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12); border-color: rgba(250, 204, 21, 0.7); transform: translateY(-0.5px); }
+    .workspace-meta { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .workspace-label { font-size: 11px; opacity: 0.7; }
+    .workspace-name-row { display: flex; align-items: baseline; gap: 6px; min-width: 0; }
+    .workspace-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
+    .workspace-role-pill { font-size: 10px; padding: 2px 7px; border-radius: 999px; background: rgba(34, 197, 94, 0.1); color: #15803d; }
+    body[data-theme="dark"] .workspace-role-pill { background: rgba(34, 197, 94, 0.2); color: #bbf7d0; }
 
     .workspace-dropdown-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
+      width: 24px; height: 24px; border-radius: 999px;
+      display: flex; align-items: center; justify-content: center; font-size: 13px;
       border: 1px solid transparent;
     }
-
-    body[data-theme="light"] .workspace-dropdown-icon {
-      background: rgba(248, 250, 252, 0.9);
-      border-color: rgba(148, 163, 184, 0.45);
-    }
-
-    body[data-theme="dark"] .workspace-dropdown-icon {
-      background: rgba(15, 23, 42, 0.9);
-      border-color: rgba(148, 163, 184, 0.7);
-    }
+    body[data-theme="light"] .workspace-dropdown-icon { background: rgba(248, 250, 252, 0.9); border-color: rgba(148, 163, 184, 0.45); }
+    body[data-theme="dark"] .workspace-dropdown-icon { background: rgba(15, 23, 42, 0.9); border-color: rgba(148, 163, 184, 0.7); }
 
     .workspace-menu {
       position: absolute;
@@ -589,16 +221,8 @@
       z-index: 15;
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
     }
-
-    body[data-theme="light"] .workspace-menu {
-      background: #ffffff;
-      border-color: rgba(148, 163, 184, 0.4);
-    }
-
-    body[data-theme="dark"] .workspace-menu {
-      background: rgba(15, 23, 42, 0.98);
-      border-color: rgba(148, 163, 184, 0.65);
-    }
+    body[data-theme="light"] .workspace-menu { background: #ffffff; border-color: rgba(148, 163, 184, 0.4); }
+    body[data-theme="dark"] .workspace-menu { background: rgba(15, 23, 42, 0.98); border-color: rgba(148, 163, 184, 0.65); }
 
     .workspace-menu-item {
       width: 100%;
@@ -614,59 +238,16 @@
       color: inherit;
       cursor: pointer;
       text-align: start;
-      transition: background var(--transition-fast),
-        border-color var(--transition-fast), transform var(--transition-fast);
+      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
     }
-
-    .workspace-menu-item-main {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .workspace-menu-item-name {
-      font-weight: 500;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .workspace-menu-item-meta {
-      font-size: 11px;
-      opacity: 0.7;
-    }
-
-    .workspace-menu-item-role {
-      font-size: 10px;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: rgba(34, 197, 94, 0.08);
-      color: #15803d;
-    }
-
-    body[data-theme="dark"] .workspace-menu-item-role {
-      background: rgba(34, 197, 94, 0.16);
-      color: #bbf7d0;
-    }
-
-    body[data-theme="light"] .workspace-menu-item:hover {
-      background: rgba(248, 250, 252, 0.9);
-      border-color: rgba(148, 163, 184, 0.4);
-    }
-
-    body[data-theme="dark"] .workspace-menu-item:hover {
-      background: rgba(30, 64, 175, 0.2);
-      border-color: rgba(129, 140, 248, 0.6);
-    }
-
-    .workspace-menu-item.active {
-      border-color: rgba(250, 204, 21, 0.9);
-      background: rgba(250, 204, 21, 0.12);
-    }
-
-    /* View toggle */
+    .workspace-menu-item-main { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+    .workspace-menu-item-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .workspace-menu-item-meta { font-size: 11px; opacity: 0.7; }
+    .workspace-menu-item-role { font-size: 10px; padding: 1px 6px; border-radius: 999px; background: rgba(34, 197, 94, 0.08); color: #15803d; }
+    body[data-theme="dark"] .workspace-menu-item-role { background: rgba(34, 197, 94, 0.16); color: #bbf7d0; }
+    body[data-theme="light"] .workspace-menu-item:hover { background: rgba(248, 250, 252, 0.9); border-color: rgba(148, 163, 184, 0.4); }
+    body[data-theme="dark"] .workspace-menu-item:hover { background: rgba(30, 64, 175, 0.2); border-color: rgba(129, 140, 248, 0.6); }
+    .workspace-menu-item.active { border-color: rgba(250, 204, 21, 0.9); background: rgba(250, 204, 21, 0.12); }
 
     .view-toggle-group {
       display: inline-flex;
@@ -676,354 +257,127 @@
       background: transparent;
       gap: 2px;
     }
-
-    body[data-theme="light"] .view-toggle-group {
-      border-color: rgba(148, 163, 184, 0.35);
-      background: rgba(255, 255, 255, 0.9);
-    }
-
-    body[data-theme="dark"] .view-toggle-group {
-      border-color: rgba(148, 163, 184, 0.5);
-      background: rgba(15, 23, 42, 0.95);
-    }
+    body[data-theme="light"] .view-toggle-group { border-color: rgba(148, 163, 184, 0.35); background: rgba(255, 255, 255, 0.9); }
+    body[data-theme="dark"] .view-toggle-group { border-color: rgba(148, 163, 184, 0.5); background: rgba(15, 23, 42, 0.95); }
 
     .view-toggle-btn {
-      border-radius: 999px;
-      border: none;
-      padding: 5px 10px;
-      font-size: 11px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: transparent;
-      color: inherit;
-      transition: background var(--transition-fast),
-        color var(--transition-fast), box-shadow var(--transition-fast),
-        transform var(--transition-fast);
+      border-radius: 999px; border: none;
+      padding: 5px 10px; font-size: 11px;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+      background: transparent; color: inherit;
+      transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
     }
-
     .view-toggle-btn span.icon { font-size: 13px; }
-
     .view-toggle-btn.active {
       background: var(--accent);
       color: #111827;
       box-shadow: 0 6px 18px rgba(250, 204, 21, 0.4);
       transform: translateY(-0.5px);
     }
-
-    .view-toggle-btn:not(.active):hover {
-      background: rgba(148, 163, 184, 0.18);
-    }
-
-    body[data-theme="dark"] .view-toggle-btn:not(.active):hover {
-      background: rgba(31, 41, 55, 0.9);
-    }
-
-    /* Apps list / marketplace cards */
+    .view-toggle-btn:not(.active):hover { background: rgba(148, 163, 184, 0.18); }
+    body[data-theme="dark"] .view-toggle-btn:not(.active):hover { background: rgba(31, 41, 55, 0.9); }
 
     .apps-section-card {
       border-radius: var(--surface-radius);
       padding: 12px 14px 14px;
       border: 1px solid;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      display: flex; flex-direction: column; gap: 10px;
     }
+    body[data-theme="light"] .apps-section-card { background: #ffffff; border-color: var(--border-light); }
+    body[data-theme="dark"] .apps-section-card { background: rgba(15, 23, 42, 0.96); border-color: var(--border-dark); }
 
-    body[data-theme="light"] .apps-section-card {
-      background: #ffffff;
-      border-color: var(--border-light);
-    }
-
-    body[data-theme="dark"] .apps-section-card {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: var(--border-dark);
-    }
-
-    .apps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 10px;
-    }
+    .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
 
     .app-card {
-      border-radius: 16px;
-      border: 1px solid;
-      padding: 10px 10px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      position: relative;
-      transition: background var(--transition-fast),
-        border-color var(--transition-fast), transform var(--transition-fast),
-        box-shadow var(--transition-fast);
+      border-radius: 16px; border: 1px solid; padding: 10px 10px;
+      display: flex; flex-direction: column; gap: 6px; position: relative;
+      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
       cursor: pointer;
     }
+    body[data-theme="light"] .app-card { background: rgba(255, 255, 255, 0.96); border-color: rgba(148, 163, 184, 0.35); }
+    body[data-theme="dark"] .app-card { background: rgba(15, 23, 42, 0.96); border-color: rgba(148, 163, 184, 0.55); }
+    .app-card:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18); border-color: rgba(250, 204, 21, 0.9); }
 
-    body[data-theme="light"] .app-card {
-      background: rgba(255, 255, 255, 0.96);
-      border-color: rgba(148, 163, 184, 0.35);
-    }
-
-    body[data-theme="dark"] .app-card {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: rgba(148, 163, 184, 0.55);
-    }
-
-    .app-card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.18);
-      border-color: rgba(250, 204, 21, 0.9);
-    }
-
-    .app-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .app-card-main {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 0;
-    }
-
+    .app-card-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .app-card-main { display: flex; align-items: center; gap: 8px; min-width: 0; }
     .app-card-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      background: rgba(244, 206, 20, 0.15);
-      color: #92400e;
-      flex-shrink: 0;
+      width: 30px; height: 30px; border-radius: 999px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; background: rgba(244, 206, 20, 0.15); color: #92400e; flex-shrink: 0;
     }
-
-    body[data-theme="dark"] .app-card-icon {
-      background: rgba(250, 204, 21, 0.16);
-      color: #fbbf24;
-    }
-
-    .app-card-title {
-      font-size: 13px;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .app-card-tagline {
-      font-size: 11px;
-      opacity: 0.75;
-    }
-
-    .app-card-body {
-      font-size: 11px;
-      opacity: 0.78;
-      height: 2.4em;
-      overflow: hidden;
-    }
-
-    .app-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-size: 11px;
-      opacity: 0.82;
-      margin-top: 4px;
-    }
-
-    .badge-soft {
-      border-radius: 999px;
-      padding: 2px 6px;
-      font-size: 10px;
-      background: rgba(148, 163, 184, 0.14);
-    }
-
-    .badge-installed {
-      border-radius: 999px;
-      padding: 2px 7px;
-      font-size: 10px;
-      background: rgba(250, 204, 21, 0.15);
-      color: #92400e;
-    }
-
-    body[data-theme="dark"] .badge-installed {
-      background: rgba(250, 204, 21, 0.22);
-      color: #facc15;
-    }
-
+    body[data-theme="dark"] .app-card-icon { background: rgba(250, 204, 21, 0.16); color: #fbbf24; }
+    .app-card-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .app-card-tagline { font-size: 11px; opacity: 0.75; }
+    .app-card-body { font-size: 11px; opacity: 0.78; height: 2.4em; overflow: hidden; }
+    .app-card-footer { display: flex; align-items: center; justify-content: space-between; font-size: 11px; opacity: 0.82; margin-top: 4px; }
+    .badge-soft { border-radius: 999px; padding: 2px 6px; font-size: 10px; background: rgba(148, 163, 184, 0.14); }
+    .badge-installed { border-radius: 999px; padding: 2px 7px; font-size: 10px; background: rgba(250, 204, 21, 0.15); color: #92400e; }
+    body[data-theme="dark"] .badge-installed { background: rgba(250, 204, 21, 0.22); color: #facc15; }
     .app-card-actions { display: flex; gap: 6px; }
 
     .btn-pill-sm {
-      border-radius: 999px;
-      border: none;
-      padding: 4px 9px;
-      font-size: 10px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(148, 163, 184, 0.18);
-      color: inherit;
+      border-radius: 999px; border: none; padding: 4px 9px; font-size: 10px;
+      cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(148, 163, 184, 0.18); color: inherit;
       transition: background var(--transition-fast), transform var(--transition-fast);
     }
-
-    .btn-pill-sm.primary {
-      background: var(--accent);
-      color: #111827;
-    }
-
+    .btn-pill-sm.primary { background: var(--accent); color: #111827; }
     .btn-pill-sm:hover { transform: translateY(-0.5px); }
-
-    /* App View */
 
     .app-view-card {
       border-radius: var(--surface-radius);
       padding: 12px 14px;
       border: 1px solid;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      display: flex; flex-direction: column; gap: 8px;
       min-height: 240px;
     }
+    body[data-theme="light"] .app-view-card { background: #ffffff; border-color: var(--border-light); }
+    body[data-theme="dark"] .app-view-card { background: rgba(15, 23, 42, 0.96); border-color: var(--border-dark); }
 
-    body[data-theme="light"] .app-view-card {
-      background: #ffffff;
-      border-color: var(--border-light);
-    }
-
-    body[data-theme="dark"] .app-view-card {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: var(--border-dark);
-    }
-
-    .app-view-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      border-bottom: 1px solid;
-      padding-bottom: 6px;
-    }
-
+    .app-view-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid; padding-bottom: 6px; }
     body[data-theme="light"] .app-view-header { border-color: rgba(148, 163, 184, 0.25); }
     body[data-theme="dark"] .app-view-header { border-color: rgba(51, 65, 85, 0.9); }
 
     .app-view-title { font-size: 13px; font-weight: 600; }
     .app-view-sub { font-size: 11px; opacity: 0.7; }
-
-    .app-frame-wrap {
-      width: 100%;
-      height: calc(100vh - 230px);
-      max-height: calc(100vh - 220px);
-      margin-top: 4px;
-    }
-
-    .app-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      display: block;
-      background: transparent;
-    }
-
-    .app-frame-placeholder {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      opacity: 0.6;
-      padding: 10px;
-      text-align: center;
-    }
+    .app-frame-wrap { width: 100%; height: calc(100vh - 230px); max-height: calc(100vh - 220px); margin-top: 4px; }
+    .app-frame { width: 100%; height: 100%; border: none; display: block; background: transparent; }
+    .app-frame-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 12px; opacity: 0.6; padding: 10px; text-align: center; }
 
     .hidden { display: none !important; }
 
-    /* Auth popup overlay */
-
     .auth-overlay {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px;
-      z-index: 30;
-      backdrop-filter: blur(10px);
+      position: fixed; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      padding: 12px; z-index: 30; backdrop-filter: blur(10px);
     }
-
     body[data-theme="light"] .auth-overlay {
-      background: radial-gradient(
-          circle at top,
-          rgba(148, 163, 184, 0.16),
-          transparent 60%
-        ),
-        rgba(15, 23, 42, 0.18);
+      background: radial-gradient(circle at top, rgba(148, 163, 184, 0.16), transparent 60%), rgba(15, 23, 42, 0.18);
     }
-
     body[data-theme="dark"] .auth-overlay {
-      background: radial-gradient(
-          circle at top,
-          rgba(15, 23, 42, 0.95),
-          rgba(15, 23, 42, 0.98)
-        );
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
     }
 
     .auth-modal {
-      width: 100%;
-      max-width: 420px;
-      border-radius: 22px;
-      border: 1px solid;
+      width: 100%; max-width: 420px;
+      border-radius: 22px; border: 1px solid;
       padding: 14px 12px 12px;
       box-shadow: 0 18px 40px rgba(15, 23, 42, 0.55);
     }
-
     body[data-theme="light"] .auth-modal {
       background: linear-gradient(140deg, rgba(244, 206, 20, 0.12), #ffffff);
       border-color: rgba(148, 163, 184, 0.5);
     }
-
     body[data-theme="dark"] .auth-modal {
-      background: radial-gradient(
-          circle at top left,
-          rgba(250, 204, 21, 0.18),
-          transparent 50%
-        ),
-        rgba(15, 23, 42, 0.98);
+      background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.18), transparent 50%), rgba(15, 23, 42, 0.98);
       border-color: rgba(148, 163, 184, 0.6);
     }
 
-    .auth-modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 2px 4px 10px;
-    }
-
+    .auth-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 2px 4px 10px; }
     .auth-title { font-size: 15px; font-weight: 700; }
     .auth-sub { font-size: 12px; opacity: 0.78; }
-
-    .auth-badge {
-      font-size: 11px;
-      border-radius: 999px;
-      padding: 3px 8px;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      opacity: 0.9;
-    }
-
-    .auth-modal-body {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .auth-badge { font-size: 11px; border-radius: 999px; padding: 3px 8px; border: 1px solid rgba(148, 163, 184, 0.6); opacity: 0.9; }
+    .auth-modal-body { display: flex; flex-direction: column; gap: 10px; }
 
     .input {
       flex: 1;
@@ -1032,45 +386,22 @@
       padding: 8px 12px;
       font-size: 13px;
       outline: none;
-      transition: border-color var(--transition-fast),
-        box-shadow var(--transition-fast), background var(--transition-fast);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
     }
-
-    body[data-theme="light"] .input {
-      background: rgba(248, 250, 252, 0.95);
-      border-color: rgba(148, 163, 184, 0.5);
-      color: var(--text-light);
-    }
-
-    body[data-theme="dark"] .input {
-      background: rgba(15, 23, 42, 0.96);
-      border-color: rgba(148, 163, 184, 0.6);
-      color: var(--text-dark);
-    }
-
-    .input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55);
-      background: rgba(255, 251, 235, 0.9);
-    }
-
-    body[data-theme="dark"] .input:focus {
-      background: rgba(15, 23, 42, 0.98);
-    }
+    body[data-theme="light"] .input { background: rgba(248, 250, 252, 0.95); border-color: rgba(148, 163, 184, 0.5); color: var(--text-light); }
+    body[data-theme="dark"] .input { background: rgba(15, 23, 42, 0.96); border-color: rgba(148, 163, 184, 0.6); color: var(--text-dark); }
+    .input:focus { border-color: var(--accent); box-shadow: 0 0 0 1px rgba(250, 204, 21, 0.55); background: rgba(255, 251, 235, 0.9); }
+    body[data-theme="dark"] .input:focus { background: rgba(15, 23, 42, 0.98); }
 
     @media (min-width: 768px) {
       .app-shell { padding: 6px 10px; }
-      .app-frame-wrap {
-        height: calc(100vh - 210px);
-        max-height: calc(100vh - 190px);
-      }
+      .app-frame-wrap { height: calc(100vh - 210px); max-height: calc(100vh - 190px); }
     }
   </style>
 </head>
 
 <body data-theme="light">
   <div class="app-shell">
-    <!-- Top bar -->
     <header class="topbar">
       <div class="topbar-left">
         <div class="brand-logo">N</div>
@@ -1081,12 +412,8 @@
       </div>
       <div class="topbar-right">
         <div class="chip-group">
-          <button class="chip-btn" id="btnLangAr" type="button" data-lang="ar">
-            <span>عربي</span>
-          </button>
-          <button class="chip-btn" id="btnLangEn" type="button" data-lang="en">
-            <span>EN</span>
-          </button>
+          <button class="chip-btn" id="btnLangAr" type="button" data-lang="ar"><span>عربي</span></button>
+          <button class="chip-btn" id="btnLangEn" type="button" data-lang="en"><span>EN</span></button>
         </div>
         <button class="chip-btn chip-btn-mini" id="btnTheme" type="button">
           <span class="icon" id="themeIcon">🌞</span>
@@ -1094,13 +421,12 @@
       </div>
     </header>
 
-    <!-- Status -->
     <div id="statusPill" class="status-pill">
       <span class="status-dot"></span>
       <span id="statusText"></span>
     </div>
 
-    <!-- AUTH POPUP -->
+    <!-- AUTH -->
     <div id="authOverlay" class="auth-overlay">
       <div class="auth-modal">
         <div class="auth-modal-header">
@@ -1113,9 +439,10 @@
             <span data-i18n="step2Title">رمز</span>
           </div>
         </div>
+
         <div class="auth-modal-body">
-          <!-- Step 1: Mobile -->
-          <section id="stepMobile" class="card" style="margin:0;">
+          <!-- Step 1 -->
+          <section id="stepMobile" class="card" style="margin: 0">
             <div class="card-header">
               <div>
                 <div class="card-title" data-i18n="step1Title">رقم الجوال</div>
@@ -1125,14 +452,7 @@
             <div class="card-body">
               <div class="field-group">
                 <label class="field-label" for="mobileInput" data-i18n="step1Label">رقم الجوال</label>
-                <input
-                  id="mobileInput"
-                  class="input"
-                  type="tel"
-                  inputmode="tel"
-                  autocomplete="tel"
-                  placeholder="5XXXXXXXX"
-                />
+                <input id="mobileInput" class="input" type="tel" inputmode="tel" autocomplete="tel" placeholder="5XXXXXXXX" />
               </div>
               <div style="display:flex; justify-content:flex-end; margin-top:6px;">
                 <button id="btnSendOtp" class="btn btn-primary" type="button">
@@ -1142,8 +462,8 @@
             </div>
           </section>
 
-          <!-- Step 2: OTP -->
-          <section id="stepOtp" class="card hidden" style="margin:0;">
+          <!-- Step 2 -->
+          <section id="stepOtp" class="card hidden" style="margin: 0">
             <div class="card-header">
               <div>
                 <div class="card-title" data-i18n="step2Title">رمز الدخول</div>
@@ -1168,12 +488,11 @@
             </div>
           </section>
         </div>
+
       </div>
     </div>
 
-    <!-- Main -->
     <main class="main-panel">
-      <!-- Welcome -->
       <section class="welcome-card" id="welcomeCard">
         <div class="welcome-header-line">
           <div>
@@ -1183,9 +502,7 @@
         </div>
       </section>
 
-      <!-- Apps + Marketplace layout (after login) -->
       <section id="stepApps" class="apps-layout hidden">
-        <!-- Workspace row -->
         <div class="apps-header-row">
           <div class="workspace-card" id="workspaceCard">
             <div class="workspace-meta">
@@ -1195,20 +512,16 @@
                 <span class="workspace-role-pill" id="workspaceRole">—</span>
               </div>
             </div>
-            <div class="workspace-dropdown-icon">
-              <span id="workspaceChevron">▾</span>
-            </div>
+            <div class="workspace-dropdown-icon"><span id="workspaceChevron">▾</span></div>
             <div id="workspaceMenu" class="workspace-menu hidden"></div>
           </div>
 
           <div class="view-toggle-group">
             <button id="btnViewApps" type="button" class="view-toggle-btn active">
-              <span class="icon">⚙️</span>
-              <span data-i18n="viewApps">Apps</span>
+              <span class="icon">⚙️</span><span data-i18n="viewApps">Apps</span>
             </button>
             <button id="btnViewMarketplace" type="button" class="view-toggle-btn">
-              <span class="icon">🛒</span>
-              <span data-i18n="viewMarketplace">Marketplace</span>
+              <span class="icon">🛒</span><span data-i18n="viewMarketplace">Marketplace</span>
             </button>
           </div>
 
@@ -1217,7 +530,6 @@
           </button>
         </div>
 
-        <!-- Your apps -->
         <section id="sectionApps" class="apps-section-card">
           <div class="card-header" style="padding:0;">
             <div>
@@ -1230,14 +542,11 @@
           </div>
         </section>
 
-        <!-- Marketplace -->
         <section id="sectionMarketplace" class="apps-section-card hidden">
           <div class="card-header" style="padding:0;">
             <div>
               <div class="card-title" data-i18n="marketplaceTitle">App Marketplace</div>
-              <div class="card-caption" data-i18n="marketplaceSub">
-                اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.
-              </div>
+              <div class="card-caption" data-i18n="marketplaceSub">اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.</div>
             </div>
           </div>
           <div class="card-body">
@@ -1245,7 +554,6 @@
           </div>
         </section>
 
-        <!-- App view -->
         <section id="sectionAppView" class="app-view-card hidden">
           <div class="app-view-header">
             <div>
@@ -1286,13 +594,17 @@
 
       var currentUser = null;
       var currentMobileRaw = "";
+
       var currentWorkspaces = [];
       var currentWorkspaceId = null;
       var currentWorkspaceRole = "";
       var currentWorkspaceApps = [];
       var currentTemplates = [];
 
-      var currentMainView = "apps"; // 'apps' | 'marketplace' | 'app'
+      var currentOtpRef = "";
+      var currentOtpExpiresAt = "";
+
+      var currentMainView = "apps";
 
       var bodyEl = document.body;
       var statusPill = document.getElementById("statusPill");
@@ -1362,7 +674,7 @@
         logout: { ar: "تسجيل خروج", en: "Logout" },
         statusIdle: { ar: "جاهز.", en: "Ready." },
         statusSendingOtp: { ar: "يتم إرسال الرمز عبر واتساب...", en: "Sending code via WhatsApp..." },
-        statusOtpSent: { ar: "تم إرسال الرمز عبر واتساب.", en: "Code sent via WhatsApp." },
+        statusOtpSent: { ar: "تم إرسال الرمز.", en: "Code sent." },
         statusVerifying: { ar: "يتم التحقق...", en: "Verifying..." },
         statusError: { ar: "حدث خطأ. حاول مرة أخرى.", en: "Something went wrong. Try again." },
         statusNoWorkspaces: { ar: "لا توجد مساحات عمل متاحة.", en: "No workspaces available." },
@@ -1377,7 +689,8 @@
         viewMarketplace: { ar: "المتجر", en: "Marketplace" },
         appPlaceholder: { ar: "اختر تطبيقاً من قائمة التطبيقات أو من المتجر.", en: "Choose an app from your apps or from the marketplace." },
         appViewSub: { ar: "التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.", en: "The app is shown inside NahlHub. Use Back to return to apps." },
-        backToApps: { ar: "التطبيقات", en: "Apps" }
+        backToApps: { ar: "التطبيقات", en: "Apps" },
+        userNotFound: { ar: "هذا الرقم غير مسجل. تواصل مع مسؤول النظام لإنشاء حساب.", en: "This mobile is not registered. Contact your admin to create an account." }
       };
 
       function t(key) {
@@ -1390,23 +703,21 @@
         document.documentElement.lang = currentLang;
         document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
 
-        var nodes = document.querySelectorAll("[data-i18n]");
-        nodes.forEach(function (node) {
-          var key = node.getAttribute("data-i18n");
-          node.textContent = t(key);
+        document.querySelectorAll("[data-i18n]").forEach(function (node) {
+          node.textContent = t(node.getAttribute("data-i18n"));
         });
 
-        btnLangAr.classList.toggle("active", currentLang === "ar");
-        btnLangEn.classList.toggle("active", currentLang === "en");
-        mobileInput.placeholder = "5XXXXXXXX";
+        if (currentLang === "ar") {
+          btnLangAr.classList.add("active");
+          btnLangEn.classList.remove("active");
+          mobileInput.placeholder = "5XXXXXXXX";
+        } else {
+          btnLangAr.classList.remove("active");
+          btnLangEn.classList.add("active");
+          mobileInput.placeholder = "5XXXXXXXX";
+        }
 
         updateUserUi();
-
-        // Re-render lists to reflect language fields
-        if (currentWorkspaceId) {
-          renderApps();
-          renderMarketplace();
-        }
       }
 
       function applyTheme() {
@@ -1420,23 +731,16 @@
           statusPill.classList.remove("ok", "error");
           return;
         }
-        var text =
-          tDict[msgKeyOrText] && tDict[msgKeyOrText][currentLang]
-            ? t(msgKeyOrText)
-            : msgKeyOrText;
-
+        var text = (tDict[msgKeyOrText] && tDict[msgKeyOrText][currentLang]) ? t(msgKeyOrText) : msgKeyOrText;
         statusPill.classList.remove("ok", "error");
         if (type === "ok") statusPill.classList.add("ok");
         else if (type === "error") statusPill.classList.add("error");
-
         statusText.textContent = text;
       }
 
       function postJson(payload) {
         var body = Object.assign({}, payload || {});
-        if (!body.appId && !body.appid && HUB_APP_ID) {
-          body.appId = HUB_APP_ID;
-        }
+        if (!body.appId && !body.appid && HUB_APP_ID) body.appId = HUB_APP_ID;
 
         return fetch(API_URL, {
           method: "POST",
@@ -1468,7 +772,6 @@
         }
       }
 
-      // OTP behavior
       otpInputs.forEach(function (input, idx) {
         input.addEventListener("input", function (e) {
           var value = e.target.value.replace(/\D/g, "");
@@ -1507,18 +810,25 @@
         postJson({ action: "sendOtp", mobile: mobile })
           .then(function (res) {
             if (!res || !res.success) {
-              var msg =
-                (res && res.error) ||
-                (currentLang === "ar" ? "تعذر إرسال الرمز." : "Failed to send code.");
-              setStatus(msg, "error");
+              setStatus((res && res.error) || (currentLang === "ar" ? "تعذر إرسال الرمز." : "Failed to send code."), "error");
               return;
             }
+
+            // IMPORTANT: store otpRef + expiresAt (required by Vercel verify)
+            currentOtpRef = res.otpRef || "";
+            currentOtpExpiresAt = res.expiresAt || "";
+
+            if (!currentOtpRef || !currentOtpExpiresAt) {
+              setStatus(currentLang === "ar" ? "تعذر إنشاء otpRef. تحقق من إعدادات Vercel." : "Missing otpRef. Check Vercel env.", "error");
+              return;
+            }
+
             setStatus("statusOtpSent", "ok");
             clearOtpInputs();
             showStep("otp");
           })
-          .catch(function () {
-            setStatus("statusError", "error");
+          .catch(function (err) {
+            setStatus((err && err.message) ? err.message : t("statusError"), "error");
           })
           .finally(function () {
             btnSendOtp.disabled = false;
@@ -1533,16 +843,31 @@
           return;
         }
 
+        if (!currentOtpRef || !currentOtpExpiresAt) {
+          setStatus(currentLang === "ar" ? "أعد إرسال الرمز أولاً." : "Please resend the code first.", "error");
+          return;
+        }
+
         btnVerifyOtp.disabled = true;
         setStatus("statusVerifying");
 
-        postJson({ action: "verifyOtp", mobile: currentMobileRaw, otp: otp })
+        postJson({
+          action: "verifyOtp",
+          mobile: currentMobileRaw,
+          otp: otp,
+          otpRef: currentOtpRef,
+          expiresAt: currentOtpExpiresAt
+        })
           .then(function (res) {
             if (!res || !res.success) {
-              var msg =
-                (res && res.error) ||
-                (currentLang === "ar" ? "رمز غير صحيح أو منتهي." : "Invalid or expired code.");
-              setStatus(msg, "error");
+              setStatus((res && res.error) || (currentLang === "ar" ? "رمز غير صحيح أو منتهي." : "Invalid or expired code."), "error");
+              clearOtpInputs();
+              otpInputs[0].focus();
+              return;
+            }
+
+            if (res.userExists === false) {
+              setStatus("userNotFound", "error");
               clearOtpInputs();
               otpInputs[0].focus();
               return;
@@ -1551,9 +876,7 @@
             currentSessionKey = res.sessionKey || null;
             currentUser = res.user || null;
 
-            if (currentSessionKey) {
-              localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
-            }
+            if (currentSessionKey) localStorage.setItem(STORAGE_SESSION_KEY, currentSessionKey);
 
             if (welcomeCard) welcomeCard.classList.add("hidden");
             updateUserUi();
@@ -1563,8 +886,8 @@
               setStatus("statusIdle");
             });
           })
-          .catch(function () {
-            setStatus("statusError", "error");
+          .catch(function (err) {
+            setStatus((err && err.message) ? err.message : t("statusError"), "error");
           })
           .finally(function () {
             btnVerifyOtp.disabled = false;
@@ -1572,22 +895,14 @@
       }
 
       function updateUserUi() {
-        if (!currentUser) {
-          userNameLabel.textContent = "";
-          return;
-        }
+        if (!currentUser) { userNameLabel.textContent = ""; return; }
         var suffix = " · " + (currentUser.mobile || "");
-        var greetName = currentLang === "ar"
-          ? "مرحباً " + (currentUser.name || "")
-          : "Hi " + (currentUser.name || "");
+        var greetName = currentLang === "ar" ? "مرحباً " + (currentUser.name || "") : "Hi " + (currentUser.name || "");
         userNameLabel.textContent = greetName + suffix;
       }
 
       function logout() {
-        // also tell backend to expire session (best-effort)
-        if (currentSessionKey) {
-          postJson({ action: "auth.logout", sessionKey: currentSessionKey }).catch(function(){});
-        }
+        var key = currentSessionKey;
 
         currentSessionKey = null;
         localStorage.removeItem(STORAGE_SESSION_KEY);
@@ -1596,6 +911,8 @@
         currentWorkspaceId = null;
         currentWorkspaceApps = [];
         currentTemplates = [];
+        currentOtpRef = "";
+        currentOtpExpiresAt = "";
 
         appsGrid.innerHTML = "";
         marketplaceGrid.innerHTML = "";
@@ -1603,12 +920,14 @@
         workspaceRoleEl.textContent = "—";
         setMainView("apps");
 
+        if (key) {
+          postJson({ action: "auth.logout", sessionKey: key }).catch(function(){});
+        }
+
         if (welcomeCard) welcomeCard.classList.remove("hidden");
         setStatus("statusIdle");
         showStep("mobile");
       }
-
-      /* -------- Workspace & views ---------- */
 
       function setMainView(view) {
         currentMainView = view;
@@ -1669,9 +988,7 @@
       }
 
       function selectWorkspace(workspaceId) {
-        var ws = currentWorkspaces.find(function (w) {
-          return w.workspaceId === workspaceId;
-        });
+        var ws = currentWorkspaces.find(function (w) { return w.workspaceId === workspaceId; });
         if (!ws) return;
 
         currentWorkspaceId = workspaceId;
@@ -1687,8 +1004,8 @@
 
       function loadWorkspaces() {
         if (!currentUser || !currentUser.userId) return Promise.resolve();
-
         setStatus("statusLoadingWorkspace");
+
         return postJson({ action: "workspace.listForUser", userId: currentUser.userId })
           .then(function (res) {
             currentWorkspaces = (res && res.items) || [];
@@ -1703,25 +1020,9 @@
           });
       }
 
-      function pickTplName(tpl) {
+      function pickTplText(tpl, arKey, enKey) {
         if (!tpl) return "";
-        return currentLang === "ar"
-          ? (tpl.nameAr || tpl.nameEn || tpl.templateId || "")
-          : (tpl.nameEn || tpl.nameAr || tpl.templateId || "");
-      }
-
-      function pickTplShort(tpl) {
-        if (!tpl) return "";
-        return currentLang === "ar"
-          ? (tpl.shortDescAr || tpl.shortDescEn || "")
-          : (tpl.shortDescEn || tpl.shortDescAr || "");
-      }
-
-      function pickTplDesc(tpl) {
-        if (!tpl) return "";
-        return currentLang === "ar"
-          ? (tpl.descriptionAr || tpl.descriptionEn || "")
-          : (tpl.descriptionEn || tpl.descriptionAr || "");
+        return currentLang === "ar" ? (tpl[arKey] || "") : (tpl[enKey] || tpl[arKey] || "");
       }
 
       function loadWorkspaceData() {
@@ -1734,6 +1035,7 @@
           .then(function (results) {
             var appsRes = results[0] || {};
             var tplRes = results[1] || {};
+
             currentTemplates = tplRes.items || [];
 
             var tplById = {};
@@ -1743,25 +1045,19 @@
 
             currentWorkspaceApps = (appsRes.items || []).map(function (app) {
               var tpl = tplById[app.templateId] || {};
-
-              var appName =
-                currentLang === "ar"
-                  ? (app.nameAr || pickTplName(tpl))
-                  : (app.nameEn || pickTplName(tpl));
-
               return {
                 workspaceAppId: app.workspaceAppId,
                 appId: app.appId,
                 templateId: app.templateId,
-                name: appName || app.templateId,
+                type: tpl.type || "app",
+                name: currentLang === "ar" ? (app.nameAr || pickTplText(tpl, "nameAr", "nameEn") || app.templateId) : (app.nameEn || pickTplText(tpl, "nameAr", "nameEn") || app.templateId),
                 category: tpl.category || "",
-                shortDesc: pickTplShort(tpl) || "",
-                description: pickTplDesc(tpl) || "",
+                shortDesc: pickTplText(tpl, "shortDescAr", "shortDescEn") || "",
                 status: app.status || "",
                 visibleInHub: app.visibleInHub || "",
                 defaultRoute: tpl.defaultRoute || "",
                 iconUrl: tpl.iconUrl || "",
-                featureTags: tpl.featureTags || ""
+                featureTags: tpl.featureTags || "",
               };
             });
 
@@ -1779,9 +1075,7 @@
         if (!currentWorkspaceApps.length) {
           var empty = document.createElement("div");
           empty.className = "card-caption";
-          empty.textContent = currentLang === "ar"
-            ? "لا توجد تطبيقات مثبتة في هذه المساحة."
-            : "No apps installed in this workspace.";
+          empty.textContent = currentLang === "ar" ? "لا توجد تطبيقات مثبتة في هذه المساحة." : "No apps installed in this workspace.";
           appsGrid.appendChild(empty);
           return;
         }
@@ -1839,7 +1133,6 @@
           openBtn.type = "button";
           openBtn.className = "btn-pill-sm primary";
           openBtn.textContent = currentLang === "ar" ? "فتح التطبيق" : "Open app";
-
           openBtn.addEventListener("click", function (e) {
             e.stopPropagation();
             openWorkspaceApp(app);
@@ -1866,9 +1159,7 @@
         if (!currentTemplates.length) {
           var empty = document.createElement("div");
           empty.className = "card-caption";
-          empty.textContent = currentLang === "ar"
-            ? "لا توجد تطبيقات في المتجر."
-            : "No apps available in marketplace.";
+          empty.textContent = currentLang === "ar" ? "لا توجد تطبيقات في المتجر." : "No apps available in marketplace.";
           marketplaceGrid.appendChild(empty);
           return;
         }
@@ -1885,17 +1176,16 @@
 
           var icon = document.createElement("div");
           icon.className = "app-card-icon";
-          icon.textContent = tpl.type === "module" ? "🧩" : "✴";
+          icon.textContent = tpl.type === "module" ? "📦" : "✴";
 
           var titleWrap = document.createElement("div");
-
           var title = document.createElement("div");
           title.className = "app-card-title";
-          title.textContent = pickTplName(tpl) || tpl.templateId;
+          title.textContent = pickTplText(tpl, "nameAr", "nameEn") || tpl.templateId;
 
           var tagLine = document.createElement("div");
           tagLine.className = "app-card-tagline";
-          tagLine.textContent = tpl.category || (tpl.type === "module" ? "Module" : "");
+          tagLine.textContent = tpl.category || "";
 
           titleWrap.appendChild(title);
           titleWrap.appendChild(tagLine);
@@ -1912,7 +1202,7 @@
 
           var body = document.createElement("div");
           body.className = "app-card-body";
-          body.textContent = pickTplShort(tpl) || "";
+          body.textContent = pickTplText(tpl, "shortDescAr", "shortDescEn") || "";
 
           var footer = document.createElement("div");
           footer.className = "app-card-footer";
@@ -1928,12 +1218,8 @@
           installBtn.className = "btn-pill-sm primary";
 
           var isInstalled = !!tpl.installed;
-
-          installBtn.textContent = isInstalled
-            ? (currentLang === "ar" ? "مثبّت" : "Installed")
-            : (currentLang === "ar" ? "تثبيت" : "Install");
-
-          if (isInstalled) installBtn.disabled = true;
+          installBtn.textContent = isInstalled ? (currentLang === "ar" ? "مثبّت" : "Installed") : (currentLang === "ar" ? "تثبيت" : "Install");
+          installBtn.disabled = isInstalled;
 
           installBtn.addEventListener("click", function (e) {
             e.stopPropagation();
@@ -1955,10 +1241,9 @@
 
       function installTemplate(tpl) {
         if (!currentWorkspaceId || !currentUser) return;
-
         setStatus("statusLoadingMarketplace");
 
-        // ✅ use generic install to support app/module
+        // Use marketplace.install (auto detect app/module)
         postJson({
           action: "marketplace.install",
           workspaceId: currentWorkspaceId,
@@ -1979,10 +1264,7 @@
 
       function openWorkspaceApp(app) {
         if (!app || !app.defaultRoute) {
-          setStatus(
-            currentLang === "ar" ? "رابط التطبيق غير مهيأ." : "App URL is not configured yet.",
-            "error"
-          );
+          setStatus(currentLang === "ar" ? "رابط التطبيق غير مهيأ." : "App URL is not configured yet.", "error");
           setMainView("apps");
           return;
         }
@@ -1998,35 +1280,26 @@
 
         var route = app.defaultRoute;
         var join = route.indexOf("?") >= 0 ? "&" : "?";
+        appFrame.src = route + join + "workspaceId=" + encodeURIComponent(currentWorkspaceId);
 
-        // ✅ pass workspaceId + sessionKey (useful for embedded apps)
-        var url =
-          route +
-          join +
-          "workspaceId=" + encodeURIComponent(currentWorkspaceId) +
-          (currentSessionKey ? "&sessionKey=" + encodeURIComponent(currentSessionKey) : "") +
-          (currentUser && currentUser.userId ? "&userId=" + encodeURIComponent(currentUser.userId) : "");
-
-        appFrame.src = url;
         setMainView("app");
       }
 
-      // --------------------------
-      // Session resume (auto-login)
-      // --------------------------
-      function resumeSessionIfAny() {
+      // ---------------- Session restore ----------------
+      function tryRestoreSession() {
         if (!currentSessionKey) return Promise.resolve(false);
 
         setStatus(currentLang === "ar" ? "جاري التحقق من الجلسة..." : "Checking session...");
         return postJson({ action: "auth.me", sessionKey: currentSessionKey })
           .then(function (res) {
             if (!res || !res.success) {
-              // invalid/expired -> clear
-              currentSessionKey = null;
               localStorage.removeItem(STORAGE_SESSION_KEY);
+              currentSessionKey = null;
               return false;
             }
             currentUser = res.user || null;
+            if (!currentUser) return false;
+
             if (welcomeCard) welcomeCard.classList.add("hidden");
             updateUserUi();
 
@@ -2037,22 +1310,21 @@
             });
           })
           .catch(function () {
-            currentSessionKey = null;
             localStorage.removeItem(STORAGE_SESSION_KEY);
+            currentSessionKey = null;
             return false;
           });
       }
 
-      // -------- Event wiring ----------
-
+      // Events
       btnSendOtp.addEventListener("click", sendOtp);
       mobileInput.addEventListener("keydown", function (e) {
         if (e.key === "Enter") { e.preventDefault(); sendOtp(); }
       });
-
       btnVerifyOtp.addEventListener("click", verifyOtp);
-
       btnChangeMobile.addEventListener("click", function () {
+        currentOtpRef = "";
+        currentOtpExpiresAt = "";
         showStep("mobile");
         setStatus("statusIdle");
       });
@@ -2069,53 +1341,36 @@
         currentLang = "ar";
         localStorage.setItem(STORAGE_LANG, currentLang);
         applyLanguage();
+        if (currentWorkspaceId) { renderApps(); renderMarketplace(); }
       });
 
       btnLangEn.addEventListener("click", function () {
         currentLang = "en";
         localStorage.setItem(STORAGE_LANG, currentLang);
         applyLanguage();
+        if (currentWorkspaceId) { renderApps(); renderMarketplace(); }
       });
 
-      btnViewApps.addEventListener("click", function () {
-        setMainView("apps");
-      });
-
-      btnViewMarketplace.addEventListener("click", function () {
-        setMainView("marketplace");
-      });
-
-      btnBackFromApp.addEventListener("click", function () {
-        setMainView("apps");
-      });
+      btnViewApps.addEventListener("click", function () { setMainView("apps"); });
+      btnViewMarketplace.addEventListener("click", function () { setMainView("marketplace"); });
+      btnBackFromApp.addEventListener("click", function () { setMainView("apps"); });
 
       workspaceCard.addEventListener("click", function (e) {
         e.stopPropagation();
         workspaceMenu.classList.toggle("hidden");
       });
-
-      document.addEventListener("click", function () {
-        workspaceMenu.classList.add("hidden");
-      });
-
-      workspaceMenu.addEventListener("click", function (e) {
-        e.stopPropagation();
-      });
+      document.addEventListener("click", function () { workspaceMenu.classList.add("hidden"); });
+      workspaceMenu.addEventListener("click", function (e) { e.stopPropagation(); });
 
       // Init
       applyTheme();
       applyLanguage();
       setStatus("statusIdle");
 
-      // show mobile by default, then try resume
-      showStep("mobile");
-      resumeSessionIfAny().then(function (ok) {
-        if (!ok) {
-          setStatus("statusIdle");
-          showStep("mobile");
-        }
+      // Try session restore first, else show mobile step
+      tryRestoreSession().then(function (restored) {
+        if (!restored) showStep("mobile");
       });
-
     })();
   </script>
 </body>
