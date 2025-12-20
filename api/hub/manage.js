@@ -1,22 +1,27 @@
 // pages/api/hub/manage.js
-// NahlHub – Vercel API → Apps Script proxy (+ WhatsApp OTP via Green API)
-// ======================================================================
+// NahlHub – Vercel API → WhatsApp OTP (GreenAPI) + Apps Script (store/verify)
+// ========================================================================
+//
+// Frontend actions:
+//   - sendOtp        -> Vercel generates OTP, sends via GreenAPI, stores via Apps Script otp.store
+//   - verifyOtp      -> proxied to Apps Script verifyOtp
+//   - workspace.*    -> proxied to Apps Script
+//   - marketplace.*  -> proxied to Apps Script
+//   - health         -> local health + optional Apps Script forward
 
 const HUB_BACKEND_URL = process.env.HUB_BACKEND_URL; // Apps Script /exec
 const HUB_APP_ID = process.env.HUB_APP_ID || "HUB";
 
-// Green API (WhatsApp)
 const GREEN_API_INSTANCE_ID = process.env.GREEN_API_INSTANCE_ID;
 const GREEN_API_TOKEN = process.env.GREEN_API_TOKEN;
-// Optional (defaults to official Green API host)
-const GREEN_API_BASE_URL = process.env.GREEN_API_BASE_URL || "https://api.green-api.com";
 
-// Optional security secret (not required for basic flow)
-const OTP_HMAC_SECRET = process.env.OTP_HMAC_SECRET || "";
+const OTP_HMAC_SECRET = process.env.OTP_HMAC_SECRET; // optional (security signature)
+const OTP_TTL_MINUTES = Number(process.env.OTP_TTL_MINUTES || 10);
+const DEFAULT_COUNTRY_CODE = (process.env.DEFAULT_COUNTRY_CODE || "966").replace(/\D/g, "");
 
-// ------------------------------------------------------------------
+// ------------------------------
 // Helpers
-// ------------------------------------------------------------------
+// ------------------------------
 
 function errorJson(message, statusCode = 500, extra = {}) {
   return { success: false, statusCode, error: message, ...extra };
@@ -26,199 +31,153 @@ function okJson(extra = {}) {
   return { success: true, ...extra };
 }
 
-function normalizeMobileForWhatsApp(mobileRaw) {
-  // Frontend sends: 5XXXXXXXX (Saudi local) OR maybe already international
-  const m = String(mobileRaw || "").trim().replace(/\s+/g, "");
-  if (!m) return { mobileRaw: "", mobileIntl: "", chatId: "" };
+function normalizeMobile(input) {
+  let s = String(input || "").trim();
+  if (!s) return "";
 
-  // Keep raw for Sheets matching (as user typed)
-  let mobileIntl = m;
+  // keep digits + leading +
+  s = s.replace(/[^\d+]/g, "");
 
-  // If user typed 5XXXXXXXX => add 966
-  if (/^5\d{8}$/.test(m)) mobileIntl = "966" + m;
+  // +9665xxxxxxx -> 9665xxxxxxx
+  if (s.startsWith("+")) s = s.slice(1);
 
-  // If user typed 05XXXXXXXX => remove 0 and add 966
-  if (/^05\d{8}$/.test(m)) mobileIntl = "966" + m.slice(1);
+  // 009665xxxxxxx -> 9665xxxxxxx
+  if (s.startsWith("00")) s = s.slice(2);
 
-  // If includes +, remove +
-  mobileIntl = mobileIntl.replace(/^\+/, "");
+  // If starts with 0 (local), remove leading 0
+  if (s.startsWith("0")) s = s.slice(1);
 
-  // WhatsApp chatId format
-  const chatId = mobileIntl ? `${mobileIntl}@c.us` : "";
-
-  return { mobileRaw: m, mobileIntl, chatId };
-}
-
-function genOtp4() {
-  // 0000–9999 => 4 digits padded
-  const n = Math.floor(Math.random() * 10000);
-  return String(n).padStart(4, "0");
-}
-
-async function fetchWithTimeout(url, options = {}, timeoutMs = 15000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { ...options, signal: controller.signal });
-    return res;
-  } finally {
-    clearTimeout(id);
+  // If number is local KSA format like 5XXXXXXXX, add 966
+  if (s.startsWith("5") && s.length === 9 && DEFAULT_COUNTRY_CODE) {
+    s = DEFAULT_COUNTRY_CODE + s;
   }
+
+  return s.replace(/\D/g, "");
+}
+
+function toChatIdE164(mobileDigits) {
+  // Green API expects chatId format: "<E164>@c.us" (commonly)
+  // e.g. 9665xxxxxxx@c.us
+  return `${mobileDigits}@c.us`;
+}
+
+function generateOtp(length = 4) {
+  let otp = "";
+  for (let i = 0; i < length; i++) otp += Math.floor(Math.random() * 10);
+  return otp;
+}
+
+function isoInMinutes(minutes) {
+  return new Date(Date.now() + minutes * 60 * 1000).toISOString();
+}
+
+function hmacSha256Hex(secret, message) {
+  // optional signature to prove otp.store came from Vercel
+  // Uses WebCrypto available in modern runtimes. If not available, skip gracefully.
+  return (async () => {
+    if (!secret || !globalThis.crypto?.subtle) return "";
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["sign"]
+    );
+    const sig = await crypto.subtle.sign("HMAC", key, enc.encode(message));
+    return Buffer.from(sig).toString("hex");
+  })();
 }
 
 /**
  * Call Apps Script backend (JSON POST).
- * Automatically injects default appId if missing.
+ * Auto inject appId if missing.
  */
 async function callHubBackend(payload) {
-  if (!HUB_BACKEND_URL) throw new Error("HUB_BACKEND_URL is not configured.");
+  if (!HUB_BACKEND_URL) {
+    throw new Error("HUB_BACKEND_URL is not configured in Vercel environment.");
+  }
 
   const finalPayload = { ...(payload || {}) };
-
   if (!finalPayload.appId && !finalPayload.appid && HUB_APP_ID) {
     finalPayload.appId = HUB_APP_ID;
   }
 
-  const res = await fetchWithTimeout(
-    HUB_BACKEND_URL,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(finalPayload),
-    },
-    20000
-  );
+  const res = await fetch(HUB_BACKEND_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(finalPayload),
+  });
 
   const text = await res.text();
   let data;
   try {
     data = JSON.parse(text);
   } catch {
-    // Apps Script sometimes returns HTML on errors
-    return errorJson("Apps Script returned non-JSON response.", 502, {
-      httpStatus: res.status,
-      sample: text.slice(0, 200),
-    });
+    throw new Error(`Apps Script returned non-JSON (HTTP ${res.status}): ${text.slice(0, 200)}`);
   }
 
   if (!res.ok) {
-    return errorJson(
-      (data && (data.error || data.message)) || "Apps Script error",
-      res.status || 502,
-      { backend: data }
-    );
+    const backendError = (data && (data.error || data.message)) || "Unknown Apps Script error";
+    throw new Error(`Apps Script error (HTTP ${res.status}): ${backendError}`);
   }
 
   return data;
 }
 
 /**
- * Send WhatsApp OTP using Green API.
+ * Send WhatsApp OTP via Green API.
  */
-async function sendWhatsAppOtp({ chatId, message }) {
+async function sendOtpViaGreenApi({ mobileDigits, otp }) {
   if (!GREEN_API_INSTANCE_ID || !GREEN_API_TOKEN) {
-    return errorJson("Green API env vars are missing (GREEN_API_INSTANCE_ID / GREEN_API_TOKEN).", 500);
+    throw new Error("Missing GREEN_API_INSTANCE_ID or GREEN_API_TOKEN in Vercel env.");
   }
-  if (!chatId) return errorJson("Invalid WhatsApp chatId.", 400);
 
-  const url = `${GREEN_API_BASE_URL}/waInstance${GREEN_API_INSTANCE_ID}/sendMessage/${GREEN_API_TOKEN}`;
+  const chatId = toChatIdE164(mobileDigits);
 
-  const res = await fetchWithTimeout(
-    url,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ chatId, message }),
-    },
-    15000
-  );
+  // Green API common endpoint format:
+  // POST https://api.green-api.com/waInstance{instanceId}/sendMessage/{token}
+  const url = `https://api.green-api.com/waInstance${GREEN_API_INSTANCE_ID}/sendMessage/${GREEN_API_TOKEN}`;
 
-  const text = await res.text();
+  const message = `رمز الدخول (NahlHub): ${otp}\n⏳ صالح لمدة ${OTP_TTL_MINUTES} دقائق`;
+
+  const resp = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chatId,
+      message,
+    }),
+  });
+
+  const text = await resp.text();
   let data = null;
   try {
     data = JSON.parse(text);
   } catch {
-    // keep text
+    // keep raw text
   }
 
-  if (!res.ok) {
-    return errorJson("Green API sendMessage failed.", 502, {
-      httpStatus: res.status,
-      response: data || text.slice(0, 200),
-    });
+  if (!resp.ok) {
+    throw new Error(`Green API failed (HTTP ${resp.status}): ${text.slice(0, 200)}`);
   }
 
-  // Green API success often includes idMessage / etc.
-  return okJson({ greenApi: data || { ok: true } });
+  return { ok: true, green: data || { raw: text } };
 }
 
-/**
- * sendOtp action:
- * 1) generate otp
- * 2) send via WhatsApp (Green API)
- * 3) store OTP in Apps Script via action: otp.store
- */
-async function handleSendOtp(payload) {
-  const mobile = String(payload.mobile || "").trim();
-  if (!mobile) return errorJson("Mobile is required.", 400);
-
-  const { mobileRaw, chatId } = normalizeMobileForWhatsApp(mobile);
-  if (!chatId) return errorJson("Mobile format is invalid.", 400);
-
-  const otp = genOtp4();
-
-  // Message text (keep it simple)
-  const message = `رمز الدخول إلى NahlHub: ${otp}\nصلاحية الرمز: 10 دقائق`;
-
-  // 1) WhatsApp send
-  const waRes = await sendWhatsAppOtp({ chatId, message });
-  if (!waRes.success) return waRes;
-
-  // 2) Store in Sheets via Apps Script
-  const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
-
-  const storeRes = await callHubBackend({
-    action: "otp.store",
-    mobile: mobileRaw,
-    otp,
-    expiresAt,
-  });
-
-  if (!storeRes || storeRes.success !== true) {
-    return errorJson("OTP sent, but failed to store OTP in backend.", 502, {
-      storeRes,
-    });
-  }
-
-  return okJson({
-    message: "OTP sent",
-    // You may hide these in production:
-    // otp,
-    expiresAt,
-  });
-}
-
-// ------------------------------------------------------------------
-// Next.js API route handler
-// ------------------------------------------------------------------
+// ------------------------------
+// Handler
+// ------------------------------
 
 export default async function handler(req, res) {
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With"
-  );
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
 
-  if (req.method === "OPTIONS") {
-    res.status(204).end();
-    return;
-  }
-
+  if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "GET" && req.method !== "POST") {
-    res.status(405).json(errorJson("Method not allowed. Use GET or POST.", 405));
-    return;
+    return res.status(405).json(errorJson("Method not allowed. Use GET or POST.", 405));
   }
 
   try {
@@ -230,38 +189,73 @@ export default async function handler(req, res) {
         : {};
 
     const action = String(payload.action || "").trim();
-    if (!action) {
-      res.status(400).json(errorJson("Missing action parameter", 400));
-      return;
-    }
+    if (!action) return res.status(400).json(errorJson("Missing action parameter", 400));
 
-    // Local health (fast)
+    // Local health
     if (action === "health") {
-      res.status(200).json({
-        ok: true,
-        service: "NahlHub",
-        info: "Hub backend is running.",
-        hasGreenApi: !!(GREEN_API_INSTANCE_ID && GREEN_API_TOKEN),
-        hasBackendUrl: !!HUB_BACKEND_URL,
-        hasOtpHmacSecret: !!OTP_HMAC_SECRET,
-        appId: HUB_APP_ID,
-      });
-      return;
+      return res.status(200).json(
+        okJson({
+          service: "NahlHub",
+          hasGreenApi: !!(GREEN_API_INSTANCE_ID && GREEN_API_TOKEN),
+          hasBackend: !!HUB_BACKEND_URL,
+          appId: HUB_APP_ID,
+        })
+      );
     }
 
-    // IMPORTANT: Intercept sendOtp here (do not forward to Apps Script)
+    // ✅ sendOtp handled in Vercel
     if (action === "sendOtp" || action === "auth.requestOtp") {
-      const out = await handleSendOtp(payload);
-      // return 200 even for expected failures so frontend shows res.error
-      res.status(200).json(out);
-      return;
+      const rawMobile = String(payload.mobile || "").trim();
+      if (!rawMobile) return res.status(400).json(errorJson("Mobile is required.", 400));
+
+      const mobileDigits = normalizeMobile(rawMobile);
+      if (!mobileDigits || mobileDigits.length < 9) {
+        return res.status(400).json(errorJson("Invalid mobile format.", 400, { mobile: rawMobile }));
+      }
+
+      const otp = generateOtp(4);
+      const expiresAt = isoInMinutes(OTP_TTL_MINUTES);
+
+      // 1) Send via WhatsApp Green API
+      const greenRes = await sendOtpViaGreenApi({ mobileDigits, otp });
+
+      // 2) Store OTP in Apps Script
+      // Optional signature: `${appId}.${mobile}.${otp}.${expiresAt}`
+      const appId = String(payload.appId || payload.appid || HUB_APP_ID || "HUB");
+      const sigMsg = `${appId}.${mobileDigits}.${otp}.${expiresAt}`;
+      const sig = await hmacSha256Hex(OTP_HMAC_SECRET, sigMsg);
+
+      const storeRes = await callHubBackend({
+        action: "otp.store",
+        appId,
+        mobile: rawMobile, // keep same as UI input (Apps Script matches this)
+        otp,
+        expiresAt,
+        sig, // optional, ignored if Apps Script doesn't check it
+      });
+
+      if (!storeRes?.success) {
+        return res.status(500).json(
+          errorJson("OTP sent but failed to store OTP in backend.", 500, {
+            storeRes,
+          })
+        );
+      }
+
+      return res.status(200).json(
+        okJson({
+          message: "OTP sent via WhatsApp and stored.",
+          expiresAt,
+          green: greenRes.green,
+        })
+      );
     }
 
-    // Forward all other actions to Apps Script
+    // Everything else → proxy to Apps Script
     const backendResponse = await callHubBackend(payload);
-    res.status(200).json(backendResponse);
+    return res.status(200).json(backendResponse);
   } catch (err) {
     console.error("❌ /api/hub/manage error:", err);
-    res.status(200).json(errorJson(err.message || "Unexpected server error", 500));
+    return res.status(500).json(errorJson(err?.message || "Unexpected server error", 500));
   }
 }
