@@ -170,7 +170,7 @@
       gap: 12px;
     }
     body[data-theme="light"] .card { background: #fff; border-color: var(--border-light); }
-    body[data-theme="dark"] .card  { background: rgba(15,23,42,0.96); border-color: var(--border-dark); }
+    body[data-theme="dark"]  .card  { background: rgba(15,23,42,0.96); border-color: var(--border-dark); }
 
     .card-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .card-title { font-size:15px; font-weight:600; }
@@ -515,6 +515,26 @@
     }
     body[data-theme="dark"] .input:focus { background: rgba(15,23,42,0.98); }
 
+    .dev-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:6px;
+      padding-top:8px;
+      border-top: 1px dashed rgba(148,163,184,0.35);
+    }
+
+    .btn-link {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      opacity: 0.85;
+      text-decoration: underline;
+      color: inherit;
+    }
+
     @media (min-width: 768px) {
       .app-shell { padding: 6px 10px; }
       .app-frame-wrap { height: calc(100vh - 210px); max-height: calc(100vh - 190px); }
@@ -579,6 +599,11 @@
                 <button id="btnSendOtp" class="btn btn-primary" type="button">
                   <span data-i18n="btnSendOtp">إرسال الرمز</span>
                 </button>
+              </div>
+
+              <div class="dev-row">
+                <button id="btnPing" class="btn-link" type="button">Ping API</button>
+                <span style="font-size:11px; opacity:.7" id="devInfo"></span>
               </div>
             </div>
           </section>
@@ -776,6 +801,10 @@
 
       var userNameLabel = document.getElementById("userNameLabel");
 
+      var btnPing = document.getElementById("btnPing");
+      var devInfo = document.getElementById("devInfo");
+
+      // ---------------- i18n ----------------
       var tDict = {
         hubTitle: { ar: "NahlHub", en: "NahlHub" },
         hubSub: { ar: "تطبيقاتك في نحل هب", en: "Your apps in NahlHub" },
@@ -854,6 +883,7 @@
         statusText.textContent = text;
       }
 
+      // ✅ IMPORTANT FIX: Always handle non-2xx, and show backend error safely
       function postJson(payload) {
         var body = Object.assign({}, payload || {});
         if (!body.appId && !body.appid && HUB_APP_ID) body.appId = HUB_APP_ID;
@@ -863,8 +893,14 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body)
         }).then(function (res) {
-          return res.json().catch(function () {
-            throw new Error("Invalid JSON from backend.");
+          return res.text().then(function (txt) {
+            var data = null;
+            try { data = JSON.parse(txt || "{}"); } catch (e) {}
+            if (!res.ok) {
+              var msg = (data && (data.error || data.message)) || ("HTTP " + res.status);
+              throw new Error(msg);
+            }
+            return data || {};
           });
         });
       }
@@ -877,11 +913,11 @@
         if (name === "mobile") {
           authOverlay.classList.remove("hidden");
           stepMobile.classList.remove("hidden");
-          mobileInput.focus();
+          setTimeout(function(){ mobileInput.focus(); }, 50);
         } else if (name === "otp") {
           authOverlay.classList.remove("hidden");
           stepOtp.classList.remove("hidden");
-          otpInputs[0].focus();
+          setTimeout(function(){ otpInputs[0].focus(); }, 50);
         } else if (name === "apps") {
           authOverlay.classList.add("hidden");
           stepApps.classList.remove("hidden");
@@ -935,7 +971,7 @@
             showStep("otp");
           })
           .catch(function (err) {
-            setStatus((currentLang === "ar" ? "خطأ شبكة: " : "Network error: ") + (err && err.message ? err.message : ""), "error");
+            setStatus((currentLang === "ar" ? "خطأ: " : "Error: ") + (err && err.message ? err.message : ""), "error");
           })
           .finally(function () {
             btnSendOtp.disabled = false;
@@ -997,7 +1033,10 @@
         userNameLabel.textContent = greet + suffix;
       }
 
+      // ✅ IMPORTANT FIX: logout must call backend to invalidate session
       function logout() {
+        var prevSession = currentSessionKey;
+
         currentSessionKey = null;
         localStorage.removeItem(STORAGE_SESSION_KEY);
         currentUser = null;
@@ -1014,6 +1053,11 @@
         if (welcomeCard) welcomeCard.classList.remove("hidden");
         setStatus("statusIdle");
         showStep("mobile");
+
+        if (prevSession) {
+          // fire-and-forget
+          postJson({ action: "auth.logout", sessionKey: prevSession }).catch(function(){});
+        }
       }
 
       function setMainView(view) {
@@ -1128,8 +1172,10 @@
                 workspaceAppId: app.workspaceAppId,
                 appId: app.appId,
                 templateId: app.templateId,
-                name: app.name || tpl.name || app.templateId,
-                category: tpl.category || "",
+                name: (currentLang === "ar"
+                      ? (app.nameAr || tpl.nameAr || app.name || tpl.name || app.templateId)
+                      : (app.nameEn || tpl.nameEn || app.name || tpl.name || app.templateId)),
+                category: tpl.category || app.category || "",
                 shortDesc: (currentLang === "ar" ? (tpl.shortDescAr || tpl.shortDesc || "") : (tpl.shortDescEn || tpl.shortDesc || "")) || "",
                 status: app.status || "",
                 visibleInHub: app.visibleInHub || "",
@@ -1172,7 +1218,7 @@
 
           var icon = document.createElement("div");
           icon.className = "app-card-icon";
-          icon.textContent = "⋯";
+          icon.textContent = "✦";
 
           var titleWrap = document.createElement("div");
           var title = document.createElement("div");
@@ -1366,6 +1412,7 @@
         setMainView("app");
       }
 
+      // ✅ IMPORTANT FIX: auto-restore session and show hub
       function tryAutoLogin() {
         if (!currentSessionKey) {
           showStep("mobile");
@@ -1376,7 +1423,6 @@
         postJson({ action: "auth.me", sessionKey: currentSessionKey })
           .then(function (res) {
             if (!res || res.success !== true) {
-              // invalid session => reset
               logout();
               return;
             }
@@ -1387,11 +1433,24 @@
 
             loadWorkspaces().then(function () {
               showStep("apps");
-              setStatus("statusIdle");
+              setStatus("statusIdle", "ok");
             });
           })
           .catch(function () {
             logout();
+          });
+      }
+
+      // Ping helper
+      function pingApi() {
+        devInfo.textContent = "…";
+        fetch(API_URL + "?action=health")
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            devInfo.textContent = d && d.ok ? "OK" : "ERR";
+          })
+          .catch(function () {
+            devInfo.textContent = "ERR";
           });
       }
 
@@ -1440,11 +1499,14 @@
       document.addEventListener("click", function () { workspaceMenu.classList.add("hidden"); });
       workspaceMenu.addEventListener("click", function (e) { e.stopPropagation(); });
 
+      btnPing.addEventListener("click", pingApi);
+
       // Init
       applyTheme();
       applyLanguage();
       setStatus("statusIdle");
-      tryAutoLogin(); // ✅ FIX: after OTP / refresh => enter hub
+      pingApi();
+      tryAutoLogin(); // ✅ after OTP / refresh => enter hub
     })();
   </script>
 </body>
