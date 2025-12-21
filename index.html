@@ -1,3 +1,4 @@
+<!-- === index.html (FULL UPDATED) === -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -729,7 +730,12 @@
       "use strict";
 
       var HUB_APP_ID = "HUB";
-      var API_URL = "/api/hub/manage.js";
+
+      // ✅ Robust API URL (works in Vercel static “Other”)
+      var API_URL = (function () {
+        try { return new URL("/api/hub/manage", window.location.origin).toString(); }
+        catch (e) { return "/api/hub/manage"; }
+      })();
 
       var STORAGE_SESSION_KEY = "nahlhub_session_key";
       var STORAGE_LANG = "nahlhub_lang";
@@ -882,9 +888,16 @@
         statusText.textContent = text;
       }
 
+      function isHtmlLike(text) {
+        return /<!doctype|<html/i.test(String(text || ""));
+      }
+
       function postJson(payload) {
         var body = Object.assign({}, payload || {});
         if (!body.appId && !body.appid && HUB_APP_ID) body.appId = HUB_APP_ID;
+
+        // ✅ Auto-attach sessionKey if available (helps backend auth)
+        if (currentSessionKey && !body.sessionKey) body.sessionKey = currentSessionKey;
 
         return fetch(API_URL, {
           method: "POST",
@@ -892,8 +905,15 @@
           body: JSON.stringify(body)
         }).then(function (res) {
           return res.text().then(function (txt) {
+            // If function is not deployed, Vercel might return HTML (or a 404 page)
+            if (isHtmlLike(txt)) {
+              var hint = "API returned HTML. In Vercel (Other/Static), ensure file exists at /api/hub/manage.js and remove any vercel.json rewrites that touch /api.";
+              throw new Error(hint + " (HTTP " + res.status + ")");
+            }
+
             var data = null;
             try { data = JSON.parse(txt || "{}"); } catch (e) {}
+
             if (!res.ok) {
               var msg = (data && (data.error || data.message)) || ("HTTP " + res.status);
               throw new Error(msg);
@@ -1436,16 +1456,21 @@
           });
       }
 
-      // ✅ Ping helper (FIXED)
+      // ✅ Ping helper (more diagnostic)
       function pingApi() {
         devInfo.textContent = "…";
-        fetch(API_URL + "?action=health", { method: "GET" })
-          .then(function (r) { return r.text().then(function(t){ return { ok:r.ok, text:t }; }); })
+        fetch(API_URL + "?action=health", { method: "GET", cache: "no-store" })
+          .then(function (r) { return r.text().then(function(t){ return { ok:r.ok, status:r.status, text:t }; }); })
           .then(function (x) {
+            if (isHtmlLike(x.text)) {
+              devInfo.textContent = "HTML";
+              setStatus("API returned HTML — check Vercel /api function routing.", "error");
+              return;
+            }
             var d = null;
             try { d = JSON.parse(x.text || "{}"); } catch (e) {}
             if (!x.ok || !d || (d.ok !== true && d.success !== true)) {
-              devInfo.textContent = "ERR";
+              devInfo.textContent = "ERR " + x.status;
               return;
             }
             devInfo.textContent = "OK";
