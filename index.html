@@ -729,12 +729,8 @@
     (function () {
       "use strict";
 
-      // ✅ Hub App Id (used by Code.gs verifyOtp HMAC store)
       var HUB_APP_ID = "HUB";
-
-      // ✅ Vercel endpoints
-      var API_MANAGE = "/api/hub/manage";
-      var API_OTP_REQUEST = "/api/hub/otp/request";
+      var API_URL = "/api/hub/manage";
 
       var STORAGE_SESSION_KEY = "nahlhub_session_key";
       var STORAGE_LANG = "nahlhub_lang";
@@ -887,13 +883,11 @@
         statusText.textContent = text;
       }
 
-      // ✅ Always handle non-2xx and show backend error
-      function postJson(url, payload) {
+      function postJson(payload) {
         var body = Object.assign({}, payload || {});
-        // inject appId when talking to manage
-        if (url === API_MANAGE && !body.appId && !body.appid) body.appId = HUB_APP_ID;
+        if (!body.appId && !body.appid && HUB_APP_ID) body.appId = HUB_APP_ID;
 
-        return fetch(url, {
+        return fetch(API_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body)
@@ -944,10 +938,14 @@
         });
       });
 
-      function readOtp() { return otpInputs.map(function (el) { return el.value || ""; }).join(""); }
-      function clearOtpInputs() { otpInputs.forEach(function (el) { el.value = ""; }); }
+      function readOtp() {
+        return otpInputs.map(function (el) { return el.value || ""; }).join("");
+      }
 
-      // ✅ IMPORTANT: send OTP via Vercel endpoint (NOT Code.gs)
+      function clearOtpInputs() {
+        otpInputs.forEach(function (el) { el.value = ""; });
+      }
+
       function sendOtp() {
         var mobile = (mobileInput.value || "").trim();
         if (!mobile) {
@@ -960,10 +958,10 @@
         btnSendOtp.disabled = true;
         setStatus("statusSendingOtp");
 
-        postJson(API_OTP_REQUEST, { appId: HUB_APP_ID, mobile: mobile })
+        postJson({ action: "sendOtp", mobile: mobile })
           .then(function (res) {
             if (!res || res.success !== true) {
-              var msg = (res && (res.error || res.message)) || (currentLang === "ar" ? "تعذر إرسال الرمز." : "Failed to send code.");
+              var msg = (res && res.error) || (currentLang === "ar" ? "تعذر إرسال الرمز." : "Failed to send code.");
               setStatus(msg, "error");
               return;
             }
@@ -990,7 +988,7 @@
         btnVerifyOtp.disabled = true;
         setStatus("statusVerifying");
 
-        postJson(API_MANAGE, { action: "verifyOtp", mobile: currentMobileRaw, otp: otp })
+        postJson({ action: "verifyOtp", mobile: currentMobileRaw, otp: otp })
           .then(function (res) {
             if (!res || res.success !== true) {
               var msg = (res && res.error) || (currentLang === "ar" ? "رمز غير صحيح أو منتهي." : "Invalid or expired code.");
@@ -1055,7 +1053,7 @@
         showStep("mobile");
 
         if (prevSession) {
-          postJson(API_MANAGE, { action: "auth.logout", sessionKey: prevSession }).catch(function(){});
+          postJson({ action: "auth.logout", sessionKey: prevSession }).catch(function(){});
         }
       }
 
@@ -1136,7 +1134,7 @@
         if (!currentUser || !currentUser.userId) return Promise.resolve();
 
         setStatus("statusLoadingWorkspace");
-        return postJson(API_MANAGE, { action: "workspace.listForUser", userId: currentUser.userId })
+        return postJson({ action: "workspace.listForUser", userId: currentUser.userId })
           .then(function (res) {
             currentWorkspaces = (res && res.items) || [];
             if (!currentWorkspaces.length) {
@@ -1154,8 +1152,8 @@
         if (!currentWorkspaceId) return;
 
         Promise.all([
-          postJson(API_MANAGE, { action: "marketplace.listWorkspaceApps", workspaceId: currentWorkspaceId }),
-          postJson(API_MANAGE, { action: "marketplace.listTemplates", workspaceId: currentWorkspaceId })
+          postJson({ action: "marketplace.listWorkspaceApps", workspaceId: currentWorkspaceId }),
+          postJson({ action: "marketplace.listTemplates", workspaceId: currentWorkspaceId })
         ])
           .then(function (results) {
             var appsRes = results[0] || {};
@@ -1370,7 +1368,7 @@
         if (!currentWorkspaceId || !currentUser) return;
         setStatus("statusLoadingMarketplace");
 
-        postJson(API_MANAGE, {
+        postJson({
           action: "marketplace.installApp",
           workspaceId: currentWorkspaceId,
           templateId: tpl.templateId,
@@ -1418,7 +1416,7 @@
         }
 
         setStatus("statusLoadingSession");
-        postJson(API_MANAGE, { action: "auth.me", sessionKey: currentSessionKey })
+        postJson({ action: "auth.me", sessionKey: currentSessionKey })
           .then(function (res) {
             if (!res || res.success !== true) {
               logout();
@@ -1439,13 +1437,12 @@
           });
       }
 
+      // ✅ FIXED Ping helper (POST health + success check)
       function pingApi() {
         devInfo.textContent = "…";
-        fetch(API_MANAGE + "?action=health")
-          .then(function (r) { return r.json(); })
+        postJson({ action: "health" })
           .then(function (d) {
-            var ok = (d && (d.success === true || d.ok === true));
-            devInfo.textContent = ok ? "OK" : "ERR";
+            devInfo.textContent = (d && d.success) ? "OK" : "ERR";
           })
           .catch(function () {
             devInfo.textContent = "ERR";
