@@ -730,7 +730,7 @@
       "use strict";
 
       var HUB_APP_ID = "HUB";
-      var API_URL = (window.location.origin || "") + "/api/hub/manage";
+      var API_URL = "/api/hub/manage";
 
       var STORAGE_SESSION_KEY = "nahlhub_session_key";
       var STORAGE_LANG = "nahlhub_lang";
@@ -824,6 +824,7 @@
         statusOtpSent: { ar: "تم إرسال الرمز على واتساب.", en: "Code sent via WhatsApp." },
         statusVerifying: { ar: "يتم التحقق...", en: "Verifying..." },
         statusLoadingSession: { ar: "جاري التحقق من الجلسة...", en: "Checking session..." },
+        statusError: { ar: "حدث خطأ. حاول مرة أخرى.", en: "Something went wrong. Try again." },
         statusNoWorkspaces: { ar: "لا توجد مساحات عمل متاحة.", en: "No workspaces available." },
         statusLoadingWorkspace: { ar: "جاري تحميل مساحات العمل...", en: "Loading workspaces..." },
         statusLoadingApps: { ar: "جاري تحميل التطبيقات...", en: "Loading apps..." },
@@ -1440,12 +1441,11 @@
         devInfo.textContent = "…";
         fetch(API_URL + "?action=health")
           .then(function (r) {
-            if (!r.ok) { devInfo.textContent = String(r.status); return null; }
+            if (!r.ok) throw new Error("HTTP " + r.status);
             return r.json();
           })
           .then(function (d) {
-            if (!d) return;
-            devInfo.textContent = (d && d.success) ? "OK" : "ERR";
+            devInfo.textContent = (d && (d.ok || d.success)) ? "OK" : "ERR";
           })
           .catch(function () {
             devInfo.textContent = "ERR";
