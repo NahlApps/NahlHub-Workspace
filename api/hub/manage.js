@@ -1,31 +1,34 @@
 // api/hub/manage.js
-module.exports = async (req, res) => {
+
+export default async function handler(req, res) {
   // --- CORS (safe default) ---
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    return res.end();
+    res.status(204).end();
+    return;
   }
 
-  // --- Helpers ---
   const sendJson = (status, obj) => {
-    res.statusCode = status;
+    res.status(status);
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.end(JSON.stringify(obj));
   };
 
   const readBodyJson = async () => {
     try {
+      // Some runtimes may populate req.body
       if (req.body && typeof req.body === "object") return req.body;
+
       let raw = "";
       await new Promise((resolve, reject) => {
         req.on("data", (c) => (raw += c));
         req.on("end", resolve);
         req.on("error", reject);
       });
+
       if (!raw) return {};
       return JSON.parse(raw);
     } catch {
@@ -33,35 +36,36 @@ module.exports = async (req, res) => {
     }
   };
 
-  // --- Parse action (GET query or POST body) ---
-  const url = new URL(req.url, "http://localhost");
-  const queryAction = url.searchParams.get("action") || "";
+  // Vercel provides req.query in Node Functions
+  const queryAction = (req.query && req.query.action) ? String(req.query.action) : "";
+
   const body = req.method === "POST" ? await readBodyJson() : {};
-  const bodyAction = (body && body.action) || "";
+  const bodyAction = body && body.action ? String(body.action) : "";
 
   const action = (bodyAction || queryAction || "").trim();
 
-  // ✅ Health always works
   if (action === "health") {
     return sendJson(200, {
       success: true,
       ok: true,
       action: "health",
-      time: new Date().toISOString()
+      time: new Date().toISOString(),
+      runtime: "vercel-node-function",
+      method: req.method,
+      query: req.query || {}
     });
   }
 
-  // ✅ Debug echo so you can see requests reaching the function
   return sendJson(200, {
     success: false,
     error: "NO_ACTION_OR_NOT_IMPLEMENTED",
-    hint: "Send {action:'health'} or implement your actions router here.",
+    hint: "Send ?action=health or {action:'health'}",
     debug: {
       method: req.method,
-      path: url.pathname,
-      query: Object.fromEntries(url.searchParams.entries()),
+      url: req.url,
+      query: req.query || {},
       actionDetected: action,
       body
     }
   });
-};
+}
