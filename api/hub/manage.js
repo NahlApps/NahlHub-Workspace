@@ -1,4 +1,4 @@
-// pages/api/hub/manage.js
+// api/hub/manage.js
 // NahlHub – Vercel API → Apps Script proxy + OTP Sender (GreenAPI)
 // ==================================================================
 //
@@ -13,8 +13,9 @@
 //   - workspace.*
 //   - marketplace.*
 
-import crypto from "crypto";
+const crypto = require("crypto");
 
+// Apps Script Web App URL (doPost endpoint)
 const HUB_BACKEND_URL = process.env.HUB_BACKEND_URL;
 const HUB_APP_ID = process.env.HUB_APP_ID || "HUB";
 
@@ -29,6 +30,12 @@ const OTP_HMAC_SECRET = process.env.OTP_HMAC_SECRET;
 // OTP settings
 const OTP_LENGTH = Number(process.env.OTP_LENGTH || 4);
 const OTP_TTL_MIN = Number(process.env.OTP_TTL_MIN || 10);
+
+function sendJson(res, status, obj) {
+  res.statusCode = status;
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.end(JSON.stringify(obj));
+}
 
 function errorJson(message, statusCode = 500, extra = {}) {
   return { success: false, statusCode, error: message, ...extra };
@@ -45,7 +52,7 @@ function normalizeMobileLocal(mobileRaw = "") {
   if (!d) return "";
   if (d.length === 12 && d.startsWith("966")) return d.slice(3); // 966XXXXXXXXX -> 5XXXXXXXX
   if (d.length === 10 && d.startsWith("0")) return d.slice(1);   // 05XXXXXXXX -> 5XXXXXXXX
-  return d; // if already "5XXXXXXXX" keep it
+  return d; // already "5XXXXXXXX" or other
 }
 
 /**
@@ -57,13 +64,9 @@ function toGreenChatId(mobileLocalOrIntl = "") {
   const d = String(mobileLocalOrIntl).trim().replace(/[^\d]/g, "");
   if (!d) return "";
 
-  // if already intl starting 966 and length 12 (Saudi mobile)
   if (d.startsWith("966") && d.length === 12) return `${d}@c.us`;
-
-  // if local 9 digits starting 5 => make it 966 + local
   if (d.length === 9 && d.startsWith("5")) return `966${d}@c.us`;
 
-  // fallback: try as-is
   return `${d}@c.us`;
 }
 
@@ -71,6 +74,27 @@ function generateOtp(len = 4) {
   let s = "";
   for (let i = 0; i < len; i++) s += Math.floor(Math.random() * 10);
   return s;
+}
+
+/**
+ * Read JSON body safely for Vercel Node function (raw stream).
+ */
+async function readBodyJson(req) {
+  try {
+    if (req.body && typeof req.body === "object") return req.body;
+
+    let raw = "";
+    await new Promise((resolve, reject) => {
+      req.on("data", (c) => (raw += c));
+      req.on("end", resolve);
+      req.on("error", reject);
+    });
+
+    if (!raw) return {};
+    return JSON.parse(raw);
+  } catch {
+    return {};
+  }
 }
 
 /**
@@ -97,7 +121,7 @@ async function callHubBackend(payload) {
   // Apps Script may return HTML if not deployed correctly
   if (/<!doctype html>|<html/i.test(text || "")) {
     throw new Error(
-      `Apps Script returned HTML (HTTP ${res.status}). Ensure Web App access: "Anyone".`
+      `Apps Script returned HTML (HTTP ${res.status}). Ensure Web App access is set to "Anyone" and you are using the Web App URL.`
     );
   }
 
@@ -132,6 +156,7 @@ async function greenSendMessage(chatId, message) {
   });
 
   const text = await res.text();
+
   let data;
   try {
     data = JSON.parse(text || "{}");
@@ -156,7 +181,7 @@ function signOtpStore({ appId, mobile, otp, ts }) {
   return crypto.createHmac("sha256", OTP_HMAC_SECRET).update(msg).digest("hex");
 }
 
-export default async function handler(req, res) {
+module.exports = async (req, res) => {
   // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -165,26 +190,28 @@ export default async function handler(req, res) {
     "Content-Type, Authorization, X-Requested-With"
   );
 
-  if (req.method === "OPTIONS") return res.status(204).end();
+  if (req.method === "OPTIONS") return sendJson(res, 204, {});
 
   if (req.method !== "GET" && req.method !== "POST") {
-    return res.status(405).json(errorJson("Method not allowed. Use GET or POST.", 405));
+    return sendJson(res, 405, errorJson("Method not allowed. Use GET or POST.", 405));
   }
 
   try {
-    const payload =
-      req.method === "GET"
-        ? { ...(req.query || {}) }
-        : typeof req.body === "object" && req.body !== null
-        ? req.body
-        : {};
+    // GET payload from query string
+    let payload = {};
+    if (req.method === "GET") {
+      const url = new URL(req.url, "http://localhost");
+      payload = Object.fromEntries(url.searchParams.entries());
+    } else {
+      payload = await readBodyJson(req);
+    }
 
     const action = String(payload.action || "").trim();
-    if (!action) return res.status(400).json(errorJson("Missing action parameter", 400));
+    if (!action) return sendJson(res, 400, errorJson("Missing action parameter", 400));
 
     // Local health
     if (action === "health") {
-      return res.status(200).json({
+      return sendJson(res, 200, {
         success: true,
         ok: true,
         service: "NahlHub",
@@ -194,29 +221,34 @@ export default async function handler(req, res) {
         hasHmac: !!OTP_HMAC_SECRET,
         otpLength: OTP_LENGTH,
         otpTtlMin: OTP_TTL_MIN,
+        time: new Date().toISOString(),
       });
     }
 
     // Local sendOtp
     if (action === "sendOtp" || action === "auth.requestOtp") {
-      const mobileLocal = normalizeMobileLocal(payload.mobile || "");
+      const mobileRaw = payload.mobile || "";
+      const mobileLocal = normalizeMobileLocal(mobileRaw);
+
       if (!mobileLocal) {
-        return res.status(400).json(errorJson("Mobile is required.", 400));
+        return sendJson(res, 400, errorJson("Mobile is required.", 400));
       }
 
       const appId = String(payload.appId || payload.appid || HUB_APP_ID || "HUB").trim();
       const otp = generateOtp(OTP_LENGTH);
 
-      // IMPORTANT: WhatsApp uses international
+      // WhatsApp uses intl
       const chatId = toGreenChatId(mobileLocal);
       const message = `رمز التحقق: ${otp}\nصالح لمدة ${OTP_TTL_MIN} دقائق.`;
 
-      // Stage: GreenAPI
+      // Stage 1: GreenAPI send
       let green;
       try {
         green = await greenSendMessage(chatId, message);
       } catch (e) {
-        return res.status(500).json(
+        return sendJson(
+          res,
+          500,
           errorJson(e?.message || "GreenAPI send failed", 500, {
             stage: "greenapi.send",
             chatId,
@@ -224,7 +256,7 @@ export default async function handler(req, res) {
         );
       }
 
-      // Stage: Apps Script otp.store
+      // Stage 2: Apps Script otp.store
       const ts = Date.now();
       const sig = signOtpStore({ appId, mobile: mobileLocal, otp, ts });
 
@@ -232,32 +264,36 @@ export default async function handler(req, res) {
         await callHubBackend({
           action: "otp.store",
           appId,
-          mobile: mobileLocal, // store local format to match verifyOtp normalization
+          mobile: mobileLocal,
           otp,
           ts,
           sig,
         });
       } catch (e) {
-        return res.status(500).json(
+        return sendJson(
+          res,
+          500,
           errorJson(e?.message || "Apps Script otp.store failed", 500, {
             stage: "backend.otp.store",
           })
         );
       }
 
-      return res.status(200).json({
+      return sendJson(res, 200, {
         success: true,
         sent: true,
         idMessage: green?.idMessage || "",
       });
     }
 
-    // Forward everything else
+    // Forward everything else to Apps Script
     try {
       const backendResponse = await callHubBackend(payload);
-      return res.status(200).json(backendResponse);
+      return sendJson(res, 200, backendResponse);
     } catch (e) {
-      return res.status(500).json(
+      return sendJson(
+        res,
+        500,
         errorJson(e?.message || "Apps Script call failed", 500, {
           stage: "backend.forward",
           action,
@@ -266,6 +302,6 @@ export default async function handler(req, res) {
     }
   } catch (err) {
     console.error("❌ /api/hub/manage error:", err);
-    return res.status(500).json(errorJson(err?.message || "Unexpected server error", 500));
+    return sendJson(res, 500, errorJson(err?.message || "Unexpected server error", 500));
   }
-}
+};
