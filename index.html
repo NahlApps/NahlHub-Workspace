@@ -9,6 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
 
+  <!-- Optional: keep your repo style.css -->
+  <link rel="stylesheet" href="/style.css" />
+
   <style>
     :root {
       --bg-light: #f5f7f8;
@@ -493,7 +496,6 @@
       padding: 3px 8px;
       border: 1px solid rgba(148,163,184,0.6);
       opacity: 0.9;
-      white-space: nowrap;
     }
     .auth-modal-body { display:flex; flex-direction:column; gap:10px; }
 
@@ -559,7 +561,7 @@
           <button class="chip-btn" id="btnLangAr" type="button" data-lang="ar"><span>عربي</span></button>
           <button class="chip-btn" id="btnLangEn" type="button" data-lang="en"><span>EN</span></button>
         </div>
-        <button class="chip-btn chip-btn-mini" id="btnTheme" type="button" aria-label="Toggle theme">
+        <button class="chip-btn chip-btn-mini" id="btnTheme" type="button">
           <span class="icon" id="themeIcon">🌞</span>
         </button>
       </div>
@@ -603,7 +605,7 @@
               </div>
 
               <div class="dev-row">
-                <button id="btnPing" class="btn-link" type="button" data-i18n="pingApi">Ping API</button>
+                <button id="btnPing" class="btn-link" type="button">Ping API</button>
                 <span style="font-size:11px; opacity:.7" id="devInfo"></span>
               </div>
             </div>
@@ -620,7 +622,7 @@
               </button>
             </div>
             <div class="card-body">
-              <div class="otp-row" aria-label="OTP inputs">
+              <div class="otp-row">
                 <input class="otp-input" id="otp1" type="tel" inputmode="numeric" maxlength="1" />
                 <input class="otp-input" id="otp2" type="tel" inputmode="numeric" maxlength="1" />
                 <input class="otp-input" id="otp3" type="tel" inputmode="numeric" maxlength="1" />
@@ -651,7 +653,7 @@
 
       <section id="stepApps" class="apps-layout hidden">
         <div class="apps-header-row">
-          <div class="workspace-card" id="workspaceCard" aria-haspopup="menu" aria-expanded="false">
+          <div class="workspace-card" id="workspaceCard">
             <div class="workspace-meta">
               <div class="workspace-label" data-i18n="workspaceLabel">مساحة العمل</div>
               <div class="workspace-name-row">
@@ -660,17 +662,17 @@
               </div>
             </div>
             <div class="workspace-dropdown-icon"><span id="workspaceChevron">▾</span></div>
-            <div id="workspaceMenu" class="workspace-menu hidden" role="menu"></div>
+            <div id="workspaceMenu" class="workspace-menu hidden"></div>
           </div>
 
           <div class="view-toggle-group">
             <button id="btnViewApps" type="button" class="view-toggle-btn active">
               <span class="icon">⚙️</span>
-              <span data-i18n="viewApps">التطبيقات</span>
+              <span data-i18n="viewApps">Apps</span>
             </button>
             <button id="btnViewMarketplace" type="button" class="view-toggle-btn">
               <span class="icon">🛒</span>
-              <span data-i18n="viewMarketplace">المتجر</span>
+              <span data-i18n="viewMarketplace">Marketplace</span>
             </button>
           </div>
 
@@ -730,18 +732,15 @@
     (function () {
       "use strict";
 
-      function getQueryParam(name) {
-        try {
-          var url = new URL(window.location.href);
-          return url.searchParams.get(name) || "";
-        } catch (e) {
-          return "";
-        }
-      }
+      // ✅ Important:
+      // - OTP send should hit /api/hub/otp/request (Vercel) which sends WhatsApp + stores OTP via GAS (otp.store).
+      // - Verify OTP hits /api/hub/manage which calls GAS verifyOtp/auth.verifyOtp.
 
-      // Allow overriding appId + api via query params if needed
-      var HUB_APP_ID = getQueryParam("appId") || getQueryParam("appid") || "HUB";
-      var API_URL = getQueryParam("api") || "/api/hub/manage";
+      var HUB_APP_ID = "HUB";
+
+      // Backend routes (Vercel)
+      var API_URL = "/api/hub/manage";
+      var OTP_REQUEST_URL = "/api/hub/otp/request";
 
       var STORAGE_SESSION_KEY = "nahlhub_session_key";
       var STORAGE_LANG = "nahlhub_lang";
@@ -830,7 +829,6 @@
         changeMobile: { ar: "تعديل الرقم", en: "Change number" },
         btnVerify: { ar: "تأكيد", en: "Confirm" },
         logout: { ar: "تسجيل خروج", en: "Logout" },
-
         statusIdle: { ar: "جاهز.", en: "Ready." },
         statusSendingOtp: { ar: "يتم إرسال الرمز عبر واتساب...", en: "Sending WhatsApp code..." },
         statusOtpSent: { ar: "تم إرسال الرمز على واتساب.", en: "Code sent via WhatsApp." },
@@ -841,7 +839,6 @@
         statusLoadingWorkspace: { ar: "جاري تحميل مساحات العمل...", en: "Loading workspaces..." },
         statusLoadingApps: { ar: "جاري تحميل التطبيقات...", en: "Loading apps..." },
         statusLoadingMarketplace: { ar: "جاري تحميل متجر التطبيقات...", en: "Loading marketplace..." },
-
         workspaceLabel: { ar: "مساحة العمل", en: "Workspace" },
         yourAppsTitle: { ar: "تطبيقاتك", en: "Your apps" },
         marketplaceTitle: { ar: "App Marketplace", en: "App Marketplace" },
@@ -851,23 +848,7 @@
         appPlaceholder: { ar: "اختر تطبيقاً من قائمة التطبيقات أو من المتجر.", en: "Choose an app from your apps or from the marketplace." },
         appViewSub: { ar: "التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.", en: "The app is shown inside NahlHub. Use Back to return to apps." },
         backToApps: { ar: "التطبيقات", en: "Apps" },
-
-        userNotFound: { ar: "هذا الرقم غير مسجل. تواصل مع مسؤول النظام لإنشاء حساب.", en: "This mobile is not registered. Contact your admin to create an account." },
-
-        pingApi: { ar: "فحص الاتصال (Ping)", en: "Ping API" },
-        roleAdmin: { ar: "مسؤول", en: "Admin" },
-        roleMember: { ar: "عضو", en: "Member" },
-
-        emptyApps: { ar: "لا توجد تطبيقات مثبتة في هذه المساحة.", en: "No apps installed in this workspace." },
-        emptyMarketplace: { ar: "لا توجد تطبيقات في المتجر.", en: "No apps available in marketplace." },
-        openApp: { ar: "فتح التطبيق", en: "Open app" },
-        install: { ar: "تثبيت", en: "Install" },
-        installed: { ar: "مثبّت", en: "Installed" },
-
-        enterMobile: { ar: "أدخل رقم الجوال.", en: "Enter your mobile." },
-        enterOtp4: { ar: "أدخل الرمز ٤ أرقام.", en: "Enter the 4-digit code." },
-        appUrlMissing: { ar: "رابط التطبيق غير مهيأ.", en: "App URL is not configured yet." },
-        pickWorkspaceFirst: { ar: "اختر مساحة عمل أولاً.", en: "Please select a workspace first." }
+        userNotFound: { ar: "هذا الرقم غير مسجل. تواصل مع مسؤول النظام لإنشاء حساب.", en: "This mobile is not registered. Contact your admin to create an account." }
       };
 
       function t(key) {
@@ -888,11 +869,10 @@
         btnLangAr.classList.toggle("active", currentLang === "ar");
         btnLangEn.classList.toggle("active", currentLang === "en");
 
-        // Keep placeholder in local format; you can customize per country later
+        // keep phone placeholder consistent
         mobileInput.placeholder = "5XXXXXXXX";
 
         updateUserUi();
-        buildWorkspaceMenu();
         renderApps();
         renderMarketplace();
       }
@@ -915,15 +895,13 @@
         statusText.textContent = text;
       }
 
-      // Always handle non-2xx and show backend error safely
-      function postJson(payload) {
-        var body = Object.assign({}, payload || {});
-        if (!body.appId && !body.appid && HUB_APP_ID) body.appId = HUB_APP_ID;
-
-        return fetch(API_URL, {
-          method: "POST",
+      // ✅ Handle non-2xx safely
+      function fetchJson(url, payload, method) {
+        method = method || "POST";
+        return fetch(url, {
+          method: method,
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body)
+          body: payload ? JSON.stringify(payload) : undefined
         }).then(function (res) {
           return res.text().then(function (txt) {
             var data = null;
@@ -935,6 +913,12 @@
             return data || {};
           });
         });
+      }
+
+      function postJson(payload) {
+        var body = Object.assign({}, payload || {});
+        if (!body.appId && !body.appid && HUB_APP_ID) body.appId = HUB_APP_ID;
+        return fetchJson(API_URL, body, "POST");
       }
 
       function showStep(name) {
@@ -979,12 +963,11 @@
         otpInputs.forEach(function (el) { el.value = ""; });
       }
 
-      // sendOtp is usually handled by your /api/hub/manage (Vercel) endpoint.
-      // Added a safe fallback: if action "sendOtp" is unknown, retry with "otp.send".
+      // ✅ Send OTP via Vercel: /api/hub/otp/request
       function sendOtp() {
         var mobile = (mobileInput.value || "").trim();
         if (!mobile) {
-          setStatus(t("enterMobile"), "error");
+          setStatus(currentLang === "ar" ? "أدخل رقم الجوال." : "Enter your mobile.", "error");
           mobileInput.focus();
           return;
         }
@@ -993,15 +976,7 @@
         btnSendOtp.disabled = true;
         setStatus("statusSendingOtp");
 
-        postJson({ action: "sendOtp", mobile: mobile })
-          .catch(function (err) {
-            // fallback if backend uses a different action name
-            var msg = (err && err.message) ? String(err.message) : "";
-            if (/Unknown action/i.test(msg) || /Missing action/i.test(msg)) {
-              return postJson({ action: "otp.send", mobile: mobile });
-            }
-            throw err;
-          })
+        fetchJson(OTP_REQUEST_URL, { appId: HUB_APP_ID, mobile: mobile }, "POST")
           .then(function (res) {
             if (!res || res.success !== true) {
               var msg = (res && res.error) || (currentLang === "ar" ? "تعذر إرسال الرمز." : "Failed to send code.");
@@ -1020,10 +995,11 @@
           });
       }
 
+      // ✅ Verify OTP via GAS through /api/hub/manage
       function verifyOtp() {
         var otp = readOtp();
         if (!otp || otp.length !== 4) {
-          setStatus(t("enterOtp4"), "error");
+          setStatus(currentLang === "ar" ? "أدخل الرمز ٤ أرقام." : "Enter the 4-digit code.", "error");
           otpInputs[0].focus();
           return;
         }
@@ -1070,15 +1046,12 @@
 
       function updateUserUi() {
         if (!currentUser) { userNameLabel.textContent = ""; return; }
-        var suffix = currentUser.mobile ? (" · " + currentUser.mobile) : "";
-        var displayName = (currentUser.name || "").trim();
-        var greet = currentLang === "ar"
-          ? ("مرحباً " + (displayName || ""))
-          : ("Hi " + (displayName || ""));
-        userNameLabel.textContent = (greet + suffix).trim();
+        var suffix = " · " + (currentUser.mobile || "");
+        var greet = currentLang === "ar" ? ("مرحباً " + (currentUser.name || "")) : ("Hi " + (currentUser.name || ""));
+        userNameLabel.textContent = greet + suffix;
       }
 
-      // logout invalidates session (best-effort)
+      // ✅ logout invalidates session on backend
       function logout() {
         var prevSession = currentSessionKey;
 
@@ -1087,7 +1060,6 @@
         currentUser = null;
         currentWorkspaces = [];
         currentWorkspaceId = null;
-        currentWorkspaceRole = "";
         currentWorkspaceApps = [];
         currentTemplates = [];
         appsGrid.innerHTML = "";
@@ -1115,11 +1087,6 @@
         btnViewMarketplace.classList.toggle("active", view === "marketplace");
       }
 
-      function roleLabel(role) {
-        var r = String(role || "member").toLowerCase();
-        return r === "admin" ? t("roleAdmin") : t("roleMember");
-      }
-
       function buildWorkspaceMenu() {
         workspaceMenu.innerHTML = "";
         if (!currentWorkspaces.length) {
@@ -1135,7 +1102,6 @@
           var btn = document.createElement("button");
           btn.type = "button";
           btn.className = "workspace-menu-item";
-          btn.setAttribute("role", "menuitem");
           if (ws.workspaceId === currentWorkspaceId) btn.classList.add("active");
 
           var main = document.createElement("div");
@@ -1154,7 +1120,7 @@
 
           var rolePill = document.createElement("span");
           rolePill.className = "workspace-menu-item-role";
-          rolePill.textContent = roleLabel(ws.role);
+          rolePill.textContent = ws.role || "member";
 
           btn.appendChild(main);
           btn.appendChild(rolePill);
@@ -1163,7 +1129,6 @@
             e.stopPropagation();
             selectWorkspace(ws.workspaceId);
             workspaceMenu.classList.add("hidden");
-            workspaceCard.setAttribute("aria-expanded", "false");
           });
 
           workspaceMenu.appendChild(btn);
@@ -1178,7 +1143,7 @@
         currentWorkspaceRole = ws.role || "member";
 
         workspaceNameEl.textContent = ws.name || ws.workspaceId;
-        workspaceRoleEl.textContent = roleLabel(ws.role);
+        workspaceRoleEl.textContent = ws.role === "admin" ? "admin" : "member";
 
         buildWorkspaceMenu();
         setStatus("statusLoadingApps");
@@ -1192,8 +1157,6 @@
         return postJson({ action: "workspace.listForUser", userId: currentUser.userId })
           .then(function (res) {
             currentWorkspaces = (res && res.items) || [];
-            buildWorkspaceMenu();
-
             if (!currentWorkspaces.length) {
               setStatus("statusNoWorkspaces", "error");
               return;
@@ -1230,9 +1193,7 @@
                       ? (app.nameAr || tpl.nameAr || app.name || tpl.name || app.templateId)
                       : (app.nameEn || tpl.nameEn || app.name || tpl.name || app.templateId)),
                 category: tpl.category || app.category || "",
-                shortDesc: (currentLang === "ar"
-                      ? (tpl.shortDescAr || tpl.shortDesc || "")
-                      : (tpl.shortDescEn || tpl.shortDesc || "")) || "",
+                shortDesc: (currentLang === "ar" ? (tpl.shortDescAr || tpl.shortDesc || "") : (tpl.shortDescEn || tpl.shortDesc || "")) || "",
                 status: app.status || "",
                 visibleInHub: app.visibleInHub || "",
                 defaultRoute: tpl.defaultRoute || app.defaultRoute || "",
@@ -1257,7 +1218,7 @@
         if (!currentWorkspaceApps || !currentWorkspaceApps.length) {
           var empty = document.createElement("div");
           empty.className = "card-caption";
-          empty.textContent = t("emptyApps");
+          empty.textContent = currentLang === "ar" ? "لا توجد تطبيقات مثبتة في هذه المساحة." : "No apps installed in this workspace.";
           appsGrid.appendChild(empty);
           return;
         }
@@ -1293,7 +1254,7 @@
 
           var statusBadge = document.createElement("span");
           statusBadge.className = "badge-installed";
-          statusBadge.textContent = t("installed");
+          statusBadge.textContent = currentLang === "ar" ? "مثبّت" : "Installed";
 
           header.appendChild(main);
           header.appendChild(statusBadge);
@@ -1314,7 +1275,7 @@
           var openBtn = document.createElement("button");
           openBtn.type = "button";
           openBtn.className = "btn-pill-sm primary";
-          openBtn.textContent = t("openApp");
+          openBtn.textContent = currentLang === "ar" ? "فتح التطبيق" : "Open app";
 
           openBtn.addEventListener("click", function (e) {
             e.stopPropagation();
@@ -1342,7 +1303,7 @@
         if (!currentTemplates.length) {
           var empty = document.createElement("div");
           empty.className = "card-caption";
-          empty.textContent = t("emptyMarketplace");
+          empty.textContent = currentLang === "ar" ? "لا توجد تطبيقات في المتجر." : "No apps available in marketplace.";
           marketplaceGrid.appendChild(empty);
           return;
         }
@@ -1402,7 +1363,7 @@
 
           var isInstalled = !!tpl.installed;
 
-          installBtn.textContent = isInstalled ? t("installed") : t("install");
+          installBtn.textContent = isInstalled ? (currentLang === "ar" ? "مثبّت" : "Installed") : (currentLang === "ar" ? "تثبيت" : "Install");
           if (isInstalled) installBtn.disabled = true;
 
           installBtn.addEventListener("click", function (e) {
@@ -1427,9 +1388,8 @@
         if (!currentWorkspaceId || !currentUser) return;
         setStatus("statusLoadingMarketplace");
 
-        // Use generic install so backend auto-detects app/module
         postJson({
-          action: "marketplace.install",
+          action: "marketplace.installApp",
           workspaceId: currentWorkspaceId,
           templateId: tpl.templateId,
           userId: currentUser.userId
@@ -1448,13 +1408,13 @@
 
       function openWorkspaceApp(app) {
         if (!app || !app.defaultRoute) {
-          setStatus(t("appUrlMissing"), "error");
+          setStatus(currentLang === "ar" ? "رابط التطبيق غير مهيأ." : "App URL is not configured yet.", "error");
           setMainView("apps");
           return;
         }
 
         if (!currentWorkspaceId) {
-          setStatus(t("pickWorkspaceFirst"), "error");
+          setStatus(currentLang === "ar" ? "اختر مساحة عمل أولاً." : "Please select a workspace first.", "error");
           return;
         }
 
@@ -1464,20 +1424,12 @@
 
         var route = app.defaultRoute;
         var join = route.indexOf("?") >= 0 ? "&" : "?";
-
-        // Pass minimal context (safe + optional for apps)
-        var qs = [
-          "workspaceId=" + encodeURIComponent(currentWorkspaceId),
-          currentSessionKey ? ("sessionKey=" + encodeURIComponent(currentSessionKey)) : "",
-          (currentUser && currentUser.userId) ? ("userId=" + encodeURIComponent(currentUser.userId)) : ""
-        ].filter(Boolean).join("&");
-
-        appFrame.src = route + join + qs;
+        appFrame.src = route + join + "workspaceId=" + encodeURIComponent(currentWorkspaceId);
 
         setMainView("app");
       }
 
-      // Auto-restore session and show hub
+      // ✅ Auto-restore session
       function tryAutoLogin() {
         if (!currentSessionKey) {
           showStep("mobile");
@@ -1506,21 +1458,14 @@
           });
       }
 
-      // Ping helper (health endpoint)
+      // ✅ Ping helper (health)
       function pingApi() {
         devInfo.textContent = "…";
-        fetch(API_URL + "?action=health")
-          .then(function (r) { return r.text(); })
-          .then(function (txt) {
-            var d = {};
-            try { d = JSON.parse(txt || "{}"); } catch (e) {}
-            var ok = (d && (d.success === true || d.ok === true));
-            if (ok) {
-              var hasSecret = (typeof d.hasOtpHmacSecret === "boolean") ? d.hasOtpHmacSecret : null;
-              devInfo.textContent = hasSecret === null ? "OK" : ("OK · " + (hasSecret ? "HMAC" : "NO-HMAC"));
-            } else {
-              devInfo.textContent = "ERR";
-            }
+        fetch(API_URL + "?action=health", { method: "GET" })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            // Code.gs health returns: { success:true, ... }
+            devInfo.textContent = (d && (d.success === true)) ? "OK" : "ERR";
           })
           .catch(function () {
             devInfo.textContent = "ERR";
@@ -1566,14 +1511,10 @@
 
       workspaceCard.addEventListener("click", function (e) {
         e.stopPropagation();
-        var isHidden = workspaceMenu.classList.toggle("hidden");
-        workspaceCard.setAttribute("aria-expanded", String(!isHidden));
+        workspaceMenu.classList.toggle("hidden");
       });
 
-      document.addEventListener("click", function () {
-        workspaceMenu.classList.add("hidden");
-        workspaceCard.setAttribute("aria-expanded", "false");
-      });
+      document.addEventListener("click", function () { workspaceMenu.classList.add("hidden"); });
       workspaceMenu.addEventListener("click", function (e) { e.stopPropagation(); });
 
       btnPing.addEventListener("click", pingApi);
