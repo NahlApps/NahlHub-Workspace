@@ -1,23 +1,10 @@
 // api/hub/manage.js
-// NahlHub – Vercel API → Apps Script proxy + OTP Sender (GreenAPI)
-// ==================================================================
-//
-// Local actions:
-//   - health                     => local health response
-//   - sendOtp / auth.requestOtp  => GreenAPI send + Apps Script otp.store (HMAC signed)
-//
-// Forwarded actions (to Apps Script):
-//   - otp.store (usually called locally after sendOtp)
-//   - verifyOtp / auth.verifyOtp
-//   - auth.me
-//   - auth.logout
-//   - workspace.*
-//   - marketplace.*
+// NahlHub – Vercel Function → Apps Script proxy + OTP Sender (GreenAPI)
 
 const crypto = require("crypto");
 
-// Apps Script Web App URL (doPost endpoint)
-const HUB_BACKEND_URL = process.env.HUB_BACKEND_URL; // required
+// Apps Script WebApp URL (POST endpoint)
+const HUB_BACKEND_URL = process.env.HUB_BACKEND_URL;
 const HUB_APP_ID = process.env.HUB_APP_ID || "HUB";
 
 // GreenAPI
@@ -25,7 +12,7 @@ const GREEN_API_URL = process.env.GREEN_API_URL || "https://api.green-api.com";
 const GREEN_API_INSTANCE_ID = process.env.GREEN_API_INSTANCE_ID;
 const GREEN_API_TOKEN = process.env.GREEN_API_TOKEN;
 
-// HMAC secret (must match Apps Script Script Properties)
+// HMAC secret (must match Apps Script Script Properties OTP_HMAC_SECRET)
 const OTP_HMAC_SECRET = process.env.OTP_HMAC_SECRET;
 
 // OTP settings
@@ -35,37 +22,24 @@ const OTP_TTL_MIN = Number(process.env.OTP_TTL_MIN || 10);
 function sendJson(res, status, obj) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.end(JSON.stringify(obj));
+  res.end(JSON.stringify(obj || {}));
 }
 
-function errorJson(message, statusCode = 500, extra = {}) {
-  return { success: false, statusCode, error: message, ...extra };
-}
-
-/**
- * Returns local mobile format used in Sheets:
- * - "9665XXXXXXXX" -> "5XXXXXXXX"
- * - "05XXXXXXXX"   -> "5XXXXXXXX"
- * - "+9665..."     -> "5XXXXXXXX"
- */
 function normalizeMobileLocal(mobileRaw = "") {
   const d = String(mobileRaw).trim().replace(/[^\d]/g, "");
   if (!d) return "";
-  if (d.length === 12 && d.startsWith("966")) return d.slice(3);
-  if (d.length === 10 && d.startsWith("0")) return d.slice(1);
-  return d;
+  if (d.length === 12 && d.startsWith("966")) return d.slice(3); // 9665XXXXXXXX -> 5XXXXXXXX
+  if (d.length === 10 && d.startsWith("0")) return d.slice(1);   // 05XXXXXXXX -> 5XXXXXXXX
+  return d; // already local
 }
 
-/**
- * GreenAPI needs chatId:
- * - local "5XXXXXXXX" => "9665XXXXXXXX@c.us"
- * - "9665..."         => "9665...@c.us"
- */
 function toGreenChatId(mobileLocalOrIntl = "") {
   const d = String(mobileLocalOrIntl).trim().replace(/[^\d]/g, "");
   if (!d) return "";
+
   if (d.startsWith("966") && d.length === 12) return `${d}@c.us`;
   if (d.length === 9 && d.startsWith("5")) return `966${d}@c.us`;
+
   return `${d}@c.us`;
 }
 
@@ -75,14 +49,20 @@ function generateOtp(len = 4) {
   return s;
 }
 
+function signOtpStore({ appId, mobile, otp, ts }) {
+  if (!OTP_HMAC_SECRET) throw new Error("OTP_HMAC_SECRET is missing in Vercel env.");
+  const msg = `${appId}|${mobile}|${otp}|${ts}`;
+  return crypto.createHmac("sha256", OTP_HMAC_SECRET).update(msg).digest("hex");
+}
+
 async function readBodyJson(req) {
   try {
     if (req.body && typeof req.body === "object") return req.body;
 
-    let raw = "";
-    await new Promise((resolve, reject) => {
-      req.on("data", (c) => (raw += c));
-      req.on("end", resolve);
+    const raw = await new Promise((resolve, reject) => {
+      let s = "";
+      req.on("data", (c) => (s += c));
+      req.on("end", () => resolve(s));
       req.on("error", reject);
     });
 
@@ -93,47 +73,33 @@ async function readBodyJson(req) {
   }
 }
 
-function signOtpStore({ appId, mobile, otp, ts }) {
-  if (!OTP_HMAC_SECRET) {
-    throw new Error("OTP_HMAC_SECRET is missing in Vercel env.");
-  }
-  const msg = `${appId}|${mobile}|${otp}|${ts}`;
-  return crypto.createHmac("sha256", OTP_HMAC_SECRET).update(msg).digest("hex");
-}
-
 async function callHubBackend(payload) {
-  if (!HUB_BACKEND_URL) {
-    throw new Error("HUB_BACKEND_URL is not configured in Vercel environment.");
-  }
+  if (!HUB_BACKEND_URL) throw new Error("HUB_BACKEND_URL is not configured in Vercel env.");
 
   const finalPayload = { ...(payload || {}) };
-  if (!finalPayload.appId && !finalPayload.appid && HUB_APP_ID) {
-    finalPayload.appId = HUB_APP_ID;
-  }
+  if (!finalPayload.appId && !finalPayload.appid && HUB_APP_ID) finalPayload.appId = HUB_APP_ID;
 
   const r = await fetch(HUB_BACKEND_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(finalPayload),
+    body: JSON.stringify(finalPayload)
   });
 
   const text = await r.text();
 
-  if (/<!doctype html>|<html/i.test(text || "")) {
-    throw new Error(
-      `Apps Script returned HTML (HTTP ${r.status}). Ensure Web App access is "Anyone" and HUB_BACKEND_URL is the Web App URL.`
-    );
+  // Apps Script returns HTML if deployment/access is wrong
+  if (/<html|<!doctype/i.test(text || "")) {
+    throw new Error(`Apps Script returned HTML (HTTP ${r.status}). Ensure Web App: Execute as Me, Access: Anyone.`);
   }
 
-  let data;
-  try {
-    data = JSON.parse(text || "{}");
-  } catch {
-    throw new Error(`Apps Script returned non-JSON: ${String(text).slice(0, 200)}`);
+  let data = {};
+  try { data = JSON.parse(text || "{}"); } catch {
+    throw new Error(`Apps Script returned non-JSON (HTTP ${r.status}): ${String(text).slice(0, 200)}`);
   }
 
-  if (!r.ok || data?.success === false) {
-    throw new Error(data?.error || data?.message || `Apps Script HTTP ${r.status}`);
+  // Your Apps Script uses success flag
+  if (!r.ok || data.success === false) {
+    throw new Error(data.error || data.message || `Apps Script HTTP ${r.status}`);
   }
 
   return data;
@@ -149,22 +115,18 @@ async function greenSendMessage(chatId, message) {
   const r = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chatId, message }),
+    body: JSON.stringify({ chatId, message })
   });
 
   const text = await r.text();
-
-  let data;
-  try {
-    data = JSON.parse(text || "{}");
-  } catch {
-    throw new Error(`GreenAPI returned non-JSON: ${String(text).slice(0, 200)}`);
+  let data = {};
+  try { data = JSON.parse(text || "{}"); } catch {
+    throw new Error(`GreenAPI returned non-JSON (HTTP ${r.status}): ${String(text).slice(0, 200)}`);
   }
 
   if (!r.ok) {
-    throw new Error(data?.message || `GreenAPI HTTP ${r.status}`);
+    throw new Error(data.message || `GreenAPI HTTP ${r.status}`);
   }
-
   return data;
 }
 
@@ -176,102 +138,76 @@ module.exports = async (req, res) => {
 
   if (req.method === "OPTIONS") return sendJson(res, 204, {});
 
+  // ✅ Allow GET + POST
   if (req.method !== "GET" && req.method !== "POST") {
-    return sendJson(res, 405, errorJson("Method not allowed. Use GET or POST.", 405));
+    return sendJson(res, 405, { success: false, error: "Method Not Allowed" });
   }
 
   try {
-    // Payload
-    let payload = {};
-    if (req.method === "GET") {
-      const url = new URL(req.url, "http://localhost");
-      payload = Object.fromEntries(url.searchParams.entries());
-    } else {
-      payload = await readBodyJson(req);
-    }
+    const url = new URL(req.url, "http://localhost");
+    const query = Object.fromEntries(url.searchParams.entries());
+    const body = req.method === "POST" ? await readBodyJson(req) : {};
+    const payload = req.method === "GET" ? query : body;
 
     const action = String(payload.action || "").trim();
-    if (!action) return sendJson(res, 400, errorJson("Missing action parameter", 400));
+    if (!action) return sendJson(res, 400, { success: false, error: "Missing action parameter" });
 
-    // ✅ Local health
+    // ✅ Health (GET or POST)
     if (action === "health") {
       return sendJson(res, 200, {
         success: true,
         ok: true,
         service: "NahlHub",
         time: new Date().toISOString(),
-        appId: HUB_APP_ID,
         hasBackendUrl: !!HUB_BACKEND_URL,
         hasGreenApi: !!(GREEN_API_INSTANCE_ID && GREEN_API_TOKEN),
-        hasHmac: !!OTP_HMAC_SECRET,
-        otpLength: OTP_LENGTH,
-        otpTtlMin: OTP_TTL_MIN
+        hasHmac: !!OTP_HMAC_SECRET
       });
     }
 
-    // ✅ Local sendOtp
+    // ✅ sendOtp (local)
     if (action === "sendOtp" || action === "auth.requestOtp") {
       const mobileLocal = normalizeMobileLocal(payload.mobile || "");
-      if (!mobileLocal) return sendJson(res, 400, errorJson("Mobile is required.", 400));
+      if (!mobileLocal) return sendJson(res, 400, { success: false, error: "Mobile is required." });
 
       const appId = String(payload.appId || payload.appid || HUB_APP_ID || "HUB").trim();
       const otp = generateOtp(OTP_LENGTH);
 
-      // WhatsApp send
       const chatId = toGreenChatId(mobileLocal);
       const message = `رمز التحقق: ${otp}\nصالح لمدة ${OTP_TTL_MIN} دقائق.`;
 
-      let green;
-      try {
-        green = await greenSendMessage(chatId, message);
-      } catch (e) {
-        return sendJson(res, 500, errorJson(e?.message || "GreenAPI send failed", 500, {
-          stage: "greenapi.send",
-          chatId
-        }));
-      }
+      // 1) WhatsApp send
+      const green = await greenSendMessage(chatId, message);
 
-      // Store OTP in Apps Script with HMAC
+      // 2) Store OTP in Apps Script (HMAC signed)
       const ts = Date.now();
-      let sig = "";
-      try {
-        sig = signOtpStore({ appId, mobile: mobileLocal, otp, ts });
-      } catch (e) {
-        return sendJson(res, 500, errorJson(e?.message || "HMAC sign failed", 500, {
-          stage: "otp.hmac"
-        }));
-      }
+      const sig = signOtpStore({ appId, mobile: mobileLocal, otp, ts });
 
-      try {
-        await callHubBackend({
-          action: "otp.store",
-          appId,
-          mobile: mobileLocal,
-          otp,
-          ts,
-          sig
-        });
-      } catch (e) {
-        return sendJson(res, 500, errorJson(e?.message || "Apps Script otp.store failed", 500, {
-          stage: "backend.otp.store"
-        }));
-      }
+      await callHubBackend({
+        action: "otp.store",
+        appId,
+        mobile: mobileLocal,
+        otp,
+        ts,
+        sig
+      });
 
-      return sendJson(res, 200, { success: true, sent: true, idMessage: green?.idMessage || "" });
+      return sendJson(res, 200, {
+        success: true,
+        sent: true,
+        idMessage: green?.idMessage || ""
+      });
     }
 
     // ✅ Forward all other actions to Apps Script
-    try {
-      const data = await callHubBackend(payload);
-      return sendJson(res, 200, data);
-    } catch (e) {
-      return sendJson(res, 500, errorJson(e?.message || "Apps Script call failed", 500, {
-        stage: "backend.forward",
-        action
-      }));
-    }
+    const backendResponse = await callHubBackend(payload);
+    return sendJson(res, 200, backendResponse);
+
   } catch (err) {
-    console.error("❌ /api/hub/manage error:", err);
-    return sendJson(res, 500, errorJson(err?.message || "Unexpected server error", 500));
+    return sendJson(res, 500, {
+      success: false,
+      error: err?.message || "Unexpected server error",
+      stage: "api/hub/manage"
+    });
   }
 };
