@@ -1,4 +1,4 @@
-// api/hub/manage.js
+// === api/hub/manage.js (FULL UPDATED) ===
 // NahlHub – Vercel Function → Apps Script proxy + OTP Sender (GreenAPI)
 
 const crypto = require("crypto");
@@ -22,6 +22,9 @@ const OTP_TTL_MIN = Number(process.env.OTP_TTL_MIN || 10);
 function sendJson(res, status, obj) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("X-Content-Type-Options", "nosniff");
   res.end(JSON.stringify(obj || {}));
 }
 
@@ -36,10 +39,8 @@ function normalizeMobileLocal(mobileRaw = "") {
 function toGreenChatId(mobileLocalOrIntl = "") {
   const d = String(mobileLocalOrIntl).trim().replace(/[^\d]/g, "");
   if (!d) return "";
-
   if (d.startsWith("966") && d.length === 12) return `${d}@c.us`;
   if (d.length === 9 && d.startsWith("5")) return `966${d}@c.us`;
-
   return `${d}@c.us`;
 }
 
@@ -57,6 +58,7 @@ function signOtpStore({ appId, mobile, otp, ts }) {
 
 async function readBodyJson(req) {
   try {
+    // Some runtimes may attach parsed body
     if (req.body && typeof req.body === "object") return req.body;
 
     const raw = await new Promise((resolve, reject) => {
@@ -73,8 +75,15 @@ async function readBodyJson(req) {
   }
 }
 
+function looksLikeHtml(text = "") {
+  return /<!doctype|<html/i.test(String(text || ""));
+}
+
 async function callHubBackend(payload) {
   if (!HUB_BACKEND_URL) throw new Error("HUB_BACKEND_URL is not configured in Vercel env.");
+  if (typeof fetch !== "function") {
+    throw new Error("Global fetch() is not available. Ensure Vercel Node.js runtime is 18+.");
+  }
 
   const finalPayload = { ...(payload || {}) };
   if (!finalPayload.appId && !finalPayload.appid && HUB_APP_ID) finalPayload.appId = HUB_APP_ID;
@@ -88,8 +97,10 @@ async function callHubBackend(payload) {
   const text = await r.text();
 
   // Apps Script returns HTML if deployment/access is wrong
-  if (/<html|<!doctype/i.test(text || "")) {
-    throw new Error(`Apps Script returned HTML (HTTP ${r.status}). Ensure Web App: Execute as Me, Access: Anyone.`);
+  if (looksLikeHtml(text)) {
+    throw new Error(
+      `Apps Script returned HTML (HTTP ${r.status}). Check Web App deployment: Execute as Me, Access: Anyone.`
+    );
   }
 
   let data = {};
@@ -97,7 +108,7 @@ async function callHubBackend(payload) {
     throw new Error(`Apps Script returned non-JSON (HTTP ${r.status}): ${String(text).slice(0, 200)}`);
   }
 
-  // Your Apps Script uses success flag
+  // Apps Script uses success flag
   if (!r.ok || data.success === false) {
     throw new Error(data.error || data.message || `Apps Script HTTP ${r.status}`);
   }
@@ -108,6 +119,9 @@ async function callHubBackend(payload) {
 async function greenSendMessage(chatId, message) {
   if (!GREEN_API_INSTANCE_ID || !GREEN_API_TOKEN) {
     throw new Error("GREEN_API_INSTANCE_ID / GREEN_API_TOKEN are missing.");
+  }
+  if (typeof fetch !== "function") {
+    throw new Error("Global fetch() is not available. Ensure Vercel Node.js runtime is 18+.");
   }
 
   const url = `${GREEN_API_URL}/waInstance${GREEN_API_INSTANCE_ID}/sendMessage/${GREEN_API_TOKEN}`;
@@ -161,8 +175,14 @@ module.exports = async (req, res) => {
         time: new Date().toISOString(),
         hasBackendUrl: !!HUB_BACKEND_URL,
         hasGreenApi: !!(GREEN_API_INSTANCE_ID && GREEN_API_TOKEN),
-        hasHmac: !!OTP_HMAC_SECRET
+        hasHmac: !!OTP_HMAC_SECRET,
+        runtimeHasFetch: typeof fetch === "function"
       });
+    }
+
+    // 🔒 Block direct client attempts to store OTP (must be internal only)
+    if (action === "otp.store") {
+      return sendJson(res, 403, { success: false, error: "Forbidden action" });
     }
 
     // ✅ sendOtp (local)
