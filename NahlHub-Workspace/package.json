@@ -1,0 +1,26 @@
+{
+  "name": "nahlhub",
+  "version": "1.0.0",
+  "description": "NahlHub - Workspace and App Management Platform",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step required for static site'",
+    "start": "vercel dev",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "workspace",
+    "app-management",
+    "saas",
+    "hub"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
+
