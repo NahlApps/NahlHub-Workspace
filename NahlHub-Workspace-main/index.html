@@ -1,0 +1,1603 @@
+<!-- === index.html (FULL UPDATED) === -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>NahlHub</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-light: #f5f7f8;
+      --bg-dark: #020617;
+      --card-light: #ffffff;
+      --card-dark: #020617;
+      --border-light: rgba(15, 23, 42, 0.08);
+      --border-dark: rgba(148, 163, 184, 0.25);
+      --accent: #f4ce14;
+      --accent-soft: rgba(244, 206, 20, 0.12);
+      --text-light: #0f172a;
+      --text-dark: #e5e7eb;
+      --muted-light: #6b7280;
+      --muted-dark: #9ca3af;
+      --surface-radius: 18px;
+      --transition-fast: 0.18s ease-out;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      font-family: "Cairo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body[data-theme="light"] {
+      background: radial-gradient(circle at top left, rgba(244, 206, 20, 0.18), transparent 55%), var(--bg-light);
+      color: var(--text-light);
+    }
+
+    body[data-theme="dark"] {
+      background: radial-gradient(circle at top left, rgba(250, 204, 21, 0.14), transparent 50%),
+        linear-gradient(145deg, #020617, #020617);
+      color: var(--text-dark);
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 6px;
+      gap: 8px;
+      position: relative;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid;
+      backdrop-filter: blur(14px);
+      gap: 12px;
+      position: relative;
+      z-index: 10;
+    }
+
+    body[data-theme="light"] .topbar { background: rgba(255,255,255,0.9); border-color: var(--border-light); }
+    body[data-theme="dark"]  .topbar { background: rgba(15,23,42,0.9); border-color: var(--border-dark); }
+
+    .topbar-left { display:flex; align-items:center; gap:10px; min-width:0; }
+
+    .brand-logo {
+      width: 30px; height: 30px; border-radius: 11px;
+      display:flex; align-items:center; justify-content:center;
+      font-weight:700; font-size:18px;
+      background: radial-gradient(circle at 20% 0, #facc15, #f97316);
+      color:#111827;
+    }
+
+    .brand-text { display:flex; flex-direction:column; gap:0; font-size:13px; line-height:1.2; }
+    .brand-title { font-weight:700; letter-spacing:0.02em; white-space:nowrap; }
+    .brand-subtitle { font-size:11px; opacity:0.75; }
+
+    .topbar-right { display:flex; align-items:center; gap:6px; }
+
+    .chip-group {
+      display:inline-flex; padding:2px; border-radius:999px;
+      border:1px solid transparent; background:transparent; gap:2px;
+    }
+    body[data-theme="light"] .chip-group { border-color: rgba(148,163,184,0.42); background: rgba(255,255,255,0.9); }
+    body[data-theme="dark"]  .chip-group { border-color: rgba(148,163,184,0.4);  background: rgba(15,23,42,0.95); }
+
+    .chip-btn {
+      border:none; outline:none; border-radius:999px;
+      padding:4px 10px; font-size:11px; cursor:pointer;
+      background:transparent; color:inherit;
+      display:inline-flex; align-items:center; justify-content:center; gap:6px;
+      transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+      white-space:nowrap;
+    }
+
+    .chip-btn.active {
+      background: var(--accent);
+      color:#111827;
+      box-shadow: 0 6px 18px rgba(250,204,21,0.4);
+      transform: translateY(-0.5px);
+    }
+
+    .chip-btn:not(.active):hover { background: rgba(148,163,184,0.25); }
+    body[data-theme="dark"] .chip-btn:not(.active):hover { background: rgba(31,41,55,0.8); }
+
+    .chip-btn-mini { border-radius:999px; padding:5px 7px; font-size:11px; }
+
+    .status-pill {
+      align-self: stretch;
+      margin: 0 4px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid transparent;
+      max-width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    body[data-theme="light"] .status-pill { background: rgba(255,255,255,0.9); border-color: var(--border-light); color: var(--muted-light); }
+    body[data-theme="dark"]  .status-pill { background: rgba(15,23,42,0.9); border-color: var(--border-dark);  color: var(--muted-dark); }
+
+    .status-pill.ok { border-color: rgba(34,197,94,0.7); color: rgba(34,197,94,0.95); }
+    .status-pill.error { border-color: rgba(239,68,68,0.85); color: rgba(248,113,113,0.96); }
+
+    .status-dot { width:7px; height:7px; border-radius:999px; background: var(--accent); }
+
+    .main-panel { flex:1; display:flex; flex-direction:column; gap:8px; min-height:0; }
+
+    .welcome-card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    body[data-theme="light"] .welcome-card {
+      background: linear-gradient(135deg, rgba(244,206,20,0.12), rgba(255,255,255,0.96));
+      border-color: var(--border-light);
+    }
+    body[data-theme="dark"] .welcome-card {
+      background: linear-gradient(145deg, rgba(250,204,21,0.16), rgba(15,23,42,0.96));
+      border-color: rgba(148,163,184,0.45);
+    }
+
+    .welcome-header-line { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .welcome-title { font-size:16px; font-weight:700; }
+    .welcome-sub { font-size:12px; opacity:0.85; }
+
+    .card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    body[data-theme="light"] .card { background: #fff; border-color: var(--border-light); }
+    body[data-theme="dark"]  .card  { background: rgba(15,23,42,0.96); border-color: var(--border-dark); }
+
+    .card-header { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .card-title { font-size:15px; font-weight:600; }
+    .card-caption { font-size:12px; opacity:0.7; }
+    .card-body { display:flex; flex-direction:column; gap:10px; }
+
+    .field-group { display:flex; flex-direction:column; gap:6px; }
+    .field-label { font-size:12px; opacity:0.85; }
+
+    .btn {
+      border-radius: 999px;
+      border: none;
+      outline: none;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast), color var(--transition-fast), opacity var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #111827;
+      box-shadow: 0 8px 20px rgba(250,204,21,0.45);
+    }
+    .btn-primary:hover:enabled {
+      transform: translateY(-0.5px);
+      box-shadow: 0 10px 28px rgba(250,204,21,0.6);
+    }
+    .btn:disabled { opacity:0.6; cursor:default; box-shadow:none; transform:none; }
+
+    .btn-ghost {
+      background: transparent;
+      color: inherit;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      border: none;
+      cursor: pointer;
+    }
+    body[data-theme="light"] .btn-ghost:hover { background: rgba(148,163,184,0.18); }
+    body[data-theme="dark"] .btn-ghost:hover { background: rgba(31,41,55,0.9); }
+
+    .otp-row { display:flex; align-items:center; justify-content:center; gap:10px; direction:ltr; }
+    .otp-input {
+      width:44px; height:44px; text-align:center;
+      font-size:18px; font-weight:600;
+      border-radius:16px; border:1px solid; outline:none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+    body[data-theme="light"] .otp-input { background: rgba(248,250,252,0.96); border-color: rgba(148,163,184,0.5); color: var(--text-light); }
+    body[data-theme="dark"]  .otp-input { background: rgba(15,23,42,0.97); border-color: rgba(148,163,184,0.7); color: var(--text-dark); }
+
+    .otp-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250,204,21,0.55);
+      background: rgba(255,251,235,0.96);
+    }
+    body[data-theme="dark"] .otp-input:focus { background: rgba(15,23,42,1); }
+
+    .apps-layout { display:flex; flex-direction:column; gap:12px; min-height:0; flex:1; }
+    .apps-header-row { display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+
+    .workspace-card {
+      flex:1; min-width:260px;
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      border-radius:999px; padding:8px 12px; border:1px solid;
+      cursor:pointer; position:relative;
+      transition: box-shadow var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), transform var(--transition-fast);
+    }
+    body[data-theme="light"] .workspace-card { background: rgba(255,255,255,0.9); border-color: rgba(148,163,184,0.35); }
+    body[data-theme="dark"]  .workspace-card { background: rgba(15,23,42,0.95); border-color: rgba(148,163,184,0.6); }
+
+    .workspace-card:hover {
+      box-shadow: 0 10px 28px rgba(15,23,42,0.12);
+      border-color: rgba(250,204,21,0.7);
+      transform: translateY(-0.5px);
+    }
+
+    .workspace-meta { display:flex; flex-direction:column; gap:2px; min-width:0; }
+    .workspace-label { font-size:11px; opacity:0.7; }
+
+    .workspace-name-row { display:flex; align-items:baseline; gap:6px; min-width:0; }
+
+    .workspace-name {
+      font-size:13px; font-weight:600;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+      max-width:220px;
+    }
+    .workspace-role-pill {
+      font-size:10px; padding:2px 7px; border-radius:999px;
+      background: rgba(34,197,94,0.1); color:#15803d;
+    }
+    body[data-theme="dark"] .workspace-role-pill { background: rgba(34,197,94,0.2); color:#bbf7d0; }
+
+    .workspace-dropdown-icon {
+      width:24px; height:24px; border-radius:999px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:13px; border:1px solid transparent;
+    }
+    body[data-theme="light"] .workspace-dropdown-icon { background: rgba(248,250,252,0.9); border-color: rgba(148,163,184,0.45); }
+    body[data-theme="dark"]  .workspace-dropdown-icon { background: rgba(15,23,42,0.9); border-color: rgba(148,163,184,0.7); }
+
+    .workspace-menu {
+      position:absolute;
+      inset-inline-start:0;
+      inset-block-start:110%;
+      min-width:100%;
+      max-width:340px;
+      border-radius:18px;
+      border:1px solid;
+      padding:6px;
+      z-index:15;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.45);
+    }
+    body[data-theme="light"] .workspace-menu { background:#fff; border-color: rgba(148,163,184,0.4); }
+    body[data-theme="dark"]  .workspace-menu { background: rgba(15,23,42,0.98); border-color: rgba(148,163,184,0.65); }
+
+    .workspace-menu-item {
+      width:100%;
+      border-radius:12px;
+      border:1px solid transparent;
+      padding:6px 8px;
+      font-size:12px;
+      display:flex; align-items:center; justify-content:space-between; gap:6px;
+      background:transparent; color:inherit;
+      cursor:pointer; text-align:start;
+      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast);
+    }
+
+    .workspace-menu-item-main { display:flex; flex-direction:column; gap:2px; flex:1; min-width:0; }
+    .workspace-menu-item-name { font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .workspace-menu-item-meta { font-size:11px; opacity:0.7; }
+
+    .workspace-menu-item-role {
+      font-size:10px; padding:1px 6px; border-radius:999px;
+      background: rgba(34,197,94,0.08); color:#15803d;
+    }
+    body[data-theme="dark"] .workspace-menu-item-role { background: rgba(34,197,94,0.16); color:#bbf7d0; }
+
+    body[data-theme="light"] .workspace-menu-item:hover { background: rgba(248,250,252,0.9); border-color: rgba(148,163,184,0.4); }
+    body[data-theme="dark"]  .workspace-menu-item:hover { background: rgba(30,64,175,0.2); border-color: rgba(129,140,248,0.6); }
+
+    .workspace-menu-item.active {
+      border-color: rgba(250,204,21,0.9);
+      background: rgba(250,204,21,0.12);
+    }
+
+    .view-toggle-group {
+      display:inline-flex;
+      border-radius:999px;
+      padding:3px;
+      border:1px solid transparent;
+      background:transparent;
+      gap:2px;
+    }
+    body[data-theme="light"] .view-toggle-group { border-color: rgba(148,163,184,0.35); background: rgba(255,255,255,0.9); }
+    body[data-theme="dark"]  .view-toggle-group { border-color: rgba(148,163,184,0.5);  background: rgba(15,23,42,0.95); }
+
+    .view-toggle-btn {
+      border-radius:999px; border:none;
+      padding:5px 10px; font-size:11px; cursor:pointer;
+      display:inline-flex; align-items:center; gap:5px;
+      background:transparent; color:inherit;
+      transition: background var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+    }
+    .view-toggle-btn span.icon { font-size:13px; }
+    .view-toggle-btn.active {
+      background: var(--accent);
+      color:#111827;
+      box-shadow: 0 6px 18px rgba(250,204,21,0.4);
+      transform: translateY(-0.5px);
+    }
+    .view-toggle-btn:not(.active):hover { background: rgba(148,163,184,0.18); }
+    body[data-theme="dark"] .view-toggle-btn:not(.active):hover { background: rgba(31,41,55,0.9); }
+
+    .apps-section-card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    body[data-theme="light"] .apps-section-card { background:#fff; border-color: var(--border-light); }
+    body[data-theme="dark"]  .apps-section-card { background: rgba(15,23,42,0.96); border-color: var(--border-dark); }
+
+    .apps-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap:10px; }
+
+    .app-card {
+      border-radius:16px; border:1px solid;
+      padding:10px; display:flex; flex-direction:column; gap:6px;
+      transition: background var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+      cursor:pointer;
+    }
+    body[data-theme="light"] .app-card { background: rgba(255,255,255,0.96); border-color: rgba(148,163,184,0.35); }
+    body[data-theme="dark"]  .app-card { background: rgba(15,23,42,0.96); border-color: rgba(148,163,184,0.55); }
+
+    .app-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(15,23,42,0.18);
+      border-color: rgba(250,204,21,0.9);
+    }
+
+    .app-card-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+    .app-card-main { display:flex; align-items:center; gap:8px; min-width:0; }
+
+    .app-card-icon {
+      width:30px; height:30px; border-radius:999px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:16px;
+      background: rgba(244,206,20,0.15);
+      color:#92400e;
+      flex-shrink:0;
+    }
+    body[data-theme="dark"] .app-card-icon { background: rgba(250,204,21,0.16); color:#fbbf24; }
+
+    .app-card-title { font-size:13px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .app-card-tagline { font-size:11px; opacity:0.75; }
+    .app-card-body { font-size:11px; opacity:0.78; height:2.4em; overflow:hidden; }
+
+    .app-card-footer { display:flex; align-items:center; justify-content:space-between; font-size:11px; opacity:0.82; margin-top:4px; }
+
+    .badge-soft { border-radius:999px; padding:2px 6px; font-size:10px; background: rgba(148,163,184,0.14); }
+    .badge-installed { border-radius:999px; padding:2px 7px; font-size:10px; background: rgba(250,204,21,0.15); color:#92400e; }
+    body[data-theme="dark"] .badge-installed { background: rgba(250,204,21,0.22); color:#facc15; }
+
+    .app-card-actions { display:flex; gap:6px; }
+
+    .btn-pill-sm {
+      border-radius:999px; border:none;
+      padding:4px 9px; font-size:10px; cursor:pointer;
+      display:inline-flex; align-items:center; gap:4px;
+      background: rgba(148,163,184,0.18);
+      color:inherit;
+      transition: background var(--transition-fast), transform var(--transition-fast);
+    }
+    .btn-pill-sm.primary { background: var(--accent); color:#111827; }
+    .btn-pill-sm:hover { transform: translateY(-0.5px); }
+
+    .app-view-card {
+      border-radius: var(--surface-radius);
+      padding: 12px 14px;
+      border: 1px solid;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 240px;
+    }
+    body[data-theme="light"] .app-view-card { background:#fff; border-color: var(--border-light); }
+    body[data-theme="dark"]  .app-view-card { background: rgba(15,23,42,0.96); border-color: var(--border-dark); }
+
+    .app-view-header {
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      border-bottom:1px solid;
+      padding-bottom:6px;
+    }
+    body[data-theme="light"] .app-view-header { border-color: rgba(148,163,184,0.25); }
+    body[data-theme="dark"]  .app-view-header { border-color: rgba(51,65,85,0.9); }
+
+    .app-view-title { font-size:13px; font-weight:600; }
+    .app-view-sub { font-size:11px; opacity:0.7; }
+
+    .app-frame-wrap { width:100%; height: calc(100vh - 230px); max-height: calc(100vh - 220px); margin-top:4px; }
+    .app-frame { width:100%; height:100%; border:none; display:block; background:transparent; }
+    .app-frame-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:12px; opacity:0.6; padding:10px; text-align:center; }
+
+    .hidden { display:none !important; }
+
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 30;
+      backdrop-filter: blur(10px);
+    }
+    body[data-theme="light"] .auth-overlay {
+      background: radial-gradient(circle at top, rgba(148,163,184,0.16), transparent 60%), rgba(15,23,42,0.18);
+    }
+    body[data-theme="dark"] .auth-overlay {
+      background: radial-gradient(circle at top, rgba(15,23,42,0.95), rgba(15,23,42,0.98));
+    }
+
+    .auth-modal {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 22px;
+      border: 1px solid;
+      padding: 14px 12px 12px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.55);
+    }
+    body[data-theme="light"] .auth-modal {
+      background: linear-gradient(140deg, rgba(244,206,20,0.12), #ffffff);
+      border-color: rgba(148,163,184,0.5);
+    }
+    body[data-theme="dark"] .auth-modal {
+      background: radial-gradient(circle at top left, rgba(250,204,21,0.18), transparent 50%), rgba(15,23,42,0.98);
+      border-color: rgba(148,163,184,0.6);
+    }
+
+    .auth-modal-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 2px 4px 10px;
+    }
+    .auth-title { font-size:15px; font-weight:700; }
+    .auth-sub { font-size:12px; opacity:0.78; }
+    .auth-badge {
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      border: 1px solid rgba(148,163,184,0.6);
+      opacity: 0.9;
+    }
+    .auth-modal-body { display:flex; flex-direction:column; gap:10px; }
+
+    .input {
+      flex:1;
+      border-radius: 999px;
+      border: 1px solid;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+    }
+    body[data-theme="light"] .input { background: rgba(248,250,252,0.95); border-color: rgba(148,163,184,0.5); color: var(--text-light); }
+    body[data-theme="dark"]  .input { background: rgba(15,23,42,0.96); border-color: rgba(148,163,184,0.6); color: var(--text-dark); }
+
+    .input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(250,204,21,0.55);
+      background: rgba(255,251,235,0.9);
+    }
+    body[data-theme="dark"] .input:focus { background: rgba(15,23,42,0.98); }
+
+    .dev-row {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:6px;
+      padding-top:8px;
+      border-top: 1px dashed rgba(148,163,184,0.35);
+    }
+
+    .btn-link {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 11px;
+      opacity: 0.85;
+      text-decoration: underline;
+      color: inherit;
+    }
+
+    @media (min-width: 768px) {
+      .app-shell { padding: 6px 10px; }
+      .app-frame-wrap { height: calc(100vh - 210px); max-height: calc(100vh - 190px); }
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="brand-logo">N</div>
+        <div class="brand-text">
+          <div class="brand-title" data-i18n="hubTitle">NahlHub</div>
+          <div class="brand-subtitle" data-i18n="hubSub">تطبيقاتك في نحل هب</div>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="chip-group">
+          <button class="chip-btn" id="btnLangAr" type="button" data-lang="ar"><span>عربي</span></button>
+          <button class="chip-btn" id="btnLangEn" type="button" data-lang="en"><span>EN</span></button>
+        </div>
+        <button class="chip-btn chip-btn-mini" id="btnTheme" type="button">
+          <span class="icon" id="themeIcon">🌞</span>
+        </button>
+      </div>
+    </header>
+
+    <div id="statusPill" class="status-pill">
+      <span class="status-dot"></span>
+      <span id="statusText"></span>
+    </div>
+
+    <div id="authOverlay" class="auth-overlay">
+      <div class="auth-modal">
+        <div class="auth-modal-header">
+          <div>
+            <div class="auth-title" data-i18n="welcomeTitle">مرحباً 👋</div>
+            <div class="auth-sub" data-i18n="welcomeSub">ادخل برقم الجوال ثم أدخل رمز الدخول.</div>
+          </div>
+          <div class="auth-badge">
+            <span data-i18n="step1Title">رقم الجوال</span> ·
+            <span data-i18n="step2Title">رمز</span>
+          </div>
+        </div>
+
+        <div class="auth-modal-body">
+          <section id="stepMobile" class="card" style="margin:0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="step1Title">رقم الجوال</div>
+                <div class="card-caption" data-i18n="step1Sub">ادخل رقم الجوال.</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="field-group">
+                <label class="field-label" for="mobileInput" data-i18n="step1Label">رقم الجوال</label>
+                <input id="mobileInput" class="input" type="tel" inputmode="tel" autocomplete="tel" placeholder="5XXXXXXXX" />
+              </div>
+              <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+                <button id="btnSendOtp" class="btn btn-primary" type="button">
+                  <span data-i18n="btnSendOtp">إرسال الرمز</span>
+                </button>
+              </div>
+
+              <div class="dev-row">
+                <button id="btnPing" class="btn-link" type="button">Ping API</button>
+                <span style="font-size:11px; opacity:.7" id="devInfo"></span>
+              </div>
+            </div>
+          </section>
+
+          <section id="stepOtp" class="card hidden" style="margin:0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="step2Title">رمز الدخول</div>
+                <div class="card-caption" data-i18n="step2Sub">أدخل الرمز ٤ أرقام.</div>
+              </div>
+              <button type="button" class="btn-ghost" id="btnChangeMobile">
+                <span data-i18n="changeMobile">تعديل الرقم</span>
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="otp-row">
+                <input class="otp-input" id="otp1" type="tel" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" id="otp2" type="tel" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" id="otp3" type="tel" inputmode="numeric" maxlength="1" />
+                <input class="otp-input" id="otp4" type="tel" inputmode="numeric" maxlength="1" />
+              </div>
+
+              <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                <button id="btnVerifyOtp" class="btn btn-primary" type="button">
+                  <span data-i18n="btnVerify">تأكيد</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+      </div>
+    </div>
+
+    <main class="main-panel">
+      <section class="welcome-card" id="welcomeCard">
+        <div class="welcome-header-line">
+          <div>
+            <div class="welcome-title" data-i18n="welcomeTitle">مرحباً 👋</div>
+            <div class="welcome-sub" data-i18n="welcomeSub">ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="stepApps" class="apps-layout hidden">
+        <div class="apps-header-row">
+          <div class="workspace-card" id="workspaceCard">
+            <div class="workspace-meta">
+              <div class="workspace-label" data-i18n="workspaceLabel">مساحة العمل</div>
+              <div class="workspace-name-row">
+                <div class="workspace-name" id="workspaceName">—</div>
+                <span class="workspace-role-pill" id="workspaceRole">—</span>
+              </div>
+            </div>
+            <div class="workspace-dropdown-icon"><span id="workspaceChevron">▾</span></div>
+            <div id="workspaceMenu" class="workspace-menu hidden"></div>
+          </div>
+
+          <div class="view-toggle-group">
+            <button id="btnViewApps" type="button" class="view-toggle-btn active">
+              <span class="icon">⚙️</span>
+              <span data-i18n="viewApps">Apps</span>
+            </button>
+            <button id="btnViewMarketplace" type="button" class="view-toggle-btn">
+              <span class="icon">🛒</span>
+              <span data-i18n="viewMarketplace">Marketplace</span>
+            </button>
+          </div>
+
+          <button class="btn-ghost" type="button" id="btnLogout">
+            <span data-i18n="logout">تسجيل خروج</span>
+          </button>
+        </div>
+
+        <section id="sectionApps" class="apps-section-card">
+          <div class="card-header" style="padding:0;">
+            <div>
+              <div class="card-title" data-i18n="yourAppsTitle">تطبيقاتك</div>
+              <div class="card-caption" id="userNameLabel"></div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="appsGrid" class="apps-grid"></div>
+          </div>
+        </section>
+
+        <section id="sectionMarketplace" class="apps-section-card hidden">
+          <div class="card-header" style="padding:0;">
+            <div>
+              <div class="card-title" data-i18n="marketplaceTitle">App Marketplace</div>
+              <div class="card-caption" data-i18n="marketplaceSub">اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.</div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="marketplaceGrid" class="apps-grid"></div>
+          </div>
+        </section>
+
+        <section id="sectionAppView" class="app-view-card hidden">
+          <div class="app-view-header">
+            <div>
+              <div id="appViewTitle" class="app-view-title">NahlHub App</div>
+              <div id="appViewSub" class="app-view-sub" data-i18n="appViewSub">
+                التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.
+              </div>
+            </div>
+            <button id="btnBackFromApp" type="button" class="btn-ghost">
+              ← <span data-i18n="backToApps">التطبيقات</span>
+            </button>
+          </div>
+          <div class="app-frame-wrap">
+            <iframe id="appFrame" class="app-frame hidden" src="" title="NahlHub App"></iframe>
+            <div id="appFramePlaceholder" class="app-frame-placeholder">
+              <span data-i18n="appPlaceholder">اختر تطبيقاً من قائمة التطبيقات أو من المتجر.</span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modular JavaScript - Inline to avoid 404 issues -->
+  <script>
+/* /js/hub/config.js */
+(function () {
+  "use strict";
+  var HUB_APP_ID = "HUB";
+  var API_URL = (function () {
+    try { return new URL("/api/hub/manage", window.location.origin).toString(); }
+    catch (e) { return "/api/hub/manage"; }
+  })();
+  var STORAGE_SESSION_KEY = "nahlhub_session_key";
+  var STORAGE_LANG = "nahlhub_lang";
+  var STORAGE_THEME = "nahlhub_theme";
+  window.NH_CONFIG = {
+    HUB_APP_ID: HUB_APP_ID,
+    API_URL: API_URL,
+    STORAGE_SESSION_KEY: STORAGE_SESSION_KEY,
+    STORAGE_LANG: STORAGE_LANG,
+    STORAGE_THEME: STORAGE_THEME
+  };
+})();
+  </script>
+  <script>
+/* /js/hub/i18n.js */
+(function () {
+  "use strict";
+  if (!window.NH_CONFIG) throw new Error("NH_CONFIG is missing. Include config.js first.");
+  var STORAGE_LANG = window.NH_CONFIG.STORAGE_LANG;
+  var currentLang = localStorage.getItem(STORAGE_LANG) || "ar";
+  var tDict = {
+    hubTitle: { ar: "NahlHub", en: "NahlHub" },
+    hubSub: { ar: "تطبيقاتك في نحل هب", en: "Your apps in NahlHub" },
+    welcomeTitle: { ar: "مرحباً 👋", en: "Welcome 👋" },
+    welcomeSub: { ar: "ادخل برقم الجوال ثم اختر مساحة العمل والتطبيق.", en: "Enter your mobile, then choose workspace and app." },
+    step1Title: { ar: "رقم الجوال", en: "Mobile number" },
+    step1Sub: { ar: "ادخل رقم الجوال.", en: "Enter your mobile." },
+    step1Label: { ar: "رقم الجوال", en: "Mobile" },
+    btnSendOtp: { ar: "إرسال الرمز", en: "Send code" },
+    step2Title: { ar: "رمز الدخول", en: "Login code" },
+    step2Sub: { ar: "أدخل الرمز ٤ أرقام.", en: "Enter the 4-digit code." },
+    changeMobile: { ar: "تعديل الرقم", en: "Change number" },
+    btnVerify: { ar: "تأكيد", en: "Confirm" },
+    logout: { ar: "تسجيل خروج", en: "Logout" },
+    statusIdle: { ar: "جاهز.", en: "Ready." },
+    statusSendingOtp: { ar: "يتم إرسال الرمز عبر واتساب...", en: "Sending WhatsApp code..." },
+    statusOtpSent: { ar: "تم إرسال الرمز على واتساب.", en: "Code sent via WhatsApp." },
+    statusVerifying: { ar: "يتم التحقق...", en: "Verifying..." },
+    statusLoadingSession: { ar: "جاري التحقق من الجلسة...", en: "Checking session..." },
+    statusError: { ar: "حدث خطأ. حاول مرة أخرى.", en: "Something went wrong. Try again." },
+    statusNoWorkspaces: { ar: "لا توجد مساحات عمل متاحة.", en: "No workspaces available." },
+    statusLoadingWorkspace: { ar: "جاري تحميل مساحات العمل...", en: "Loading workspaces..." },
+    statusLoadingApps: { ar: "جاري تحميل التطبيقات...", en: "Loading apps..." },
+    statusLoadingMarketplace: { ar: "جاري تحميل متجر التطبيقات...", en: "Loading marketplace..." },
+    workspaceLabel: { ar: "مساحة العمل", en: "Workspace" },
+    yourAppsTitle: { ar: "تطبيقاتك", en: "Your apps" },
+    marketplaceTitle: { ar: "App Marketplace", en: "App Marketplace" },
+    marketplaceSub: { ar: "اختر مساحة العمل وثبت التطبيقات المناسبة لفريقك.", en: "Choose a workspace and install the right apps for your team." },
+    viewApps: { ar: "التطبيقات", en: "Apps" },
+    viewMarketplace: { ar: "المتجر", en: "Marketplace" },
+    appPlaceholder: { ar: "اختر تطبيقاً من قائمة التطبيقات أو من المتجر.", en: "Choose an app from your apps or from the marketplace." },
+    appViewSub: { ar: "التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.", en: "The app is shown inside NahlHub. Use Back to return to apps." },
+    backToApps: { ar: "التطبيقات", en: "Apps" },
+    userNotFound: { ar: "هذا الرقم غير مسجل. تواصل مع مسؤول النظام لإنشاء حساب.", en: "This mobile is not registered. Contact your admin to create an account." }
+  };
+  function t(key) {
+    var entry = tDict[key];
+    if (!entry) return key;
+    return entry[currentLang] || entry.ar || key;
+  }
+  function getLang() { return currentLang; }
+  function setLang(lang) {
+    if (lang !== "ar" && lang !== "en") return;
+    currentLang = lang;
+    localStorage.setItem(STORAGE_LANG, currentLang);
+    applyLanguage();
+  }
+  function applyLanguage() {
+    document.documentElement.lang = currentLang;
+    document.documentElement.dir = currentLang === "ar" ? "rtl" : "ltr";
+    document.querySelectorAll("[data-i18n]").forEach(function (node) {
+      var key = node.getAttribute("data-i18n");
+      node.textContent = t(key);
+    });
+  }
+  function getDict() { return tDict; }
+  window.NH_I18N = { t: t, getLang: getLang, setLang: setLang, applyLanguage: applyLanguage, getDict: getDict };
+})();
+  </script>
+  <script>
+/* /js/hub/ui.js */
+(function () {
+  "use strict";
+  if (!window.NH_I18N) throw new Error("NH_I18N is missing. Include i18n.js first.");
+  var t = window.NH_I18N.t;
+  var getLang = window.NH_I18N.getLang;
+  function isHtmlLike(text) { return /<!doctype|<html/i.test(String(text || "")); }
+  function setStatus(statusPill, statusText, msgKeyOrText, type) {
+    if (!statusPill || !statusText) return;
+    if (!msgKeyOrText) {
+      statusText.textContent = "";
+      statusPill.classList.remove("ok", "error");
+      return;
+    }
+    var text = (window.NH_I18N.getDict()[msgKeyOrText] && window.NH_I18N.getDict()[msgKeyOrText][getLang()]) 
+      ? t(msgKeyOrText) 
+      : msgKeyOrText;
+    statusPill.classList.remove("ok", "error");
+    if (type === "ok") statusPill.classList.add("ok");
+    else if (type === "error") statusPill.classList.add("error");
+    statusText.textContent = text;
+  }
+  function showStep(name, elements) {
+    if (!elements) return;
+    elements.stepMobile.classList.add("hidden");
+    elements.stepOtp.classList.add("hidden");
+    elements.stepApps.classList.add("hidden");
+    if (name === "mobile") {
+      elements.authOverlay.classList.remove("hidden");
+      elements.stepMobile.classList.remove("hidden");
+      setTimeout(function () { if (elements.mobileInput) elements.mobileInput.focus(); }, 50);
+    } else if (name === "otp") {
+      elements.authOverlay.classList.remove("hidden");
+      elements.stepOtp.classList.remove("hidden");
+      setTimeout(function () { if (elements.otpInputs && elements.otpInputs[0]) elements.otpInputs[0].focus(); }, 50);
+    } else if (name === "apps") {
+      elements.authOverlay.classList.add("hidden");
+      elements.stepApps.classList.remove("hidden");
+    }
+  }
+  function applyTheme(bodyEl, themeIcon, theme) {
+    if (!bodyEl) return;
+    bodyEl.setAttribute("data-theme", theme);
+    if (themeIcon) { themeIcon.textContent = theme === "light" ? "🌞" : "🌙"; }
+  }
+  function toggleTheme(bodyEl, themeIcon, currentTheme, storageKey) {
+    var newTheme = currentTheme === "light" ? "dark" : "light";
+    localStorage.setItem(storageKey, newTheme);
+    applyTheme(bodyEl, themeIcon, newTheme);
+    return newTheme;
+  }
+  window.NH_UI = { isHtmlLike: isHtmlLike, setStatus: setStatus, showStep: showStep, applyTheme: applyTheme, toggleTheme: toggleTheme };
+})();
+  </script>
+  <script>
+/* /js/hub/api-client.js */
+(function () {
+  "use strict";
+  if (!window.NH_CONFIG) throw new Error("NH_CONFIG is missing. Include config.js first.");
+  if (!window.NH_UI) throw new Error("NH_UI is missing. Include ui.js first.");
+  var API_URL = window.NH_CONFIG.API_URL;
+  var HUB_APP_ID = window.NH_CONFIG.HUB_APP_ID;
+  var isHtmlLike = window.NH_UI.isHtmlLike;
+  function postJson(payload, sessionKey) {
+    var body = Object.assign({}, payload || {});
+    if (!body.appId && !body.appid && HUB_APP_ID) body.appId = HUB_APP_ID;
+    if (sessionKey && !body.sessionKey) body.sessionKey = sessionKey;
+    return fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    }).then(function (res) {
+      return res.text().then(function (txt) {
+        if (isHtmlLike(txt)) {
+          var hint = "API returned HTML. In Vercel (Other/Static), ensure file exists at /api/hub/manage.js and remove any vercel.json rewrites that touch /api.";
+          throw new Error(hint + " (HTTP " + res.status + ")");
+        }
+        var data = null;
+        try { data = JSON.parse(txt || "{}"); } catch (e) {}
+        if (!res.ok) {
+          var msg = (data && (data.error || data.message)) || ("HTTP " + res.status);
+          throw new Error(msg);
+        }
+        return data || {};
+      });
+    });
+  }
+  function pingApi() {
+    return fetch(API_URL + "?action=health", { method: "GET", cache: "no-store" })
+      .then(function (r) { return r.text().then(function (t) { return { ok: r.ok, status: r.status, text: t }; }); })
+      .then(function (x) {
+        if (isHtmlLike(x.text)) { throw new Error("API returned HTML — check Vercel /api function routing."); }
+        var d = null;
+        try { d = JSON.parse(x.text || "{}"); } catch (e) {}
+        if (!x.ok || !d || (d.ok !== true && d.success !== true)) { throw new Error("Health check failed: HTTP " + x.status); }
+        return d;
+      });
+  }
+  window.NH_API_CLIENT = { postJson: postJson, pingApi: pingApi };
+})();
+  </script>
+  <script>
+/* /js/hub/auth.js */
+(function () {
+  "use strict";
+  if (!window.NH_CONFIG) throw new Error("NH_CONFIG is missing. Include config.js first.");
+  if (!window.NH_I18N) throw new Error("NH_I18N is missing. Include i18n.js first.");
+  if (!window.NH_UI) throw new Error("NH_UI is missing. Include ui.js first.");
+  if (!window.NH_API_CLIENT) throw new Error("NH_API_CLIENT is missing. Include api-client.js first.");
+  var STORAGE_SESSION_KEY = window.NH_CONFIG.STORAGE_SESSION_KEY;
+  var t = window.NH_I18N.t;
+  var getLang = window.NH_I18N.getLang;
+  var setStatus = window.NH_UI.setStatus;
+  var showStep = window.NH_UI.showStep;
+  var postJson = window.NH_API_CLIENT.postJson;
+  function readOtp(otpInputs) { return otpInputs.map(function (el) { return el.value || ""; }).join(""); }
+  function clearOtpInputs(otpInputs) { otpInputs.forEach(function (el) { el.value = ""; }); }
+  function setupOtpInputs(otpInputs, verifyCallback) {
+    otpInputs.forEach(function (input, idx) {
+      input.addEventListener("input", function (e) {
+        var value = e.target.value.replace(/\D/g, "");
+        e.target.value = value.slice(0, 1);
+        if (value && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+      });
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Backspace" && !e.target.value && idx > 0) otpInputs[idx - 1].focus();
+        if (e.key === "ArrowLeft" && idx > 0) otpInputs[idx - 1].focus();
+        if (e.key === "ArrowRight" && idx < otpInputs.length - 1) otpInputs[idx + 1].focus();
+        if (e.key === "Enter" && verifyCallback) { e.preventDefault(); verifyCallback(); }
+      });
+    });
+  }
+  function sendOtp(elements, state, onSuccess) {
+    var mobile = (elements.mobileInput.value || "").trim();
+    if (!mobile) {
+      var msg = getLang() === "ar" ? "أدخل رقم الجوال." : "Enter your mobile.";
+      setStatus(elements.statusPill, elements.statusText, msg, "error");
+      elements.mobileInput.focus();
+      return;
+    }
+    state.currentMobileRaw = mobile;
+    elements.btnSendOtp.disabled = true;
+    setStatus(elements.statusPill, elements.statusText, "statusSendingOtp");
+    postJson({ action: "sendOtp", mobile: mobile }, state.currentSessionKey)
+      .then(function (res) {
+        if (!res || res.success !== true) {
+          var msg = (res && res.error) || (getLang() === "ar" ? "تعذر إرسال الرمز." : "Failed to send code.");
+          setStatus(elements.statusPill, elements.statusText, msg, "error");
+          return;
+        }
+        setStatus(elements.statusPill, elements.statusText, "statusOtpSent", "ok");
+        clearOtpInputs(elements.otpInputs);
+        showStep("otp", elements);
+        if (onSuccess) onSuccess();
+      })
+      .catch(function (err) {
+        var msg = (getLang() === "ar" ? "خطأ: " : "Error: ") + (err && err.message ? err.message : "");
+        setStatus(elements.statusPill, elements.statusText, msg, "error");
+      })
+      .finally(function () { elements.btnSendOtp.disabled = false; });
+  }
+  function verifyOtp(elements, state, onSuccess) {
+    var otp = readOtp(elements.otpInputs);
+    if (!otp || otp.length !== 4) {
+      var msg = getLang() === "ar" ? "أدخل الرمز ٤ أرقام." : "Enter the 4-digit code.";
+      setStatus(elements.statusPill, elements.statusText, msg, "error");
+      elements.otpInputs[0].focus();
+      return;
+    }
+    elements.btnVerifyOtp.disabled = true;
+    setStatus(elements.statusPill, elements.statusText, "statusVerifying");
+    postJson({ action: "verifyOtp", mobile: state.currentMobileRaw, otp: otp }, state.currentSessionKey)
+      .then(function (res) {
+        if (!res || res.success !== true) {
+          var msg = (res && res.error) || (getLang() === "ar" ? "رمز غير صحيح أو منتهي." : "Invalid or expired code.");
+          setStatus(elements.statusPill, elements.statusText, msg, "error");
+          clearOtpInputs(elements.otpInputs);
+          elements.otpInputs[0].focus();
+          return;
+        }
+        if (res.userExists === false) {
+          setStatus(elements.statusPill, elements.statusText, "userNotFound", "error");
+          clearOtpInputs(elements.otpInputs);
+          elements.otpInputs[0].focus();
+          return;
+        }
+        state.currentSessionKey = res.sessionKey || null;
+        state.currentUser = res.user || null;
+        if (state.currentSessionKey) { localStorage.setItem(STORAGE_SESSION_KEY, state.currentSessionKey); }
+        if (onSuccess) onSuccess();
+      })
+      .catch(function (err) {
+        var msg = (getLang() === "ar" ? "خطأ: " : "Error: ") + (err && err.message ? err.message : "");
+        setStatus(elements.statusPill, elements.statusText, msg, "error");
+      })
+      .finally(function () { elements.btnVerifyOtp.disabled = false; });
+  }
+  function tryAutoLogin(elements, state, onSuccess, onFailure) {
+    if (!state.currentSessionKey) { if (onFailure) onFailure(); return; }
+    setStatus(elements.statusPill, elements.statusText, "statusLoadingSession");
+    postJson({ action: "auth.me" }, state.currentSessionKey)
+      .then(function (res) {
+        if (!res || res.success !== true) { if (onFailure) onFailure(); return; }
+        state.currentUser = res.user || null;
+        if (onSuccess) onSuccess();
+      })
+      .catch(function () { if (onFailure) onFailure(); });
+  }
+  function logout(elements, state, onComplete) {
+    var prevSession = state.currentSessionKey;
+    state.currentSessionKey = null;
+    localStorage.removeItem(STORAGE_SESSION_KEY);
+    state.currentUser = null;
+    state.currentWorkspaces = [];
+    state.currentWorkspaceId = null;
+    state.currentWorkspaceApps = [];
+    state.currentTemplates = [];
+    if (elements.appsGrid) elements.appsGrid.innerHTML = "";
+    if (elements.marketplaceGrid) elements.marketplaceGrid.innerHTML = "";
+    if (elements.workspaceNameEl) elements.workspaceNameEl.textContent = "—";
+    if (elements.workspaceRoleEl) elements.workspaceRoleEl.textContent = "—";
+    if (elements.welcomeCard) elements.welcomeCard.classList.remove("hidden");
+    setStatus(elements.statusPill, elements.statusText, "statusIdle");
+    showStep("mobile", elements);
+    if (prevSession) { postJson({ action: "auth.logout", sessionKey: prevSession }).catch(function () {}); }
+    if (onComplete) onComplete();
+  }
+  window.NH_AUTH = { readOtp: readOtp, clearOtpInputs: clearOtpInputs, setupOtpInputs: setupOtpInputs, sendOtp: sendOtp, verifyOtp: verifyOtp, tryAutoLogin: tryAutoLogin, logout: logout };
+})();
+  </script>
+  <script>
+/* /js/hub/workspace.js */
+(function () {
+  "use strict";
+  if (!window.NH_I18N) throw new Error("NH_I18N is missing. Include i18n.js first.");
+  if (!window.NH_UI) throw new Error("NH_UI is missing. Include ui.js first.");
+  if (!window.NH_API_CLIENT) throw new Error("NH_API_CLIENT is missing. Include api-client.js first.");
+  var t = window.NH_I18N.t;
+  var getLang = window.NH_I18N.getLang;
+  var setStatus = window.NH_UI.setStatus;
+  var postJson = window.NH_API_CLIENT.postJson;
+  function buildWorkspaceMenu(workspaceMenu, workspaces, currentWorkspaceId, onSelect) {
+    if (!workspaceMenu) return;
+    workspaceMenu.innerHTML = "";
+    if (!workspaces || !workspaces.length) {
+      var empty = document.createElement("div");
+      empty.className = "card-caption";
+      empty.style.padding = "6px 4px";
+      empty.textContent = t("statusNoWorkspaces");
+      workspaceMenu.appendChild(empty);
+      return;
+    }
+    workspaces.forEach(function (ws) {
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "workspace-menu-item";
+      if (ws.workspaceId === currentWorkspaceId) btn.classList.add("active");
+      var main = document.createElement("div");
+      main.className = "workspace-menu-item-main";
+      var name = document.createElement("div");
+      name.className = "workspace-menu-item-name";
+      name.textContent = ws.name || ws.workspaceId;
+      var meta = document.createElement("div");
+      meta.className = "workspace-menu-item-meta";
+      meta.textContent = (ws.slug || "") + (ws.plan ? " · " + ws.plan : "");
+      main.appendChild(name);
+      main.appendChild(meta);
+      var rolePill = document.createElement("span");
+      rolePill.className = "workspace-menu-item-role";
+      rolePill.textContent = ws.role || "member";
+      btn.appendChild(main);
+      btn.appendChild(rolePill);
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (onSelect) onSelect(ws.workspaceId);
+        workspaceMenu.classList.add("hidden");
+      });
+      workspaceMenu.appendChild(btn);
+    });
+  }
+  function loadWorkspaces(elements, state, onSuccess) {
+    if (!state.currentUser || !state.currentUser.userId) { if (onSuccess) onSuccess(); return; }
+    setStatus(elements.statusPill, elements.statusText, "statusLoadingWorkspace");
+    postJson({ action: "workspace.listForUser", userId: state.currentUser.userId }, state.currentSessionKey)
+      .then(function (res) {
+        state.currentWorkspaces = (res && res.items) || [];
+        if (!state.currentWorkspaces.length) {
+          setStatus(elements.statusPill, elements.statusText, "statusNoWorkspaces", "error");
+          if (onSuccess) onSuccess();
+          return;
+        }
+        if (onSuccess) onSuccess();
+      })
+      .catch(function (err) {
+        var msg = (getLang() === "ar" ? "فشل تحميل المساحات: " : "Failed loading workspaces: ") + (err && err.message ? err.message : "");
+        setStatus(elements.statusPill, elements.statusText, msg, "error");
+        if (onSuccess) onSuccess();
+      });
+  }
+  function selectWorkspace(elements, state, workspaceId, onLoadData) {
+    var ws = state.currentWorkspaces.find(function (w) { return w.workspaceId === workspaceId; });
+    if (!ws) return;
+    state.currentWorkspaceId = workspaceId;
+    state.currentWorkspaceRole = ws.role || "member";
+    if (elements.workspaceNameEl) elements.workspaceNameEl.textContent = ws.name || ws.workspaceId;
+    if (elements.workspaceRoleEl) elements.workspaceRoleEl.textContent = ws.role === "admin" ? "admin" : "member";
+    buildWorkspaceMenu(elements.workspaceMenu, state.currentWorkspaces, workspaceId, function (id) {
+      selectWorkspace(elements, state, id, onLoadData);
+    });
+    setStatus(elements.statusPill, elements.statusText, "statusLoadingApps");
+    if (onLoadData) onLoadData();
+  }
+  function loadWorkspaceData(elements, state, onRenderApps, onRenderMarketplace) {
+    if (!state.currentWorkspaceId) return;
+    Promise.all([
+      postJson({ action: "marketplace.listWorkspaceApps", workspaceId: state.currentWorkspaceId }, state.currentSessionKey),
+      postJson({ action: "marketplace.listTemplates", workspaceId: state.currentWorkspaceId }, state.currentSessionKey)
+    ])
+      .then(function (results) {
+        var appsRes = results[0] || {};
+        var tplRes = results[1] || {};
+        state.currentTemplates = tplRes.items || [];
+        var tplById = {};
+        state.currentTemplates.forEach(function (tpl) { tplById[tpl.templateId] = tpl; });
+        var currentLang = getLang();
+        state.currentWorkspaceApps = (appsRes.items || []).map(function (app) {
+          var tpl = tplById[app.templateId] || {};
+          return {
+            workspaceAppId: app.workspaceAppId,
+            appId: app.appId,
+            templateId: app.templateId,
+            name: (currentLang === "ar"
+              ? (app.nameAr || tpl.nameAr || app.name || tpl.name || app.templateId)
+              : (app.nameEn || tpl.nameEn || app.name || tpl.name || app.templateId)),
+            category: tpl.category || app.category || "",
+            shortDesc: (currentLang === "ar" ? (tpl.shortDescAr || tpl.shortDesc || "") : (tpl.shortDescEn || tpl.shortDesc || "")) || "",
+            status: app.status || "",
+            visibleInHub: app.visibleInHub || "",
+            defaultRoute: tpl.defaultRoute || app.defaultRoute || "",
+            iconUrl: tpl.iconUrl || "",
+            featureTags: tpl.featureTags || ""
+          };
+        });
+        if (onRenderApps) onRenderApps();
+        if (onRenderMarketplace) onRenderMarketplace();
+        setStatus(elements.statusPill, elements.statusText, "statusIdle");
+      })
+      .catch(function (err) {
+        var msg = (getLang() === "ar" ? "فشل تحميل البيانات: " : "Failed loading data: ") + (err && err.message ? err.message : "");
+        setStatus(elements.statusPill, elements.statusText, msg, "error");
+      });
+  }
+  window.NH_WORKSPACE = { buildWorkspaceMenu: buildWorkspaceMenu, loadWorkspaces: loadWorkspaces, selectWorkspace: selectWorkspace, loadWorkspaceData: loadWorkspaceData };
+})();
+  </script>
+  <script>
+/* /js/hub/apps.js */
+(function () {
+  "use strict";
+  if (!window.NH_I18N) throw new Error("NH_I18N is missing. Include i18n.js first.");
+  if (!window.NH_UI) throw new Error("NH_UI is missing. Include ui.js first.");
+  if (!window.NH_API_CLIENT) throw new Error("NH_API_CLIENT is missing. Include api-client.js first.");
+  var t = window.NH_I18N.t;
+  var getLang = window.NH_I18N.getLang;
+  var setStatus = window.NH_UI.setStatus;
+  var postJson = window.NH_API_CLIENT.postJson;
+  function setMainView(elements, view) {
+    if (elements.sectionApps) elements.sectionApps.classList.toggle("hidden", view !== "apps");
+    if (elements.sectionMarketplace) elements.sectionMarketplace.classList.toggle("hidden", view !== "marketplace");
+    if (elements.sectionAppView) elements.sectionAppView.classList.toggle("hidden", view !== "app");
+    if (elements.btnViewApps) elements.btnViewApps.classList.toggle("active", view === "apps");
+    if (elements.btnViewMarketplace) elements.btnViewMarketplace.classList.toggle("active", view === "marketplace");
+  }
+  function renderApps(appsGrid, apps, onOpenApp) {
+    if (!appsGrid) return;
+    appsGrid.innerHTML = "";
+    if (!apps || !apps.length) {
+      var empty = document.createElement("div");
+      empty.className = "card-caption";
+      empty.textContent = getLang() === "ar" ? "لا توجد تطبيقات مثبتة في هذه المساحة." : "No apps installed in this workspace.";
+      appsGrid.appendChild(empty);
+      return;
+    }
+    apps.forEach(function (app) {
+      var card = document.createElement("article");
+      card.className = "app-card";
+      var header = document.createElement("div");
+      header.className = "app-card-header";
+      var main = document.createElement("div");
+      main.className = "app-card-main";
+      var icon = document.createElement("div");
+      icon.className = "app-card-icon";
+      icon.textContent = "✦";
+      var titleWrap = document.createElement("div");
+      var title = document.createElement("div");
+      title.className = "app-card-title";
+      title.textContent = app.name || app.templateId;
+      var tagLine = document.createElement("div");
+      tagLine.className = "app-card-tagline";
+      tagLine.textContent = app.category || "";
+      titleWrap.appendChild(title);
+      titleWrap.appendChild(tagLine);
+      main.appendChild(icon);
+      main.appendChild(titleWrap);
+      var statusBadge = document.createElement("span");
+      statusBadge.className = "badge-installed";
+      statusBadge.textContent = getLang() === "ar" ? "مثبّت" : "Installed";
+      header.appendChild(main);
+      header.appendChild(statusBadge);
+      var body = document.createElement("div");
+      body.className = "app-card-body";
+      body.textContent = app.shortDesc || "";
+      var footer = document.createElement("div");
+      footer.className = "app-card-footer";
+      var cat = document.createElement("span");
+      cat.textContent = app.category || "—";
+      var actions = document.createElement("div");
+      actions.className = "app-card-actions";
+      var openBtn = document.createElement("button");
+      openBtn.type = "button";
+      openBtn.className = "btn-pill-sm primary";
+      openBtn.textContent = getLang() === "ar" ? "فتح التطبيق" : "Open app";
+      openBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (onOpenApp) onOpenApp(app);
+      });
+      actions.appendChild(openBtn);
+      footer.appendChild(cat);
+      footer.appendChild(actions);
+      card.appendChild(header);
+      card.appendChild(body);
+      card.appendChild(footer);
+      card.addEventListener("click", function () { if (onOpenApp) onOpenApp(app); });
+      appsGrid.appendChild(card);
+    });
+  }
+  function renderMarketplace(marketplaceGrid, templates, onInstall) {
+    if (!marketplaceGrid) return;
+    marketplaceGrid.innerHTML = "";
+    if (!templates || !templates.length) {
+      var empty = document.createElement("div");
+      empty.className = "card-caption";
+      empty.textContent = getLang() === "ar" ? "لا توجد تطبيقات في المتجر." : "No apps available in marketplace.";
+      marketplaceGrid.appendChild(empty);
+      return;
+    }
+    var currentLang = getLang();
+    templates.forEach(function (tpl) {
+      var card = document.createElement("article");
+      card.className = "app-card";
+      var header = document.createElement("div");
+      header.className = "app-card-header";
+      var main = document.createElement("div");
+      main.className = "app-card-main";
+      var icon = document.createElement("div");
+      icon.className = "app-card-icon";
+      icon.textContent = "✴";
+      var titleWrap = document.createElement("div");
+      var title = document.createElement("div");
+      title.className = "app-card-title";
+      title.textContent = (currentLang === "ar" ? (tpl.nameAr || tpl.name || tpl.templateId) : (tpl.nameEn || tpl.name || tpl.templateId));
+      var tagLine = document.createElement("div");
+      tagLine.className = "app-card-tagline";
+      tagLine.textContent = tpl.category || "";
+      titleWrap.appendChild(title);
+      titleWrap.appendChild(tagLine);
+      main.appendChild(icon);
+      main.appendChild(titleWrap);
+      var statusSpan = document.createElement("span");
+      statusSpan.className = "badge-soft";
+      statusSpan.textContent = tpl.planRequired || "free";
+      header.appendChild(main);
+      header.appendChild(statusSpan);
+      var body = document.createElement("div");
+      body.className = "app-card-body";
+      body.textContent = (currentLang === "ar" ? (tpl.shortDescAr || tpl.shortDesc || "") : (tpl.shortDescEn || tpl.shortDesc || ""));
+      var footer = document.createElement("div");
+      footer.className = "app-card-footer";
+      var tags = document.createElement("span");
+      tags.textContent = tpl.featureTags || "";
+      var actions = document.createElement("div");
+      actions.className = "app-card-actions";
+      var installBtn = document.createElement("button");
+      installBtn.type = "button";
+      installBtn.className = "btn-pill-sm primary";
+      var isInstalled = !!tpl.installed;
+      installBtn.textContent = isInstalled ? (currentLang === "ar" ? "مثبّت" : "Installed") : (currentLang === "ar" ? "تثبيت" : "Install");
+      if (isInstalled) installBtn.disabled = true;
+      installBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (isInstalled) return;
+        if (onInstall) onInstall(tpl);
+      });
+      actions.appendChild(installBtn);
+      footer.appendChild(tags);
+      footer.appendChild(actions);
+      card.appendChild(header);
+      card.appendChild(body);
+      card.appendChild(footer);
+      marketplaceGrid.appendChild(card);
+    });
+  }
+  function installTemplate(elements, state, template, onReload) {
+    if (!state.currentWorkspaceId || !state.currentUser) return;
+    setStatus(elements.statusPill, elements.statusText, "statusLoadingMarketplace");
+    postJson({
+      action: "marketplace.installApp",
+      workspaceId: state.currentWorkspaceId,
+      templateId: template.templateId,
+      userId: state.currentUser.userId
+    }, state.currentSessionKey)
+      .then(function (res) {
+        if (!res || res.success !== true) {
+          setStatus(elements.statusPill, elements.statusText, (res && res.error) || "Install failed", "error");
+          return;
+        }
+        if (onReload) onReload();
+      })
+      .catch(function (err) {
+        var msg = (getLang() === "ar" ? "فشل التثبيت: " : "Install failed: ") + (err && err.message ? err.message : "");
+        setStatus(elements.statusPill, elements.statusText, msg, "error");
+      });
+  }
+  function openWorkspaceApp(elements, state, app) {
+    if (!app || !app.defaultRoute) {
+      var msg = getLang() === "ar" ? "رابط التطبيق غير مهيأ." : "App URL is not configured yet.";
+      setStatus(elements.statusPill, elements.statusText, msg, "error");
+      setMainView(elements, "apps");
+      return;
+    }
+    if (!state.currentWorkspaceId) {
+      var msg2 = getLang() === "ar" ? "اختر مساحة عمل أولاً." : "Please select a workspace first.";
+      setStatus(elements.statusPill, elements.statusText, msg2, "error");
+      return;
+    }
+    if (elements.appViewTitle) elements.appViewTitle.textContent = app.name || app.templateId;
+    if (elements.appFramePlaceholder) elements.appFramePlaceholder.classList.add("hidden");
+    if (elements.appFrame) elements.appFrame.classList.remove("hidden");
+    var route = app.defaultRoute;
+    var join = route.indexOf("?") >= 0 ? "&" : "?";
+    if (elements.appFrame) {
+      elements.appFrame.src = route + join + "workspaceId=" + encodeURIComponent(state.currentWorkspaceId);
+    }
+    setMainView(elements, "app");
+  }
+  function updateUserUi(userNameLabel, user) {
+    if (!userNameLabel) return;
+    if (!user) { userNameLabel.textContent = ""; return; }
+    var suffix = " · " + (user.mobile || "");
+    var greet = getLang() === "ar" ? ("مرحباً " + (user.name || "")) : ("Hi " + (user.name || ""));
+    userNameLabel.textContent = greet + suffix;
+  }
+  window.NH_APPS = { setMainView: setMainView, renderApps: renderApps, renderMarketplace: renderMarketplace, installTemplate: installTemplate, openWorkspaceApp: openWorkspaceApp, updateUserUi: updateUserUi };
+})();
+  </script>
+  <script>
+/* /js/hub/main.js */
+(function () {
+  "use strict";
+  if (!window.NH_CONFIG) throw new Error("NH_CONFIG is missing. Include config.js first.");
+  if (!window.NH_I18N) throw new Error("NH_I18N is missing. Include i18n.js first.");
+  if (!window.NH_UI) throw new Error("NH_UI is missing. Include ui.js first.");
+  if (!window.NH_API_CLIENT) throw new Error("NH_API_CLIENT is missing. Include api-client.js first.");
+  if (!window.NH_AUTH) throw new Error("NH_AUTH is missing. Include auth.js first.");
+  if (!window.NH_WORKSPACE) throw new Error("NH_WORKSPACE is missing. Include workspace.js first.");
+  if (!window.NH_APPS) throw new Error("NH_APPS is missing. Include apps.js first.");
+  var STORAGE_SESSION_KEY = window.NH_CONFIG.STORAGE_SESSION_KEY;
+  var STORAGE_THEME = window.NH_CONFIG.STORAGE_THEME;
+  var state = {
+    currentLang: window.NH_I18N.getLang(),
+    currentTheme: localStorage.getItem(STORAGE_THEME) || "light",
+    currentSessionKey: localStorage.getItem(STORAGE_SESSION_KEY) || null,
+    currentUser: null,
+    currentMobileRaw: "",
+    currentWorkspaces: [],
+    currentWorkspaceId: null,
+    currentWorkspaceRole: "",
+    currentWorkspaceApps: [],
+    currentTemplates: [],
+    currentMainView: "apps"
+  };
+  var elements = {
+    bodyEl: document.body,
+    statusPill: document.getElementById("statusPill"),
+    statusText: document.getElementById("statusText"),
+    welcomeCard: document.getElementById("welcomeCard"),
+    authOverlay: document.getElementById("authOverlay"),
+    stepMobile: document.getElementById("stepMobile"),
+    stepOtp: document.getElementById("stepOtp"),
+    stepApps: document.getElementById("stepApps"),
+    mobileInput: document.getElementById("mobileInput"),
+    btnSendOtp: document.getElementById("btnSendOtp"),
+    otpInputs: [
+      document.getElementById("otp1"),
+      document.getElementById("otp2"),
+      document.getElementById("otp3"),
+      document.getElementById("otp4")
+    ],
+    btnVerifyOtp: document.getElementById("btnVerifyOtp"),
+    btnChangeMobile: document.getElementById("btnChangeMobile"),
+    workspaceCard: document.getElementById("workspaceCard"),
+    workspaceMenu: document.getElementById("workspaceMenu"),
+    workspaceNameEl: document.getElementById("workspaceName"),
+    workspaceRoleEl: document.getElementById("workspaceRole"),
+    btnViewApps: document.getElementById("btnViewApps"),
+    btnViewMarketplace: document.getElementById("btnViewMarketplace"),
+    sectionApps: document.getElementById("sectionApps"),
+    sectionMarketplace: document.getElementById("sectionMarketplace"),
+    sectionAppView: document.getElementById("sectionAppView"),
+    appsGrid: document.getElementById("appsGrid"),
+    marketplaceGrid: document.getElementById("marketplaceGrid"),
+    appFrame: document.getElementById("appFrame"),
+    appFramePlaceholder: document.getElementById("appFramePlaceholder"),
+    appViewTitle: document.getElementById("appViewTitle"),
+    btnBackFromApp: document.getElementById("btnBackFromApp"),
+    btnLogout: document.getElementById("btnLogout"),
+    btnTheme: document.getElementById("btnTheme"),
+    themeIcon: document.getElementById("themeIcon"),
+    btnLangAr: document.getElementById("btnLangAr"),
+    btnLangEn: document.getElementById("btnLangEn"),
+    userNameLabel: document.getElementById("userNameLabel"),
+    btnPing: document.getElementById("btnPing"),
+    devInfo: document.getElementById("devInfo")
+  };
+  window.NH_AUTH.setupOtpInputs(elements.otpInputs, function () {
+    window.NH_AUTH.verifyOtp(elements, state, onAuthSuccess);
+  });
+  function onAuthSuccess() {
+    if (elements.welcomeCard) elements.welcomeCard.classList.add("hidden");
+    window.NH_APPS.updateUserUi(elements.userNameLabel, state.currentUser);
+    window.NH_WORKSPACE.loadWorkspaces(elements, state, function () {
+      if (state.currentWorkspaces.length > 0) {
+        window.NH_WORKSPACE.selectWorkspace(elements, state, state.currentWorkspaces[0].workspaceId, function () {
+          window.NH_WORKSPACE.loadWorkspaceData(elements, state, renderApps, renderMarketplace);
+        });
+      }
+      window.NH_UI.showStep("apps", elements);
+      window.NH_UI.setStatus(elements.statusPill, elements.statusText, "statusIdle");
+    });
+  }
+  function renderApps() {
+    window.NH_APPS.renderApps(elements.appsGrid, state.currentWorkspaceApps, function (app) {
+      window.NH_APPS.openWorkspaceApp(elements, state, app);
+    });
+  }
+  function renderMarketplace() {
+    window.NH_APPS.renderMarketplace(elements.marketplaceGrid, state.currentTemplates, function (tpl) {
+      window.NH_APPS.installTemplate(elements, state, tpl, function () {
+        window.NH_WORKSPACE.loadWorkspaceData(elements, state, renderApps, renderMarketplace);
+      });
+    });
+  }
+  if (elements.btnSendOtp) {
+    elements.btnSendOtp.addEventListener("click", function () {
+      window.NH_AUTH.sendOtp(elements, state, function () {});
+    });
+  }
+  if (elements.mobileInput) {
+    elements.mobileInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        window.NH_AUTH.sendOtp(elements, state);
+      }
+    });
+  }
+  if (elements.btnVerifyOtp) {
+    elements.btnVerifyOtp.addEventListener("click", function () {
+      window.NH_AUTH.verifyOtp(elements, state, onAuthSuccess);
+    });
+  }
+  if (elements.btnChangeMobile) {
+    elements.btnChangeMobile.addEventListener("click", function () {
+      window.NH_UI.showStep("mobile", elements);
+      window.NH_UI.setStatus(elements.statusPill, elements.statusText, "statusIdle");
+    });
+  }
+  if (elements.btnLogout) {
+    elements.btnLogout.addEventListener("click", function () {
+      window.NH_AUTH.logout(elements, state);
+    });
+  }
+  if (elements.btnTheme) {
+    elements.btnTheme.addEventListener("click", function () {
+      state.currentTheme = window.NH_UI.toggleTheme(elements.bodyEl, elements.themeIcon, state.currentTheme, STORAGE_THEME);
+    });
+  }
+  if (elements.btnLangAr) {
+    elements.btnLangAr.addEventListener("click", function () {
+      window.NH_I18N.setLang("ar");
+      state.currentLang = "ar";
+      updateLanguageUI();
+      renderApps();
+      renderMarketplace();
+    });
+  }
+  if (elements.btnLangEn) {
+    elements.btnLangEn.addEventListener("click", function () {
+      window.NH_I18N.setLang("en");
+      state.currentLang = "en";
+      updateLanguageUI();
+      renderApps();
+      renderMarketplace();
+    });
+  }
+  function updateLanguageUI() {
+    if (elements.btnLangAr) elements.btnLangAr.classList.toggle("active", state.currentLang === "ar");
+    if (elements.btnLangEn) elements.btnLangEn.classList.toggle("active", state.currentLang === "en");
+    if (elements.mobileInput) elements.mobileInput.placeholder = "5XXXXXXXX";
+    window.NH_APPS.updateUserUi(elements.userNameLabel, state.currentUser);
+  }
+  if (elements.btnViewApps) {
+    elements.btnViewApps.addEventListener("click", function () {
+      window.NH_APPS.setMainView(elements, "apps");
+      state.currentMainView = "apps";
+    });
+  }
+  if (elements.btnViewMarketplace) {
+    elements.btnViewMarketplace.addEventListener("click", function () {
+      window.NH_APPS.setMainView(elements, "marketplace");
+      state.currentMainView = "marketplace";
+    });
+  }
+  if (elements.btnBackFromApp) {
+    elements.btnBackFromApp.addEventListener("click", function () {
+      window.NH_APPS.setMainView(elements, "apps");
+      state.currentMainView = "apps";
+    });
+  }
+  if (elements.workspaceCard) {
+    elements.workspaceCard.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (elements.workspaceMenu) elements.workspaceMenu.classList.toggle("hidden");
+    });
+  }
+  document.addEventListener("click", function () {
+    if (elements.workspaceMenu) elements.workspaceMenu.classList.add("hidden");
+  });
+  if (elements.workspaceMenu) {
+    elements.workspaceMenu.addEventListener("click", function (e) {
+      e.stopPropagation();
+    });
+  }
+  if (elements.btnPing) {
+    elements.btnPing.addEventListener("click", function () {
+      if (elements.devInfo) elements.devInfo.textContent = "…";
+      window.NH_API_CLIENT.pingApi()
+        .then(function (data) {
+          if (elements.devInfo) elements.devInfo.textContent = "OK";
+        })
+        .catch(function (err) {
+          if (elements.devInfo) elements.devInfo.textContent = "ERR";
+          window.NH_UI.setStatus(elements.statusPill, elements.statusText, err.message || "API error", "error");
+        });
+    });
+  }
+  window.NH_UI.applyTheme(elements.bodyEl, elements.themeIcon, state.currentTheme);
+  window.NH_I18N.applyLanguage();
+  updateLanguageUI();
+  window.NH_UI.setStatus(elements.statusPill, elements.statusText, "statusIdle");
+  window.NH_AUTH.tryAutoLogin(elements, state, function () {
+    if (elements.welcomeCard) elements.welcomeCard.classList.add("hidden");
+    window.NH_APPS.updateUserUi(elements.userNameLabel, state.currentUser);
+    window.NH_WORKSPACE.loadWorkspaces(elements, state, function () {
+      if (state.currentWorkspaces.length > 0) {
+        window.NH_WORKSPACE.selectWorkspace(elements, state, state.currentWorkspaces[0].workspaceId, function () {
+          window.NH_WORKSPACE.loadWorkspaceData(elements, state, renderApps, renderMarketplace);
+        });
+      }
+      window.NH_UI.showStep("apps", elements);
+      window.NH_UI.setStatus(elements.statusPill, elements.statusText, "statusIdle", "ok");
+    });
+  }, function () {
+    window.NH_UI.showStep("mobile", elements);
+  });
+  if (elements.btnPing) {
+    window.NH_API_CLIENT.pingApi()
+      .then(function () {
+        if (elements.devInfo) elements.devInfo.textContent = "OK";
+      })
+      .catch(function () {
+        if (elements.devInfo) elements.devInfo.textContent = "ERR";
+      });
+  }
+})();
+  </script>
+</body>
+</html>
