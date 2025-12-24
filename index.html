@@ -595,7 +595,10 @@
                 <label class="field-label" for="mobileInput" data-i18n="step1Label">رقم الجوال</label>
                 <input id="mobileInput" class="input" type="tel" inputmode="tel" autocomplete="tel" placeholder="5XXXXXXXX" />
               </div>
-              <div style="display:flex; justify-content:flex-end; margin-top:6px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+                <button id="btnShowRegister" class="btn-link" type="button">
+                  <span data-i18n="btnRegister">إنشاء حساب جديد</span>
+                </button>
                 <button id="btnSendOtp" class="btn btn-primary" type="button">
                   <span data-i18n="btnSendOtp">إرسال الرمز</span>
                 </button>
@@ -604,6 +607,37 @@
               <div class="dev-row">
                 <button id="btnPing" class="btn-link" type="button">Ping API</button>
                 <span style="font-size:11px; opacity:.7" id="devInfo"></span>
+              </div>
+            </div>
+          </section>
+
+          <section id="stepRegister" class="card hidden" style="margin:0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="registerTitle">إنشاء حساب جديد</div>
+                <div class="card-caption" data-i18n="registerSub">أدخل بياناتك لإنشاء حساب جديد.</div>
+              </div>
+              <button type="button" class="btn-ghost" id="btnBackToLogin">
+                <span data-i18n="backToLogin">العودة للدخول</span>
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="field-group">
+                <label class="field-label" for="registerNameInput" data-i18n="registerNameLabel">الاسم</label>
+                <input id="registerNameInput" class="input" type="text" autocomplete="name" placeholder="" />
+              </div>
+              <div class="field-group" style="margin-top:8px;">
+                <label class="field-label" for="registerEmailInput" data-i18n="registerEmailLabel">البريد الإلكتروني (اختياري)</label>
+                <input id="registerEmailInput" class="input" type="email" autocomplete="email" placeholder="example@email.com" />
+              </div>
+              <div class="field-group" style="margin-top:8px;">
+                <label class="field-label" for="registerMobileInput" data-i18n="registerMobileLabel">رقم الجوال</label>
+                <input id="registerMobileInput" class="input" type="tel" inputmode="tel" autocomplete="tel" placeholder="5XXXXXXXX" />
+              </div>
+              <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+                <button id="btnRegister" class="btn btn-primary" type="button">
+                  <span data-i18n="btnRegisterSubmit">إنشاء الحساب</span>
+                </button>
               </div>
             </div>
           </section>
@@ -638,6 +672,128 @@
       </div>
     </div>
 
+    <div id="profileOverlay" class="auth-overlay hidden">
+      <div class="auth-modal">
+        <div class="auth-modal-header">
+          <div>
+            <div class="auth-title" data-i18n="profileTitle">الملف الشخصي</div>
+            <div class="auth-sub" data-i18n="profileSub">إدارة معلوماتك الشخصية</div>
+          </div>
+          <button type="button" class="btn-ghost" id="btnCloseProfile">
+            <span>✕</span>
+          </button>
+        </div>
+
+        <div class="auth-modal-body">
+          <section id="profileView" class="card" style="margin:0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="profileInfo">معلومات المستخدم</div>
+                <div class="card-caption" data-i18n="profileInfoSub">عرض وتعديل معلوماتك الشخصية</div>
+              </div>
+              <button type="button" class="btn-ghost" id="btnEditProfile">
+                <span data-i18n="edit">تعديل</span>
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="field-group">
+                <label class="field-label" data-i18n="profileNameLabel">الاسم</label>
+                <div id="profileNameDisplay" class="input" style="background:transparent; border:none; padding:4px 0; cursor:default;"></div>
+              </div>
+              <div class="field-group" style="margin-top:8px;">
+                <label class="field-label" data-i18n="profileEmailLabel">البريد الإلكتروني</label>
+                <div id="profileEmailDisplay" class="input" style="background:transparent; border:none; padding:4px 0; cursor:default;"></div>
+              </div>
+              <div class="field-group" style="margin-top:8px;">
+                <label class="field-label" data-i18n="profileMobileLabel">رقم الجوال</label>
+                <div id="profileMobileDisplay" class="input" style="background:transparent; border:none; padding:4px 0; cursor:default;"></div>
+              </div>
+            </div>
+          </section>
+
+          <section id="profileEdit" class="card hidden" style="margin:0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="profileEditTitle">تعديل الملف الشخصي</div>
+                <div class="card-caption" data-i18n="profileEditSub">قم بتحديث معلوماتك</div>
+              </div>
+              <button type="button" class="btn-ghost" id="btnCancelEdit">
+                <span data-i18n="cancel">إلغاء</span>
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="field-group">
+                <label class="field-label" for="profileNameInput" data-i18n="profileNameLabel">الاسم</label>
+                <input id="profileNameInput" class="input" type="text" autocomplete="name" />
+              </div>
+              <div class="field-group" style="margin-top:8px;">
+                <label class="field-label" for="profileEmailInput" data-i18n="profileEmailLabel">البريد الإلكتروني</label>
+                <input id="profileEmailInput" class="input" type="email" autocomplete="email" />
+              </div>
+              <div class="field-group" style="margin-top:8px;">
+                <label class="field-label" data-i18n="profileMobileLabel">رقم الجوال</label>
+                <div class="input" style="background:transparent; border:none; padding:4px 0; cursor:default; opacity:0.7;" id="profileMobileReadonly"></div>
+                <div class="card-caption" style="margin-top:4px;" data-i18n="profileMobileNote">لا يمكن تغيير رقم الجوال</div>
+              </div>
+              <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+                <button id="btnCancelProfile" class="btn btn-ghost" type="button">
+                  <span data-i18n="cancel">إلغاء</span>
+                </button>
+                <button id="btnSaveProfile" class="btn btn-primary" type="button">
+                  <span data-i18n="save">حفظ</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div id="workspaceCreateOverlay" class="auth-overlay hidden">
+      <div class="auth-modal">
+        <div class="auth-modal-header">
+          <div>
+            <div class="auth-title" data-i18n="createWorkspaceTitle">إنشاء مساحة عمل جديدة</div>
+            <div class="auth-sub" data-i18n="createWorkspaceSub">أدخل اسم مساحة العمل</div>
+          </div>
+          <button type="button" class="btn-ghost" id="btnCloseWorkspaceCreate">
+            <span>✕</span>
+          </button>
+        </div>
+
+        <div class="auth-modal-body">
+          <section class="card" style="margin:0">
+            <div class="card-header">
+              <div>
+                <div class="card-title" data-i18n="workspaceDetails">تفاصيل مساحة العمل</div>
+                <div class="card-caption" data-i18n="workspaceDetailsSub">أدخل اسم مساحة العمل. سيتم إنشاء معرف تلقائياً.</div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="field-group">
+                <label class="field-label" for="workspaceNameInput" data-i18n="workspaceNameLabel">اسم مساحة العمل</label>
+                <input id="workspaceNameInput" class="input" type="text" placeholder="" />
+                <div class="card-caption" style="margin-top:4px;" data-i18n="workspaceNameHint">مثال: شركتي، فريق المبيعات، إلخ</div>
+              </div>
+              <div class="field-group" style="margin-top:8px;">
+                <label class="field-label" data-i18n="workspaceSlugLabel">معرف مساحة العمل</label>
+                <div id="workspaceSlugPreview" class="input" style="background:transparent; border:none; padding:4px 0; cursor:default; opacity:0.7; font-family:monospace; font-size:11px;"></div>
+                <div class="card-caption" style="margin-top:4px;" data-i18n="workspaceSlugHint">سيتم إنشاؤه تلقائياً من الاسم</div>
+              </div>
+              <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:10px;">
+                <button id="btnCancelWorkspaceCreate" class="btn btn-ghost" type="button">
+                  <span data-i18n="cancel">إلغاء</span>
+                </button>
+                <button id="btnCreateWorkspaceSubmit" class="btn btn-primary" type="button">
+                  <span data-i18n="createWorkspaceBtn">إنشاء</span>
+                </button>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
     <main class="main-panel">
       <section class="welcome-card" id="welcomeCard">
         <div class="welcome-header-line">
@@ -659,7 +815,14 @@
               </div>
             </div>
             <div class="workspace-dropdown-icon"><span id="workspaceChevron">▾</span></div>
-            <div id="workspaceMenu" class="workspace-menu hidden"></div>
+            <div id="workspaceMenu" class="workspace-menu hidden">
+              <button type="button" class="workspace-menu-item" id="btnCreateWorkspace" style="border-bottom:1px solid rgba(148,163,184,0.2); margin-bottom:4px; padding-bottom:8px;">
+                <div class="workspace-menu-item-main">
+                  <div class="workspace-menu-item-name" data-i18n="createWorkspace">+ إنشاء مساحة عمل</div>
+                  <div class="workspace-menu-item-meta" data-i18n="createWorkspaceSub">إنشاء مساحة عمل جديدة</div>
+                </div>
+              </button>
+            </div>
           </div>
 
           <div class="view-toggle-group">
@@ -673,6 +836,9 @@
             </button>
           </div>
 
+          <button class="btn-ghost" type="button" id="btnProfile">
+            <span data-i18n="profile">الملف الشخصي</span>
+          </button>
           <button class="btn-ghost" type="button" id="btnLogout">
             <span data-i18n="logout">تسجيل خروج</span>
           </button>
@@ -787,7 +953,57 @@
     appPlaceholder: { ar: "اختر تطبيقاً من قائمة التطبيقات أو من المتجر.", en: "Choose an app from your apps or from the marketplace." },
     appViewSub: { ar: "التطبيق ظاهر داخل نحل هب. استخدم زر الرجوع للعودة للتطبيقات.", en: "The app is shown inside NahlHub. Use Back to return to apps." },
     backToApps: { ar: "التطبيقات", en: "Apps" },
-    userNotFound: { ar: "هذا الرقم غير مسجل. تواصل مع مسؤول النظام لإنشاء حساب.", en: "This mobile is not registered. Contact your admin to create an account." }
+    userNotFound: { ar: "هذا الرقم غير مسجل. تواصل مع مسؤول النظام لإنشاء حساب.", en: "This mobile is not registered. Contact your admin to create an account." },
+    btnRegister: { ar: "إنشاء حساب جديد", en: "Create account" },
+    registerTitle: { ar: "إنشاء حساب جديد", en: "Create new account" },
+    registerSub: { ar: "أدخل بياناتك لإنشاء حساب جديد.", en: "Enter your details to create a new account." },
+    registerNameLabel: { ar: "الاسم", en: "Name" },
+    registerEmailLabel: { ar: "البريد الإلكتروني (اختياري)", en: "Email (optional)" },
+    registerMobileLabel: { ar: "رقم الجوال", en: "Mobile number" },
+    btnRegisterSubmit: { ar: "إنشاء الحساب", en: "Create account" },
+    backToLogin: { ar: "العودة للدخول", en: "Back to login" },
+    statusRegistering: { ar: "جاري إنشاء الحساب...", en: "Creating account..." },
+    statusRegistrationSuccess: { ar: "تم إنشاء الحساب. تم إرسال رمز التحقق.", en: "Account created. Verification code sent." },
+    registerError: { ar: "فشل إنشاء الحساب.", en: "Failed to create account." },
+    registerErrorUserExists: { ar: "هذا الرقم مسجل بالفعل. استخدم تسجيل الدخول.", en: "This mobile is already registered. Please login." },
+    registerErrorInvalidName: { ar: "الاسم مطلوب.", en: "Name is required." },
+    registerErrorInvalidMobile: { ar: "رقم الجوال غير صحيح.", en: "Invalid mobile number." },
+    profile: { ar: "الملف الشخصي", en: "Profile" },
+    profileTitle: { ar: "الملف الشخصي", en: "User Profile" },
+    profileSub: { ar: "إدارة معلوماتك الشخصية", en: "Manage your personal information" },
+    profileInfo: { ar: "معلومات المستخدم", en: "User Information" },
+    profileInfoSub: { ar: "عرض وتعديل معلوماتك الشخصية", en: "View and edit your personal information" },
+    profileEditTitle: { ar: "تعديل الملف الشخصي", en: "Edit Profile" },
+    profileEditSub: { ar: "قم بتحديث معلوماتك", en: "Update your information" },
+    profileNameLabel: { ar: "الاسم", en: "Name" },
+    profileEmailLabel: { ar: "البريد الإلكتروني", en: "Email" },
+    profileMobileLabel: { ar: "رقم الجوال", en: "Mobile Number" },
+    profileMobileNote: { ar: "لا يمكن تغيير رقم الجوال", en: "Mobile number cannot be changed" },
+    edit: { ar: "تعديل", en: "Edit" },
+    cancel: { ar: "إلغاء", en: "Cancel" },
+    save: { ar: "حفظ", en: "Save" },
+    statusLoadingProfile: { ar: "جاري تحميل الملف الشخصي...", en: "Loading profile..." },
+    statusSavingProfile: { ar: "جاري حفظ التغييرات...", en: "Saving changes..." },
+    statusProfileSaved: { ar: "تم حفظ التغييرات بنجاح.", en: "Changes saved successfully." },
+    profileError: { ar: "فشل تحميل الملف الشخصي.", en: "Failed to load profile." },
+    profileSaveError: { ar: "فشل حفظ التغييرات.", en: "Failed to save changes." },
+    profileErrorInvalidName: { ar: "الاسم مطلوب.", en: "Name is required." },
+    profileErrorInvalidEmail: { ar: "البريد الإلكتروني غير صحيح.", en: "Invalid email address." },
+    createWorkspace: { ar: "+ إنشاء مساحة عمل", en: "+ Create Workspace" },
+    createWorkspaceTitle: { ar: "إنشاء مساحة عمل جديدة", en: "Create New Workspace" },
+    workspaceDetails: { ar: "تفاصيل مساحة العمل", en: "Workspace Details" },
+    workspaceDetailsSub: { ar: "أدخل اسم مساحة العمل. سيتم إنشاء معرف تلقائياً.", en: "Enter workspace name. An identifier will be generated automatically." },
+    workspaceNameLabel: { ar: "اسم مساحة العمل", en: "Workspace Name" },
+    workspaceNameHint: { ar: "مثال: شركتي، فريق المبيعات، إلخ", en: "Example: My Company, Sales Team, etc." },
+    workspaceSlugLabel: { ar: "معرف مساحة العمل", en: "Workspace Identifier" },
+    workspaceSlugHint: { ar: "سيتم إنشاؤه تلقائياً من الاسم", en: "Will be generated automatically from name" },
+    createWorkspaceBtn: { ar: "إنشاء", en: "Create" },
+    statusCreatingWorkspace: { ar: "جاري إنشاء مساحة العمل...", en: "Creating workspace..." },
+    statusWorkspaceCreated: { ar: "تم إنشاء مساحة العمل بنجاح.", en: "Workspace created successfully." },
+    workspaceCreateError: { ar: "فشل إنشاء مساحة العمل.", en: "Failed to create workspace." },
+    workspaceCreateErrorInvalidName: { ar: "اسم مساحة العمل مطلوب.", en: "Workspace name is required." },
+    workspaceCreateErrorNameTooShort: { ar: "اسم مساحة العمل قصير جداً (3 أحرف على الأقل).", en: "Workspace name is too short (minimum 3 characters)." },
+    workspaceCreateErrorNameTooLong: { ar: "اسم مساحة العمل طويل جداً (50 حرف كحد أقصى).", en: "Workspace name is too long (maximum 50 characters)." }
   };
   function t(key) {
     var entry = tDict[key];
@@ -840,6 +1056,7 @@
     if (!elements) return;
     elements.stepMobile.classList.add("hidden");
     elements.stepOtp.classList.add("hidden");
+    elements.stepRegister.classList.add("hidden");
     elements.stepApps.classList.add("hidden");
     if (name === "mobile") {
       elements.authOverlay.classList.remove("hidden");
@@ -849,6 +1066,10 @@
       elements.authOverlay.classList.remove("hidden");
       elements.stepOtp.classList.remove("hidden");
       setTimeout(function () { if (elements.otpInputs && elements.otpInputs[0]) elements.otpInputs[0].focus(); }, 50);
+    } else if (name === "register") {
+      elements.authOverlay.classList.remove("hidden");
+      elements.stepRegister.classList.remove("hidden");
+      setTimeout(function () { if (elements.registerNameInput) elements.registerNameInput.focus(); }, 50);
     } else if (name === "apps") {
       elements.authOverlay.classList.add("hidden");
       elements.stepApps.classList.remove("hidden");
@@ -1041,7 +1262,204 @@
     if (prevSession) { postJson({ action: "auth.logout", sessionKey: prevSession }).catch(function () {}); }
     if (onComplete) onComplete();
   }
-  window.NH_AUTH = { readOtp: readOtp, clearOtpInputs: clearOtpInputs, setupOtpInputs: setupOtpInputs, sendOtp: sendOtp, verifyOtp: verifyOtp, tryAutoLogin: tryAutoLogin, logout: logout };
+  function register(elements, state, onSuccess) {
+    var name = (elements.registerNameInput.value || "").trim();
+    var email = (elements.registerEmailInput.value || "").trim();
+    var mobile = (elements.registerMobileInput.value || "").trim();
+    if (!name) {
+      var msg = getLang() === "ar" ? "الاسم مطلوب." : "Name is required.";
+      setStatus(elements.statusPill, elements.statusText, msg, "error");
+      elements.registerNameInput.focus();
+      return;
+    }
+    if (!mobile) {
+      var msg2 = getLang() === "ar" ? "رقم الجوال مطلوب." : "Mobile number is required.";
+      setStatus(elements.statusPill, elements.statusText, msg2, "error");
+      elements.registerMobileInput.focus();
+      return;
+    }
+    elements.btnRegister.disabled = true;
+    setStatus(elements.statusPill, elements.statusText, "statusRegistering");
+    var registerUrl = (function () {
+      try { return new URL("/api/hub/auth/register", window.location.origin).toString(); }
+      catch (e) { return "/api/hub/auth/register"; }
+    })();
+    fetch(registerUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name, email: email || null, mobile: mobile })
+    }).then(function (res) {
+      return res.text().then(function (txt) {
+        if (window.NH_UI.isHtmlLike(txt)) {
+          throw new Error("API returned HTML. Check Vercel deployment.");
+        }
+        var data = null;
+        try { data = JSON.parse(txt || "{}"); } catch (e) {}
+        if (!res.ok) {
+          var msg = (data && (data.error || data.message)) || ("HTTP " + res.status);
+          throw new Error(msg);
+        }
+        return data || {};
+      });
+    })
+      .then(function (res) {
+        if (!res || res.success !== true) {
+          var errorMsg = "registerError";
+          if (res && res.error) {
+            if (res.error.includes("already") || res.error.includes("exists") || res.error.includes("registered")) {
+              errorMsg = "registerErrorUserExists";
+            } else if (res.error.includes("name") || res.error.includes("Name")) {
+              errorMsg = "registerErrorInvalidName";
+            } else if (res.error.includes("mobile") || res.error.includes("Mobile")) {
+              errorMsg = "registerErrorInvalidMobile";
+            }
+          }
+          setStatus(elements.statusPill, elements.statusText, errorMsg, "error");
+          return;
+        }
+        setStatus(elements.statusPill, elements.statusText, "statusRegistrationSuccess", "ok");
+        state.currentMobileRaw = mobile;
+        clearOtpInputs(elements.otpInputs);
+        setTimeout(function () {
+          showStep("otp", elements);
+          if (onSuccess) onSuccess();
+        }, 1000);
+      })
+      .catch(function (err) {
+        var msg = (getLang() === "ar" ? "خطأ: " : "Error: ") + (err && err.message ? err.message : "");
+        setStatus(elements.statusPill, elements.statusText, msg, "error");
+      })
+      .finally(function () { elements.btnRegister.disabled = false; });
+  }
+  function loadProfile(elements, state, onSuccess) {
+    if (!state.currentSessionKey || !state.currentUser) {
+      if (onSuccess) onSuccess();
+      return;
+    }
+    setStatus(elements.statusPill, elements.statusText, "statusLoadingProfile");
+    var profileUrl = (function () {
+      try { return new URL("/api/hub/user/profile", window.location.origin).toString(); }
+      catch (e) { return "/api/hub/user/profile"; }
+    })();
+    fetch(profileUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "user.getProfile", userId: state.currentUser.userId, sessionKey: state.currentSessionKey })
+    }).then(function (res) {
+      return res.text().then(function (txt) {
+        if (window.NH_UI.isHtmlLike(txt)) {
+          throw new Error("API returned HTML. Check Vercel deployment.");
+        }
+        var data = null;
+        try { data = JSON.parse(txt || "{}"); } catch (e) {}
+        if (!res.ok) {
+          var msg = (data && (data.error || data.message)) || ("HTTP " + res.status);
+          throw new Error(msg);
+        }
+        return data || {};
+      });
+    })
+      .then(function (res) {
+        if (!res || res.success !== true) {
+          setStatus(elements.statusPill, elements.statusText, "profileError", "error");
+          if (onSuccess) onSuccess();
+          return;
+        }
+        if (res.user) {
+          state.currentUser = res.user;
+          if (onSuccess) onSuccess();
+        }
+      })
+      .catch(function (err) {
+        var msg = (getLang() === "ar" ? "خطأ: " : "Error: ") + (err && err.message ? err.message : "");
+        setStatus(elements.statusPill, elements.statusText, msg, "error");
+        if (onSuccess) onSuccess();
+      });
+  }
+  function showProfile(elements, state) {
+    if (!state.currentUser) return;
+    if (elements.profileOverlay) elements.profileOverlay.classList.remove("hidden");
+    if (elements.profileView) elements.profileView.classList.remove("hidden");
+    if (elements.profileEdit) elements.profileEdit.classList.add("hidden");
+    if (elements.profileNameDisplay) elements.profileNameDisplay.textContent = state.currentUser.name || "—";
+    if (elements.profileEmailDisplay) elements.profileEmailDisplay.textContent = state.currentUser.email || "—";
+    if (elements.profileMobileDisplay) elements.profileMobileDisplay.textContent = state.currentUser.mobile || "—";
+  }
+  function showProfileEdit(elements, state) {
+    if (!state.currentUser) return;
+    if (elements.profileView) elements.profileView.classList.add("hidden");
+    if (elements.profileEdit) elements.profileEdit.classList.remove("hidden");
+    if (elements.profileNameInput) elements.profileNameInput.value = state.currentUser.name || "";
+    if (elements.profileEmailInput) elements.profileEmailInput.value = state.currentUser.email || "";
+    if (elements.profileMobileReadonly) elements.profileMobileReadonly.textContent = state.currentUser.mobile || "—";
+    setTimeout(function () { if (elements.profileNameInput) elements.profileNameInput.focus(); }, 50);
+  }
+  function saveProfile(elements, state, onSuccess) {
+    if (!state.currentUser || !state.currentSessionKey) return;
+    var name = (elements.profileNameInput.value || "").trim();
+    var email = (elements.profileEmailInput.value || "").trim();
+    if (!name) {
+      var msg = getLang() === "ar" ? "الاسم مطلوب." : "Name is required.";
+      setStatus(elements.statusPill, elements.statusText, msg, "error");
+      elements.profileNameInput.focus();
+      return;
+    }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      var msg2 = getLang() === "ar" ? "البريد الإلكتروني غير صحيح." : "Invalid email address.";
+      setStatus(elements.statusPill, elements.statusText, msg2, "error");
+      elements.profileEmailInput.focus();
+      return;
+    }
+    elements.btnSaveProfile.disabled = true;
+    setStatus(elements.statusPill, elements.statusText, "statusSavingProfile");
+    var profileUrl = (function () {
+      try { return new URL("/api/hub/user/profile", window.location.origin).toString(); }
+      catch (e) { return "/api/hub/user/profile"; }
+    })();
+    fetch(profileUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "user.updateProfile", userId: state.currentUser.userId, name: name, email: email || null, sessionKey: state.currentSessionKey })
+    }).then(function (res) {
+      return res.text().then(function (txt) {
+        if (window.NH_UI.isHtmlLike(txt)) {
+          throw new Error("API returned HTML. Check Vercel deployment.");
+        }
+        var data = null;
+        try { data = JSON.parse(txt || "{}"); } catch (e) {}
+        if (!res.ok) {
+          var msg = (data && (data.error || data.message)) || ("HTTP " + res.status);
+          throw new Error(msg);
+        }
+        return data || {};
+      });
+    })
+      .then(function (res) {
+        if (!res || res.success !== true) {
+          setStatus(elements.statusPill, elements.statusText, "profileSaveError", "error");
+          return;
+        }
+        if (res.user) {
+          state.currentUser = res.user;
+          setStatus(elements.statusPill, elements.statusText, "statusProfileSaved", "ok");
+          setTimeout(function () {
+            showProfile(elements, state);
+            if (onSuccess) onSuccess();
+          }, 1000);
+        }
+      })
+      .catch(function (err) {
+        var msg = (getLang() === "ar" ? "خطأ: " : "Error: ") + (err && err.message ? err.message : "");
+        setStatus(elements.statusPill, elements.statusText, msg, "error");
+      })
+      .finally(function () { elements.btnSaveProfile.disabled = false; });
+  }
+  function closeProfile(elements) {
+    if (elements.profileOverlay) elements.profileOverlay.classList.add("hidden");
+    if (elements.profileView) elements.profileView.classList.remove("hidden");
+    if (elements.profileEdit) elements.profileEdit.classList.add("hidden");
+  }
+  window.NH_AUTH = { readOtp: readOtp, clearOtpInputs: clearOtpInputs, setupOtpInputs: setupOtpInputs, sendOtp: sendOtp, verifyOtp: verifyOtp, tryAutoLogin: tryAutoLogin, logout: logout, register: register, loadProfile: loadProfile, showProfile: showProfile, showProfileEdit: showProfileEdit, saveProfile: saveProfile, closeProfile: closeProfile };
 })();
   </script>
   <script>
@@ -1122,6 +1540,8 @@
     if (elements.workspaceRoleEl) elements.workspaceRoleEl.textContent = ws.role === "admin" ? "admin" : "member";
     buildWorkspaceMenu(elements.workspaceMenu, state.currentWorkspaces, workspaceId, function (id) {
       selectWorkspace(elements, state, id, onLoadData);
+    }, function () {
+      showWorkspaceCreate(elements, state);
     });
     setStatus(elements.statusPill, elements.statusText, "statusLoadingApps");
     if (onLoadData) onLoadData();
@@ -1166,7 +1586,104 @@
         setStatus(elements.statusPill, elements.statusText, msg, "error");
       });
   }
-  window.NH_WORKSPACE = { buildWorkspaceMenu: buildWorkspaceMenu, loadWorkspaces: loadWorkspaces, selectWorkspace: selectWorkspace, loadWorkspaceData: loadWorkspaceData };
+  function generateSlug(name) {
+    if (!name) return "";
+    return name.toLowerCase()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .trim();
+  }
+  function showWorkspaceCreate(elements, state) {
+    if (!state.currentUser) return;
+    if (elements.workspaceCreateOverlay) elements.workspaceCreateOverlay.classList.remove("hidden");
+    if (elements.workspaceNameInput) {
+      elements.workspaceNameInput.value = "";
+      elements.workspaceNameInput.focus();
+    }
+    if (elements.workspaceSlugPreview) elements.workspaceSlugPreview.textContent = "";
+    if (elements.workspaceNameInput) {
+      elements.workspaceNameInput.addEventListener("input", function () {
+        var name = elements.workspaceNameInput.value.trim();
+        var slug = generateSlug(name);
+        if (elements.workspaceSlugPreview) elements.workspaceSlugPreview.textContent = slug || "—";
+      });
+    }
+  }
+  function closeWorkspaceCreate(elements) {
+    if (elements.workspaceCreateOverlay) elements.workspaceCreateOverlay.classList.add("hidden");
+    if (elements.workspaceNameInput) elements.workspaceNameInput.value = "";
+    if (elements.workspaceSlugPreview) elements.workspaceSlugPreview.textContent = "";
+  }
+  function createWorkspace(elements, state, onSuccess) {
+    if (!state.currentUser || !state.currentSessionKey) return;
+    var name = (elements.workspaceNameInput.value || "").trim();
+    if (!name) {
+      var msg = getLang() === "ar" ? "اسم مساحة العمل مطلوب." : "Workspace name is required.";
+      setStatus(elements.statusPill, elements.statusText, msg, "error");
+      elements.workspaceNameInput.focus();
+      return;
+    }
+    if (name.length < 3) {
+      var msg2 = getLang() === "ar" ? "اسم مساحة العمل قصير جداً (3 أحرف على الأقل)." : "Workspace name is too short (minimum 3 characters).";
+      setStatus(elements.statusPill, elements.statusText, msg2, "error");
+      elements.workspaceNameInput.focus();
+      return;
+    }
+    if (name.length > 50) {
+      var msg3 = getLang() === "ar" ? "اسم مساحة العمل طويل جداً (50 حرف كحد أقصى)." : "Workspace name is too long (maximum 50 characters).";
+      setStatus(elements.statusPill, elements.statusText, msg3, "error");
+      elements.workspaceNameInput.focus();
+      return;
+    }
+    var slug = generateSlug(name);
+    elements.btnCreateWorkspaceSubmit.disabled = true;
+    setStatus(elements.statusPill, elements.statusText, "statusCreatingWorkspace");
+    var createUrl = (function () {
+      try { return new URL("/api/hub/workspace/create", window.location.origin).toString(); }
+      catch (e) { return "/api/hub/workspace/create"; }
+    })();
+    fetch(createUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name, slug: slug, userId: state.currentUser.userId, sessionKey: state.currentSessionKey })
+    }).then(function (res) {
+      return res.text().then(function (txt) {
+        if (window.NH_UI.isHtmlLike(txt)) {
+          throw new Error("API returned HTML. Check Vercel deployment.");
+        }
+        var data = null;
+        try { data = JSON.parse(txt || "{}"); } catch (e) {}
+        if (!res.ok) {
+          var msg = (data && (data.error || data.message)) || ("HTTP " + res.status);
+          throw new Error(msg);
+        }
+        return data || {};
+      });
+    })
+      .then(function (res) {
+        if (!res || res.success !== true) {
+          setStatus(elements.statusPill, elements.statusText, "workspaceCreateError", "error");
+          return;
+        }
+        setStatus(elements.statusPill, elements.statusText, "statusWorkspaceCreated", "ok");
+        closeWorkspaceCreate(elements);
+        loadWorkspaces(elements, state, function () {
+          if (res.workspace && res.workspace.workspaceId) {
+            selectWorkspace(elements, state, res.workspace.workspaceId, function () {
+              loadWorkspaceData(elements, state, function () {}, function () {});
+            });
+          }
+          if (onSuccess) onSuccess();
+        });
+      })
+      .catch(function (err) {
+        var msg = (getLang() === "ar" ? "خطأ: " : "Error: ") + (err && err.message ? err.message : "");
+        setStatus(elements.statusPill, elements.statusText, msg, "error");
+      })
+      .finally(function () { elements.btnCreateWorkspaceSubmit.disabled = false; });
+  }
+  window.NH_WORKSPACE = { buildWorkspaceMenu: buildWorkspaceMenu, loadWorkspaces: loadWorkspaces, selectWorkspace: selectWorkspace, loadWorkspaceData: loadWorkspaceData, showWorkspaceCreate: showWorkspaceCreate, closeWorkspaceCreate: closeWorkspaceCreate, createWorkspace: createWorkspace, generateSlug: generateSlug };
 })();
   </script>
   <script>
@@ -1403,9 +1920,16 @@
     authOverlay: document.getElementById("authOverlay"),
     stepMobile: document.getElementById("stepMobile"),
     stepOtp: document.getElementById("stepOtp"),
+    stepRegister: document.getElementById("stepRegister"),
     stepApps: document.getElementById("stepApps"),
     mobileInput: document.getElementById("mobileInput"),
     btnSendOtp: document.getElementById("btnSendOtp"),
+    btnShowRegister: document.getElementById("btnShowRegister"),
+    registerNameInput: document.getElementById("registerNameInput"),
+    registerEmailInput: document.getElementById("registerEmailInput"),
+    registerMobileInput: document.getElementById("registerMobileInput"),
+    btnRegister: document.getElementById("btnRegister"),
+    btnBackToLogin: document.getElementById("btnBackToLogin"),
     otpInputs: [
       document.getElementById("otp1"),
       document.getElementById("otp2"),
@@ -1418,6 +1942,12 @@
     workspaceMenu: document.getElementById("workspaceMenu"),
     workspaceNameEl: document.getElementById("workspaceName"),
     workspaceRoleEl: document.getElementById("workspaceRole"),
+    workspaceCreateOverlay: document.getElementById("workspaceCreateOverlay"),
+    workspaceNameInput: document.getElementById("workspaceNameInput"),
+    workspaceSlugPreview: document.getElementById("workspaceSlugPreview"),
+    btnCreateWorkspaceSubmit: document.getElementById("btnCreateWorkspaceSubmit"),
+    btnCancelWorkspaceCreate: document.getElementById("btnCancelWorkspaceCreate"),
+    btnCloseWorkspaceCreate: document.getElementById("btnCloseWorkspaceCreate"),
     btnViewApps: document.getElementById("btnViewApps"),
     btnViewMarketplace: document.getElementById("btnViewMarketplace"),
     sectionApps: document.getElementById("sectionApps"),
@@ -1436,7 +1966,22 @@
     btnLangEn: document.getElementById("btnLangEn"),
     userNameLabel: document.getElementById("userNameLabel"),
     btnPing: document.getElementById("btnPing"),
-    devInfo: document.getElementById("devInfo")
+    devInfo: document.getElementById("devInfo"),
+    btnProfile: document.getElementById("btnProfile"),
+    profileOverlay: document.getElementById("profileOverlay"),
+    profileView: document.getElementById("profileView"),
+    profileEdit: document.getElementById("profileEdit"),
+    profileNameDisplay: document.getElementById("profileNameDisplay"),
+    profileEmailDisplay: document.getElementById("profileEmailDisplay"),
+    profileMobileDisplay: document.getElementById("profileMobileDisplay"),
+    btnEditProfile: document.getElementById("btnEditProfile"),
+    btnCloseProfile: document.getElementById("btnCloseProfile"),
+    btnCancelEdit: document.getElementById("btnCancelEdit"),
+    profileNameInput: document.getElementById("profileNameInput"),
+    profileEmailInput: document.getElementById("profileEmailInput"),
+    profileMobileReadonly: document.getElementById("profileMobileReadonly"),
+    btnCancelProfile: document.getElementById("btnCancelProfile"),
+    btnSaveProfile: document.getElementById("btnSaveProfile")
   };
   window.NH_AUTH.setupOtpInputs(elements.otpInputs, function () {
     window.NH_AUTH.verifyOtp(elements, state, onAuthSuccess);
@@ -1488,6 +2033,98 @@
     elements.btnChangeMobile.addEventListener("click", function () {
       window.NH_UI.showStep("mobile", elements);
       window.NH_UI.setStatus(elements.statusPill, elements.statusText, "statusIdle");
+    });
+  }
+  if (elements.btnShowRegister) {
+    elements.btnShowRegister.addEventListener("click", function () {
+      window.NH_UI.showStep("register", elements);
+      window.NH_UI.setStatus(elements.statusPill, elements.statusText, "statusIdle");
+    });
+  }
+  if (elements.btnBackToLogin) {
+    elements.btnBackToLogin.addEventListener("click", function () {
+      window.NH_UI.showStep("mobile", elements);
+      window.NH_UI.setStatus(elements.statusPill, elements.statusText, "statusIdle");
+    });
+  }
+  if (elements.btnRegister) {
+    elements.btnRegister.addEventListener("click", function () {
+      window.NH_AUTH.register(elements, state, function () {});
+    });
+  }
+  if (elements.registerNameInput) {
+    elements.registerNameInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (elements.registerEmailInput) elements.registerEmailInput.focus();
+        else if (elements.registerMobileInput) elements.registerMobileInput.focus();
+      }
+    });
+  }
+  if (elements.registerEmailInput) {
+    elements.registerEmailInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (elements.registerMobileInput) elements.registerMobileInput.focus();
+      }
+    });
+  }
+  if (elements.registerMobileInput) {
+    elements.registerMobileInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        window.NH_AUTH.register(elements, state);
+      }
+    });
+  }
+  if (elements.btnProfile) {
+    elements.btnProfile.addEventListener("click", function () {
+      window.NH_AUTH.loadProfile(elements, state, function () {
+        window.NH_AUTH.showProfile(elements, state);
+        window.NH_APPS.updateUserUi(elements.userNameLabel, state.currentUser);
+      });
+    });
+  }
+  if (elements.btnCloseProfile) {
+    elements.btnCloseProfile.addEventListener("click", function () {
+      window.NH_AUTH.closeProfile(elements);
+    });
+  }
+  if (elements.btnEditProfile) {
+    elements.btnEditProfile.addEventListener("click", function () {
+      window.NH_AUTH.showProfileEdit(elements, state);
+    });
+  }
+  if (elements.btnCancelEdit || elements.btnCancelProfile) {
+    var cancelBtn = elements.btnCancelEdit || elements.btnCancelProfile;
+    if (cancelBtn) {
+      cancelBtn.addEventListener("click", function () {
+        window.NH_AUTH.showProfile(elements, state);
+      });
+    }
+  }
+  if (elements.btnSaveProfile) {
+    elements.btnSaveProfile.addEventListener("click", function () {
+      window.NH_AUTH.saveProfile(elements, state, function () {
+        window.NH_APPS.updateUserUi(elements.userNameLabel, state.currentUser);
+      });
+    });
+  }
+  if (elements.profileNameInput) {
+    elements.profileNameInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (elements.profileEmailInput) elements.profileEmailInput.focus();
+        else if (elements.btnSaveProfile) elements.btnSaveProfile.click();
+      }
+    });
+  }
+  if (elements.profileEmailInput) {
+    elements.profileEmailInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (elements.btnSaveProfile) elements.btnSaveProfile.click();
+      }
     });
   }
   if (elements.btnLogout) {
@@ -1554,6 +2191,35 @@
   if (elements.workspaceMenu) {
     elements.workspaceMenu.addEventListener("click", function (e) {
       e.stopPropagation();
+    });
+  }
+  if (elements.btnCloseWorkspaceCreate || elements.btnCancelWorkspaceCreate) {
+    var closeBtn = elements.btnCloseWorkspaceCreate || elements.btnCancelWorkspaceCreate;
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        window.NH_WORKSPACE.closeWorkspaceCreate(elements);
+      });
+    }
+  }
+  if (elements.btnCreateWorkspaceSubmit) {
+    elements.btnCreateWorkspaceSubmit.addEventListener("click", function () {
+      window.NH_WORKSPACE.createWorkspace(elements, state, function () {
+        renderApps();
+        renderMarketplace();
+      });
+    });
+  }
+  if (elements.workspaceNameInput) {
+    elements.workspaceNameInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (elements.btnCreateWorkspaceSubmit) elements.btnCreateWorkspaceSubmit.click();
+      }
+    });
+    elements.workspaceNameInput.addEventListener("input", function () {
+      var name = elements.workspaceNameInput.value.trim();
+      var slug = window.NH_WORKSPACE.generateSlug ? window.NH_WORKSPACE.generateSlug(name) : (name.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-").trim());
+      if (elements.workspaceSlugPreview) elements.workspaceSlugPreview.textContent = slug || "—";
     });
   }
   if (elements.btnPing) {
